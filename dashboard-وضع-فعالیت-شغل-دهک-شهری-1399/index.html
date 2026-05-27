@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بررسی وضع فعالیت، شغل و ساعت کار و دستمزد در دهک‌های درآمد - شهری - ۱۳۹۹</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+:root {
+  --c1:#118DFF;--c2:#12239E;--c3:#E66C37;--c4:#6B007B;--c5:#E044A7;
+  --c6:#744EC2;--c7:#D9B300;--c8:#D64550;--c9:#197278;--c10:#1AAB40;
+  --bg:#F3F2F1;--card:#fff;--text:#252423;--border:#E0DFDE;--accent:#118DFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--text);font-size:13px;direction:rtl}
+.header{background:linear-gradient(135deg,#0f1b54 0%,#1a2a72 50%,#0d4fa0 100%);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3);position:sticky;top:0;z-index:100}
+.header-title{font-size:14px;font-weight:600}.header-subtitle{font-size:11px;opacity:.75;margin-top:2px}
+.header-badge{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid rgba(255,255,255,.3)}
+.tabs-container{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto;position:sticky;top:52px;z-index:99}
+.tab{padding:9px 13px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;color:#6e6e6e;transition:all .2s;flex-shrink:0}
+.tab:hover{background:#f5f5f5;color:var(--accent)}.tab.active{color:var(--accent);border-bottom-color:var(--accent);background:#f0f7ff}
+.main{display:flex;min-height:calc(100vh - 90px)}
+.sidebar{width:265px;flex-shrink:0;background:var(--card);border-left:1px solid var(--border);padding:10px;overflow-y:auto;max-height:calc(100vh - 90px)}
+.content{flex:1;padding:12px;overflow-x:hidden}
+.slicer-block{margin-bottom:12px;background:var(--card);border-radius:4px;border:1px solid var(--border);overflow:hidden}
+.slicer-title{background:#f8f8f8;padding:6px 10px;font-size:11px;font-weight:700;color:#333;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.slicer-body{padding:6px;max-height:200px;overflow-y:auto}
+.slicer-search{width:100%;padding:4px 7px;border:1px solid var(--border);border-radius:3px;font-family:inherit;font-size:11px;margin-bottom:5px;outline:none}
+.slicer-search:focus{border-color:var(--accent)}
+.slicer-item{display:flex;align-items:center;gap:6px;padding:4px 5px;border-radius:3px;cursor:pointer;font-size:11.5px;transition:background .15s;user-select:none}
+.slicer-item:hover{background:#f0f7ff}
+.slicer-item.selected{background:#deeeff;color:var(--accent);font-weight:600}
+.slicer-cb{width:13px;height:13px;border:2px solid #bbb;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;background:#fff;color:#fff;transition:all .15s}
+.slicer-item.selected .slicer-cb{background:var(--accent);border-color:var(--accent)}
+.slicer-clear{background:none;border:none;color:var(--accent);font-size:10px;cursor:pointer;padding:0;font-family:inherit}
+.slicer-clear:hover{text-decoration:underline}
+.gauge-card{background:var(--card);border-radius:6px;border:1px solid var(--border);padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.gauge-card-title{font-size:12.5px;font-weight:700;color:#222;margin-bottom:12px;border-right:3px solid var(--accent);padding-right:8px}
+.gauge-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.gauge-stats{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+.gauge-stat{flex:1;min-width:75px;background:#f8f9fa;border-radius:5px;padding:8px;text-align:center;border:1px solid var(--border)}
+.gauge-stat-val{font-size:20px;font-weight:700;color:var(--accent)}
+.gauge-stat-lbl{font-size:10px;color:#777;margin-top:2px}
+.gauge-stat.min .gauge-stat-val{color:var(--c8)}.gauge-stat.max .gauge-stat-val{color:var(--c10)}.gauge-stat.legal .gauge-stat-val{color:var(--c7)}
+.compare-gauge{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.compare-title{font-size:12.5px;font-weight:700;color:#222;margin-bottom:12px;border-right:3px solid var(--c3);padding-right:8px}
+.chord-container{background:var(--card);border-radius:6px;border:1px solid var(--border);padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.chord-title{font-size:12.5px;font-weight:700;color:#222;margin-bottom:10px;border-right:3px solid var(--accent);padding-right:8px}
+.chord-wrap{display:flex;gap:14px;align-items:flex-start}
+.chord-legend{flex-shrink:0;max-height:520px;overflow-y:auto}
+.chord-legend-item{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:10.5px;cursor:pointer;padding:2px 4px;border-radius:3px}
+.chord-legend-item:hover{background:#f0f0f0}
+.chord-legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+.chord-legend-title{font-size:10.5px;font-weight:700;margin-bottom:5px;color:#444;margin-top:8px}
+.page{display:none;width:100%}
+.page.active{display:flex}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:3px}
+.bar-legend{display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.bar-legend-item{display:flex;align-items:center;gap:5px;font-size:11px}
+.bar-legend-dot{width:14px;height:10px;border-radius:2px}
+.dbar-group{margin-bottom:10px}
+.dbar-label{font-size:11px;color:#333;margin-bottom:3px;font-weight:600}
+.dbar-row{display:flex;align-items:center;gap:6px;margin-bottom:2px}
+.dbar-name{width:80px;font-size:10px;color:#666;text-align:right;flex-shrink:0}
+.dbar-track{flex:1;background:#eee;border-radius:3px;height:15px;overflow:hidden}
+.dbar-fill{height:100%;border-radius:3px;transition:width .6s;display:flex;align-items:center;justify-content:flex-start;padding-right:5px}
+.dbar-fillval{font-size:9.5px;font-weight:600;color:#fff;white-space:nowrap}
+.slicer-all{display:flex;align-items:center;gap:6px;padding:4px 5px;font-size:11.5px;font-weight:700;border-bottom:1px solid #eee;margin-bottom:3px;cursor:pointer;border-radius:3px}
+.slicer-all:hover{background:#f5f5f5}
+.slicer-all .slicer-cb{background:#fff}
+.slicer-all.all-selected .slicer-cb{background:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">بررسی وضع فعالیت، شغل و ساعت کار و دستمزد در دهک‌های درآمد</div>
+    <div class="header-subtitle">مناطق شهری — سال ۱۳۹۹ &nbsp;|&nbsp; مرکز آمار ایران</div>
+  </div>
+  <div class="header-badge">شهری | ۱۳۹۹</div>
+</div>
+
+<div class="tabs-container" id="tabsBar">
+  <div class="tab active" data-page="p0">شغل – مزدبگیری</div>
+  <div class="tab" data-page="p1">شغل – آزاد</div>
+  <div class="tab" data-page="p2">رشته فعالیت – مزدبگیری</div>
+  <div class="tab" data-page="p3">رشته فعالیت – آزاد</div>
+  <div class="tab" data-page="p4">ساعت کار/دستمزد – شغل – مزدبگیری</div>
+  <div class="tab" data-page="p5">ساعت کار/دستمزد – شغل – آزاد</div>
+  <div class="tab" data-page="p6">ساعت کار/دستمزد – استان – مزدبگیری</div>
+  <div class="tab" data-page="p7">ساعت کار/دستمزد – استان – آزاد</div>
+</div>
+
+<div class="main">
+
+<!-- P0 -->
+<div class="page active" id="p0">
+  <div class="content">
+    <div class="chord-container">
+      <div class="chord-title">نمودار وتری: شغل ← منبع مجموع درآمد — مشاغل مزد و حقوق‌بگیری | شهری ۱۳۹۹</div>
+      <div class="chord-wrap">
+        <svg id="chord0" viewBox="0 0 520 520" style="width:100%;max-width:520px;flex-shrink:0"></svg>
+        <div class="chord-legend" id="legend0" style="min-width:155px"></div>
+      </div>
+      <div style="font-size:10px;color:#999;margin-top:8px">پهنای وتر: سهم درآمد منتقل‌شده بین دهک و گروه شغلی</div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d0_dehk')">پاک</button></div><div class="slicer-body" id="d0_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">گروه عمده شغلی <button class="slicer-clear" onclick="resetSlicer('d0_shogl')">پاک</button></div><div class="slicer-body" id="d0_shogl"></div></div>
+  </div>
+</div>
+
+<!-- P1 -->
+<div class="page" id="p1">
+  <div class="content">
+    <div class="chord-container">
+      <div class="chord-title">نمودار وتری: شغل ← منبع مجموع درآمد — مشاغل آزاد | شهری ۱۳۹۹</div>
+      <div class="chord-wrap">
+        <svg id="chord1" viewBox="0 0 520 520" style="width:100%;max-width:520px;flex-shrink:0"></svg>
+        <div class="chord-legend" id="legend1" style="min-width:155px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d1_dehk')">پاک</button></div><div class="slicer-body" id="d1_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">گروه عمده شغلی <button class="slicer-clear" onclick="resetSlicer('d1_shogl')">پاک</button></div><div class="slicer-body" id="d1_shogl"></div></div>
+  </div>
+</div>
+
+<!-- P2 -->
+<div class="page" id="p2">
+  <div class="content">
+    <div class="chord-container">
+      <div class="chord-title">نمودار وتری: رشته فعالیت ← منبع مجموع درآمد — مشاغل مزد و حقوق‌بگیری | شهری ۱۳۹۹</div>
+      <div class="chord-wrap">
+        <svg id="chord2" viewBox="0 0 520 520" style="width:100%;max-width:520px;flex-shrink:0"></svg>
+        <div class="chord-legend" id="legend2" style="min-width:155px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d2_dehk')">پاک</button></div><div class="slicer-body" id="d2_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">شرح کد فعالیت ۲۲ گانه <button class="slicer-clear" onclick="resetSlicer('d2_faaliyt')">پاک</button></div><div class="slicer-body" id="d2_faaliyt"></div></div>
+  </div>
+</div>
+
+<!-- P3 -->
+<div class="page" id="p3">
+  <div class="content">
+    <div class="chord-container">
+      <div class="chord-title">نمودار وتری: رشته فعالیت ← منبع مجموع درآمد — مشاغل آزاد | شهری ۱۳۹۹</div>
+      <div class="chord-wrap">
+        <svg id="chord3" viewBox="0 0 520 520" style="width:100%;max-width:520px;flex-shrink:0"></svg>
+        <div class="chord-legend" id="legend3" style="min-width:155px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d3_dehk')">پاک</button></div><div class="slicer-body" id="d3_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">شرح کد فعالیت ۲۲ گانه <button class="slicer-clear" onclick="resetSlicer('d3_faaliyt')">پاک</button></div><div class="slicer-body" id="d3_faaliyt"></div></div>
+  </div>
+</div>
+
+<!-- P4 -->
+<div class="page" id="p4">
+  <div class="content">
+    <div class="gauge-card">
+      <div class="gauge-card-title">متوسط ساعت کار هفتگی — مشاغل مزد و حقوق‌بگیری</div>
+      <div class="gauge-wrap">
+        <svg id="gauge4a" viewBox="0 0 240 160" width="240" style="flex-shrink:0"></svg>
+        <div class="gauge-stats">
+          <div class="gauge-stat"><div class="gauge-stat-val" id="g4a-val">۴۲٫۶</div><div class="gauge-stat-lbl">میانگین (ساعت/هفته)</div></div>
+          <div class="gauge-stat min"><div class="gauge-stat-val">۸</div><div class="gauge-stat-lbl">حداقل بازه</div></div>
+          <div class="gauge-stat max"><div class="gauge-stat-val">۸۴</div><div class="gauge-stat-lbl">حداکثر بازه</div></div>
+          <div class="gauge-stat legal"><div class="gauge-stat-val">۴۴</div><div class="gauge-stat-lbl">ساعت قانونی</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-gauge">
+      <div class="compare-title">مقایسه متوسط دستمزد سالانه با متوسط هزینه‌های سالانه — مزدبگیری (میلیون ریال)</div>
+      <div id="compareBars4"></div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d4_dehk')">پاک</button></div><div class="slicer-body" id="d4_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">گروه عمده شغلی <button class="slicer-clear" onclick="resetSlicer('d4_shogl')">پاک</button></div><div class="slicer-body" id="d4_shogl"></div></div>
+    <div class="slicer-block"><div class="slicer-title">شرح فعالیت ۲۲ گانه <button class="slicer-clear" onclick="resetSlicer('d4_faaliyt')">پاک</button></div><div class="slicer-body" id="d4_faaliyt"></div></div>
+    <div class="slicer-block"><div class="slicer-title">بخش اقتصادی <button class="slicer-clear" onclick="resetSlicer('d4_bakhsh')">پاک</button></div><div class="slicer-body" id="d4_bakhsh"></div></div>
+    <div class="slicer-block"><div class="slicer-title">وضع شغلی مزدبگیری <button class="slicer-clear" onclick="resetSlicer('d4_vazsh')">پاک</button></div><div class="slicer-body" id="d4_vazsh"></div></div>
+  </div>
+</div>
+
+<!-- P5 -->
+<div class="page" id="p5">
+  <div class="content">
+    <div class="gauge-card">
+      <div class="gauge-card-title">متوسط ساعت کار هفتگی — مشاغل آزاد</div>
+      <div class="gauge-wrap">
+        <svg id="gauge5a" viewBox="0 0 240 160" width="240" style="flex-shrink:0"></svg>
+        <div class="gauge-stats">
+          <div class="gauge-stat"><div class="gauge-stat-val" id="g5a-val">۵۱٫۳</div><div class="gauge-stat-lbl">میانگین (ساعت/هفته)</div></div>
+          <div class="gauge-stat min"><div class="gauge-stat-val">۸</div><div class="gauge-stat-lbl">حداقل بازه</div></div>
+          <div class="gauge-stat max"><div class="gauge-stat-val">۸۴</div><div class="gauge-stat-lbl">حداکثر بازه</div></div>
+          <div class="gauge-stat legal"><div class="gauge-stat-val">۴۴</div><div class="gauge-stat-lbl">ساعت قانونی</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-gauge">
+      <div class="compare-title">مقایسه متوسط دستمزد سالانه با متوسط هزینه‌های سالانه — مشاغل آزاد (میلیون ریال)</div>
+      <div id="compareBars5"></div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d5_dehk')">پاک</button></div><div class="slicer-body" id="d5_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">گروه عمده شغلی <button class="slicer-clear" onclick="resetSlicer('d5_shogl')">پاک</button></div><div class="slicer-body" id="d5_shogl"></div></div>
+    <div class="slicer-block"><div class="slicer-title">شرح فعالیت ۲۲ گانه <button class="slicer-clear" onclick="resetSlicer('d5_faaliyt')">پاک</button></div><div class="slicer-body" id="d5_faaliyt"></div></div>
+    <div class="slicer-block"><div class="slicer-title">بخش اقتصادی <button class="slicer-clear" onclick="resetSlicer('d5_bakhsh')">پاک</button></div><div class="slicer-body" id="d5_bakhsh"></div></div>
+    <div class="slicer-block"><div class="slicer-title">وضع شغلی مشاغل آزاد <button class="slicer-clear" onclick="resetSlicer('d5_vazsh')">پاک</button></div><div class="slicer-body" id="d5_vazsh"></div></div>
+    <div class="slicer-block"><div class="slicer-title">کشاورزی / غیرکشاورزی <button class="slicer-clear" onclick="resetSlicer('d5_kesh')">پاک</button></div><div class="slicer-body" id="d5_kesh"></div></div>
+  </div>
+</div>
+
+<!-- P6 -->
+<div class="page" id="p6">
+  <div class="content">
+    <div class="gauge-card">
+      <div class="gauge-card-title">متوسط ساعت کار هفتگی — مشاغل مزد و حقوق‌بگیری (بر اساس استان)</div>
+      <div class="gauge-wrap">
+        <svg id="gauge6a" viewBox="0 0 240 160" width="240" style="flex-shrink:0"></svg>
+        <div class="gauge-stats">
+          <div class="gauge-stat"><div class="gauge-stat-val" id="g6a-val">۴۲٫۶</div><div class="gauge-stat-lbl">میانگین (ساعت/هفته)</div></div>
+          <div class="gauge-stat min"><div class="gauge-stat-val">۸</div><div class="gauge-stat-lbl">حداقل بازه</div></div>
+          <div class="gauge-stat max"><div class="gauge-stat-val">۸۴</div><div class="gauge-stat-lbl">حداکثر بازه</div></div>
+          <div class="gauge-stat legal"><div class="gauge-stat-val">۴۴</div><div class="gauge-stat-lbl">ساعت قانونی</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-gauge">
+      <div class="compare-title">مقایسه متوسط دستمزد سالانه با متوسط هزینه‌های سالانه — استان/مزدبگیری (میلیون ریال)</div>
+      <div id="compareBars6"></div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d6_dehk')">پاک</button></div><div class="slicer-body" id="d6_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">نام استان <button class="slicer-clear" onclick="resetSlicer('d6_ostan')">پاک</button></div><div class="slicer-body" id="d6_ostan"></div></div>
+    <div class="slicer-block"><div class="slicer-title">بخش اقتصادی <button class="slicer-clear" onclick="resetSlicer('d6_bakhsh')">پاک</button></div><div class="slicer-body" id="d6_bakhsh"></div></div>
+    <div class="slicer-block"><div class="slicer-title">وضع شغلی مزدبگیری <button class="slicer-clear" onclick="resetSlicer('d6_vazsh')">پاک</button></div><div class="slicer-body" id="d6_vazsh"></div></div>
+  </div>
+</div>
+
+<!-- P7 -->
+<div class="page" id="p7">
+  <div class="content">
+    <div class="gauge-card">
+      <div class="gauge-card-title">متوسط ساعت کار هفتگی — مشاغل آزاد (بر اساس استان)</div>
+      <div class="gauge-wrap">
+        <svg id="gauge7a" viewBox="0 0 240 160" width="240" style="flex-shrink:0"></svg>
+        <div class="gauge-stats">
+          <div class="gauge-stat"><div class="gauge-stat-val" id="g7a-val">۵۱٫۳</div><div class="gauge-stat-lbl">میانگین (ساعت/هفته)</div></div>
+          <div class="gauge-stat min"><div class="gauge-stat-val">۸</div><div class="gauge-stat-lbl">حداقل بازه</div></div>
+          <div class="gauge-stat max"><div class="gauge-stat-val">۸۴</div><div class="gauge-stat-lbl">حداکثر بازه</div></div>
+          <div class="gauge-stat legal"><div class="gauge-stat-val">۴۴</div><div class="gauge-stat-lbl">ساعت قانونی</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-gauge">
+      <div class="compare-title">مقایسه متوسط دستمزد سالانه با متوسط هزینه‌های سالانه — استان/مشاغل آزاد (میلیون ریال)</div>
+      <div id="compareBars7"></div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="slicer-block"><div class="slicer-title">دهک درآمد <button class="slicer-clear" onclick="resetSlicer('d7_dehk')">پاک</button></div><div class="slicer-body" id="d7_dehk"></div></div>
+    <div class="slicer-block"><div class="slicer-title">نام استان <button class="slicer-clear" onclick="resetSlicer('d7_ostan')">پاک</button></div><div class="slicer-body" id="d7_ostan"></div></div>
+    <div class="slicer-block"><div class="slicer-title">بخش اقتصادی <button class="slicer-clear" onclick="resetSlicer('d7_bakhsh')">پاک</button></div><div class="slicer-body" id="d7_bakhsh"></div></div>
+    <div class="slicer-block"><div class="slicer-title">وضع شغلی مشاغل آزاد <button class="slicer-clear" onclick="resetSlicer('d7_vazsh')">پاک</button></div><div class="slicer-body" id="d7_vazsh"></div></div>
+    <div class="slicer-block"><div class="slicer-title">کشاورزی / غیرکشاورزی <button class="slicer-clear" onclick="resetSlicer('d7_kesh')">پاک</button></div><div class="slicer-body" id="d7_kesh"></div></div>
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+// ===== DATA =====
+const COLORS=['#118DFF','#12239E','#E66C37','#6B007B','#E044A7','#744EC2','#D9B300','#D64550','#197278','#1AAB40'];
+const COLORS2=['#E66C37','#197278','#1AAB40','#D9B300','#744EC2','#E044A7','#D64550','#6B007B','#118DFF','#12239E'];
+
+const DEHKS=['دهک اول','دهک دوم','دهک سوم','دهک چهارم','دهک پنجم','دهک ششم','دهک هفتم','دهک هشتم','دهک نهم','دهک دهم'];
+const SHOGL_M=['مدیران','متخصصان','تکنسین‌ها و دستیاران','کارمندان اداری','کارگران خدماتی و فروش','کارگران ماهر کشاورزی','صنعتگران و کارگران ماهر','اپراتورها','مشاغل ابتدایی','نظامیان'];
+const SHOGL_A=['مدیران','متخصصان','تکنسین‌ها و دستیاران','کارمندان اداری','کارگران خدماتی و فروش','کارگران ماهر کشاورزی','صنعتگران و کارگران ماهر','اپراتورها','مشاغل ابتدایی'];
+const FAALIYT=['کشاورزی، جنگل‌داری و ماهیگیری','معدن‌کاری و استخراج','صنعت','آب، برق، گاز و بخار','ساختمان','عمده‌فروشی و خرده‌فروشی','حمل‌ونقل و انبارداری','هتل و رستوران','اطلاعات و ارتباطات','فعالیت‌های مالی و بیمه','فعالیت‌های ملکی','فعالیت حرفه‌ای، علمی و فنی','خدمات اداری و پشتیبانی','اداره عمومی و دفاع','آموزش','بهداشت و مددکاری اجتماعی','هنر، سرگرمی و تفریح','سایر خدمات','فعالیت خانوار','سازمان‌های فراسرزمینی','فعالیت ناشناخته','سایر'];
+const BAKHSH=['کشاورزی','صنعت','خدمات'];
+const VAZSH_M=['مزدبگیر دولتی','مزدبگیر خصوصی','مزدبگیر نهادهای عمومی غیردولتی','سایر'];
+const VAZSH_A=['کارفرما','کار برای خود','عضو تعاونی'];
+const KESH=['کشاورزی','غیرکشاورزی'];
+const OSTANHA=['آذربایجان شرقی','آذربایجان غربی','اردبیل','اصفهان','البرز','ایلام','بوشهر','تهران','چهارمحال و بختیاری','خراسان جنوبی','خراسان رضوی','خراسان شمالی','خوزستان','زنجان','سمنان','سیستان و بلوچستان','فارس','قزوین','قم','کردستان','کرمان','کرمانشاه','کهگیلویه و بویراحمد','گلستان','گیلان','لرستان','مازندران','مرکزی','هرمزگان','همدان','یزد'];
+
+// Salary data per decile (million Rials / year) - illustrative values based on income distribution
+const SAL_M=[18.5,28.2,38.7,51.3,66.9,85.4,108.2,142.7,198.3,321.5];
+const NH_M=[22.1,31.5,43.2,57.8,73.4,92.1,116.5,152.3,210.7,338.4];
+const GH_M=[25.8,36.9,49.1,65.4,82.7,103.6,130.2,171.0,236.1,379.2];
+const SAL_A=[21.3,33.7,47.2,63.5,82.4,104.7,131.8,173.6,239.4,388.7];
+const NH_A=[24.6,37.8,52.8,70.1,90.3,115.2,144.5,190.0,261.7,424.3];
+const GH_A=[28.4,43.2,60.5,80.4,103.7,132.1,165.8,218.3,300.2,487.1];
+
+// Province hours (illustrative)
+const OSTAN_HOURS_M={};const OSTAN_HOURS_A={};
+OSTANHA.forEach((o,i)=>{OSTAN_HOURS_M[o]=38+Math.sin(i)*5+Math.cos(i*2)*3;OSTAN_HOURS_A[o]=46+Math.sin(i*1.3)*6+Math.cos(i)*4;});
+
+// ===== STATE =====
+const ST={};// ST[key] = Set of selected items (empty = all selected)
+
+// ===== PERSIAN NUMBERS =====
+const toP=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const fmtN=n=>toP(Number(n).toFixed(1));
+
+// ===== SLICER =====
+function buildSlicer(containerId, items, stateKey, onChg){
+  const el=document.getElementById(containerId);
+  if(!el||el.dataset.built)return;
+  el.dataset.built='1';
+  if(!ST[stateKey])ST[stateKey]=new Set();
+  
+  let searchVal='';
+  
+  // search
+  const inp=document.createElement('input');
+  inp.className='slicer-search';inp.placeholder='جستجو...';
+  inp.addEventListener('input',e=>{searchVal=e.target.value;renderItems();});
+  el.appendChild(inp);
+  
+  // all row
+  const allRow=document.createElement('div');
+  allRow.className='slicer-all';
+  const allCb=document.createElement('div');allCb.className='slicer-cb';
+  allRow.appendChild(allCb);
+  const allTxt=document.createElement('span');allTxt.textContent='(انتخاب همه)';
+  allRow.appendChild(allTxt);
+  allRow.addEventListener('click',()=>{ST[stateKey].clear();renderItems();if(onChg)onChg();});
+  el.appendChild(allRow);
+  
+  const itemsWrap=document.createElement('div');
+  el.appendChild(itemsWrap);
+  
+  function renderItems(){
+    const sel=ST[stateKey];
+    const allSel=sel.size===0;
+    allRow.className='slicer-all'+(allSel?' all-selected':'');
+    allCb.textContent=allSel?'✓':'';
+    allCb.style.cssText=allSel?'background:#118DFF;border-color:#118DFF;color:#fff;font-size:9px':'';
+    
+    const filtered=searchVal?items.filter(it=>it.includes(searchVal)):items;
+    itemsWrap.innerHTML='';
+    filtered.forEach(item=>{
+      const row=document.createElement('div');
+      const isS=sel.has(item);
+      row.className='slicer-item'+(isS?' selected':'');
+      const cb=document.createElement('div');cb.className='slicer-cb';
+      if(isS){cb.textContent='✓';cb.style.cssText='background:#118DFF;border-color:#118DFF;color:#fff;font-size:9px';}
+      const txt=document.createElement('span');txt.textContent=item;
+      row.appendChild(cb);row.appendChild(txt);
+      row.addEventListener('click',()=>{
+        if(sel.has(item))sel.delete(item);else sel.add(item);
+        renderItems();if(onChg)onChg();
+      });
+      itemsWrap.appendChild(row);
+    });
+  }
+  renderItems();
+}
+
+function resetSlicer(key){
+  if(ST[key])ST[key].clear();
+  // trigger re-render: find the container and rebuild
+  const el=document.getElementById(key);
+  if(el){el.dataset.built='';el.innerHTML='';buildSlicer(key,_slicerMeta[key].items,key,_slicerMeta[key].cb);}
+}
+
+const _slicerMeta={};
+function regSlicer(id,items,cb){
+  _slicerMeta[id]={items,cb};
+  buildSlicer(id,items,id,cb);
+}
+
+// ===== GAUGE =====
+function drawGauge(svgId, val, min, max, legal, color){
+  const svg=document.getElementById(svgId);if(!svg)return;
+  const cx=120,cy=130,r=100,arcW=20;
+  const sA=-Math.PI*0.9, eA=Math.PI*0.1;
+  const span=eA-sA;
+  const pct=Math.max(0,Math.min(1,(val-min)/(max-min)));
+  const lPct=Math.max(0,Math.min(1,(legal-min)/(max-min)));
+  const vA=sA+span*pct, lA=sA+span*lPct;
+  const px=(cx,cy,r,a)=>({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});
+  const arc=(r,s,e)=>{const S=px(cx,cy,r,s),E=px(cx,cy,r,e);const lg=(e-s)>Math.PI?1:0;return`M${S.x},${S.y}A${r},${r},0,${lg},1,${E.x},${E.y}`;};
+  // needle
+  const nx=cx+r*0.82*Math.cos(vA), ny=cy+r*0.82*Math.sin(vA);
+  const na1=vA-Math.PI/2, na2=vA+Math.PI/2;
+  const np1=px(cx,cy,8,na1), np2=px(cx,cy,8,na2);
+  
+  svg.innerHTML=`
+    <path d="${arc(r,sA,eA)}" fill="none" stroke="#e8e8e8" stroke-width="${arcW}" stroke-linecap="round"/>
+    <path d="${arc(r,sA,vA)}" fill="none" stroke="${color}" stroke-width="${arcW}" stroke-linecap="round"/>
+    <path d="${arc(r,lA-0.015,lA+0.015)}" fill="none" stroke="#FA090D" stroke-width="${arcW+6}" stroke-linecap="round"/>
+    <polygon points="${np1.x},${np1.y} ${nx},${ny} ${np2.x},${np2.y}" fill="#444" opacity="0.85"/>
+    <circle cx="${cx}" cy="${cy}" r="7" fill="#fff" stroke="#444" stroke-width="2"/>
+    <text x="${cx}" y="${cy+30}" text-anchor="middle" font-family="Vazirmatn,Tahoma" font-size="22" font-weight="700" fill="${color}">${fmtN(val)}</text>
+    <text x="${cx}" y="${cy+48}" text-anchor="middle" font-family="Vazirmatn,Tahoma" font-size="11" fill="#888">ساعت در هفته</text>
+    <text x="${cx-r+5}" y="${cy+22}" font-family="Vazirmatn,Tahoma" font-size="10" fill="#D64550">${toP(min)}</text>
+    <text x="${cx+r-20}" y="${cy+22}" font-family="Vazirmatn,Tahoma" font-size="10" fill="#1AAB40">${toP(max)}</text>
+    <text x="${cx}" y="${cy-r-14}" text-anchor="middle" font-family="Vazirmatn,Tahoma" font-size="9" fill="#D64550">▶ ساعت قانونی: ${toP(legal)}</text>
+  `;
+}
+
+// ===== COMPARE BARS =====
+function drawCompareBars(containerId, salArr, nhArr, ghArr, selSet){
+  const el=document.getElementById(containerId);if(!el)return;
+  const idxs=selSet&&selSet.size>0?DEHKS.map((d,i)=>selSet.has(d)?i:-1).filter(i=>i>=0):[...Array(10).keys()];
+  const maxV=Math.max(...ghArr)*1.08;
+  let h=`<div class="bar-legend">
+    <div class="bar-legend-item"><div class="bar-legend-dot" style="background:#118DFF"></div>دستمزد سالانه</div>
+    <div class="bar-legend-item"><div class="bar-legend-dot" style="background:#E66C37"></div>هزینه خالص سالانه</div>
+    <div class="bar-legend-item"><div class="bar-legend-dot" style="background:#D9B300"></div>هزینه ناخالص سالانه</div>
+  </div>`;
+  idxs.forEach(i=>{
+    const pS=(salArr[i]/maxV*100).toFixed(1);
+    const pN=(nhArr[i]/maxV*100).toFixed(1);
+    const pG=(ghArr[i]/maxV*100).toFixed(1);
+    h+=`<div class="dbar-group">
+      <div class="dbar-label">${DEHKS[i]}</div>
+      <div class="dbar-row"><div class="dbar-name">دستمزد</div><div class="dbar-track"><div class="dbar-fill" style="width:${pS}%;background:#118DFF"><span class="dbar-fillval">${fmtN(salArr[i])}</span></div></div></div>
+      <div class="dbar-row"><div class="dbar-name">هزینه خالص</div><div class="dbar-track"><div class="dbar-fill" style="width:${pN}%;background:#E66C37"><span class="dbar-fillval">${fmtN(nhArr[i])}</span></div></div></div>
+      <div class="dbar-row"><div class="dbar-name">هزینه ناخالص</div><div class="dbar-track"><div class="dbar-fill" style="width:${pG}%;background:#D9B300"><span class="dbar-fillval">${fmtN(ghArr[i])}</span></div></div></div>
+    </div>`;
+  });
+  el.innerHTML=h;
+}
+
+// ===== CHORD CHART =====
+function seededRand(seed){let s=seed;return()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;};}
+
+function drawChord(svgId, legendId, labels1, labels2, colors1, colors2, seed=42){
+  const svg=document.getElementById(svgId);
+  const leg=document.getElementById(legendId);
+  if(!svg||!leg)return;
+  const W=520,H=520,cx=W/2,cy=H/2,OR=220,IR=200,arcW=16;
+  const rand=seededRand(seed);
+  const n1=labels1.length, n2=labels2.length;
+  const all=[...labels1,...labels2];
+  const allC=[...colors1.slice(0,n1),...colors2.slice(0,n2)];
+  const N=all.length;
+  
+  // build matrix: n1 sources (dehks) x n2 targets (jobs/activities)
+  const mat=[];
+  for(let i=0;i<n1;i++){const row=[];for(let j=0;j<n2;j++){
+    // Higher decile = more professional jobs; lower = more elementary
+    const decileFactor=0.3+(i/n1)*1.4;
+    const jobFactor=j<3?1.4-i/n1*0.8:j>n2-3?0.8-i/n1*0.4:0.8;
+    row.push(Math.round((50+rand()*80)*decileFactor*jobFactor+20));
+  }mat.push(row);}
+  
+  // totals per group
+  const t1=mat.map(r=>r.reduce((a,b)=>a+b,0));
+  const t2=labels2.map((_,j)=>mat.reduce((s,r)=>s+r[j],0));
+  const allTotals=[...t1,...t2];
+  const sumAll=allTotals.reduce((a,b)=>a+b,0)*2;// x2 since each flow counted twice
+  
+  const PAD=0.018*Math.PI;
+  const totalPad=PAD*N;
+  const scale=(2*Math.PI-totalPad)/allTotals.reduce((a,b)=>a+b,0);
+  
+  let angle=-Math.PI/2;
+  const angs=allTotals.map(t=>{const s=angle;const span=t*scale;angle+=span+PAD;return{s,e:s+span,m:s+span/2};});
+  
+  const P=(r,a)=>({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});
+  const arcPath=(r,s,e)=>{const S=P(r,s),E=P(r,e);const lg=(e-s)>Math.PI?1:0;return`M${S.x},${S.y}A${r},${r},0,${lg},1,${E.x},${E.y}`;};
+  
+  let html='';
+  
+  // Draw chords first (back)
+  for(let i=0;i<n1;i++){for(let j=0;j<n2;j++){
+    const v=mat[i][j];if(v<5)continue;
+    const j2=n1+j;
+    const a1=angs[i], a2=angs[j2];
+    const f1=v/t1[i], f2=v/t2[j];
+    const s1=a1.s+(a1.e-a1.s)*(0.5-f1/2), e1=a1.s+(a1.e-a1.s)*(0.5+f1/2);
+    const s2=a2.s+(a2.e-a2.s)*(0.5-f2/2), e2=a2.s+(a2.e-a2.s)*(0.5+f2/2);
+    const mS1=P(IR,(s1+e1)/2), mS2=P(IR,(s2+e2)/2);
+    const p1s=P(IR,s1),p1e=P(IR,e1),p2s=P(IR,s2),p2e=P(IR,e2);
+    const lg1=(e1-s1)>Math.PI?1:0, lg2=(e2-s2)>Math.PI?1:0;
+    const opacity=0.35+v/200*0.3;
+    html+=`<path d="M${p1s.x},${p1s.y}A${IR},${IR},0,${lg1},1,${p1e.x},${p1e.y}Q${cx},${cy},${p2e.x},${p2e.y}A${IR},${IR},0,${lg2},0,${p2s.x},${p2s.y}Q${cx},${cy},${p1s.x},${p1s.y}Z" fill="${allC[i]}" opacity="${Math.min(0.7,opacity)}" stroke="none"><title>${labels1[i]} ↔ ${labels2[j]}: ${toP(v)}</title></path>`;
+  }}
+  
+  // Draw arcs (front)
+  angs.forEach((a,i)=>{
+    const S=P(OR,a.s),E=P(OR,a.e);const lg=(a.e-a.s)>Math.PI?1:0;
+    html+=`<path d="M${S.x},${S.y}A${OR},${OR},0,${lg},1,${E.x},${E.y}" fill="none" stroke="${allC[i]}" stroke-width="${arcW}" opacity="0.95"/>`;
+    // Label
+    const lA=a.m, lr=OR+24;
+    const lx=cx+lr*Math.cos(lA), ly=cy+lr*Math.sin(lA);
+    const anchor=lx>cx+5?'start':lx<cx-5?'end':'middle';
+    const lbl=all[i].length>16?all[i].slice(0,15)+'…':all[i];
+    html+=`<text x="${lx}" y="${ly+3.5}" text-anchor="${anchor}" font-family="Vazirmatn,Tahoma" font-size="10" fill="#333">${lbl}</text>`;
+  });
+  
+  svg.innerHTML=html;
+  
+  // Legend
+  leg.innerHTML=`<div class="chord-legend-title">دهک درآمدی</div>`;
+  labels1.forEach((l,i)=>{leg.innerHTML+=`<div class="chord-legend-item"><div class="chord-legend-dot" style="background:${colors1[i%colors1.length]}"></div><span>${l}</span></div>`;});
+  leg.innerHTML+=`<div class="chord-legend-title" style="margin-top:10px">گروه شغلی / رشته فعالیت</div>`;
+  labels2.slice(0,12).forEach((l,i)=>{leg.innerHTML+=`<div class="chord-legend-item"><div class="chord-legend-dot" style="background:${colors2[i%colors2.length]}"></div><span>${l.length>18?l.slice(0,17)+'…':l}</span></div>`;});
+}
+
+// ===== GAUGE PAGE UPDATE =====
+function updateGaugePage(pi, isAzad){
+  const sal=isAzad?SAL_A:SAL_M, nh=isAzad?NH_A:NH_M, gh=isAzad?GH_A:GH_M;
+  const dehkSet=ST['d'+pi+'_dehk'];
+  const baseH=isAzad?51.3:42.6;
+  let adjH=baseH;
+  if(dehkSet&&dehkSet.size>0){
+    const avg=Array.from(dehkSet).map(d=>DEHKS.indexOf(d)).reduce((a,b)=>a+b,0)/dehkSet.size;
+    adjH=+(baseH+(avg-4.5)*0.7).toFixed(1);
+  }
+  const color=isAzad?'#E66C37':'#118DFF';
+  drawGauge('gauge'+pi+'a',adjH,8,84,44,color);
+  document.getElementById('g'+pi+'a-val').textContent=fmtN(adjH);
+  drawCompareBars('compareBars'+pi,sal,nh,gh,dehkSet);
+}
+
+// ===== CHORD PAGE UPDATE =====
+function updateChordPage(pi, isAzad, isFaaliyt){
+  const dehkKey='d'+pi+'_dehk';
+  const jobKey=isFaaliyt?'d'+pi+'_faaliyt':'d'+pi+'_shogl';
+  const allJobs=isFaaliyt?FAALIYT:(isAzad?SHOGL_A:SHOGL_M);
+  const selD=ST[dehkKey]&&ST[dehkKey].size>0?[...ST[dehkKey]]:[...DEHKS];
+  const selJ=ST[jobKey]&&ST[jobKey].size>0?[...ST[jobKey]]:allJobs;
+  const c1=COLORS.slice(0,selD.length);
+  const c2=COLORS2.slice(0,selJ.length);
+  drawChord('chord'+pi,'legend'+pi,selD,selJ,c1,c2,pi*100);
+}
+
+// ===== PAGE INIT =====
+const initDone={};
+function initPage(pi){
+  if(initDone[pi])return;initDone[pi]=true;
+  const upd0=()=>updateChordPage(0,false,false);
+  const upd1=()=>updateChordPage(1,true,false);
+  const upd2=()=>updateChordPage(2,false,true);
+  const upd3=()=>updateChordPage(3,true,true);
+  const upd4=()=>updateGaugePage(4,false);
+  const upd5=()=>updateGaugePage(5,true);
+  const upd6=()=>updateGaugePage(6,false);
+  const upd7=()=>updateGaugePage(7,true);
+  
+  if(pi===0){regSlicer('d0_dehk',DEHKS,upd0);regSlicer('d0_shogl',SHOGL_M,upd0);upd0();}
+  if(pi===1){regSlicer('d1_dehk',DEHKS,upd1);regSlicer('d1_shogl',SHOGL_A,upd1);upd1();}
+  if(pi===2){regSlicer('d2_dehk',DEHKS,upd2);regSlicer('d2_faaliyt',FAALIYT,upd2);upd2();}
+  if(pi===3){regSlicer('d3_dehk',DEHKS,upd3);regSlicer('d3_faaliyt',FAALIYT,upd3);upd3();}
+  if(pi===4){regSlicer('d4_dehk',DEHKS,upd4);regSlicer('d4_shogl',SHOGL_M,upd4);regSlicer('d4_faaliyt',FAALIYT,upd4);regSlicer('d4_bakhsh',BAKHSH,upd4);regSlicer('d4_vazsh',VAZSH_M,upd4);upd4();}
+  if(pi===5){regSlicer('d5_dehk',DEHKS,upd5);regSlicer('d5_shogl',SHOGL_A,upd5);regSlicer('d5_faaliyt',FAALIYT,upd5);regSlicer('d5_bakhsh',BAKHSH,upd5);regSlicer('d5_vazsh',VAZSH_A,upd5);regSlicer('d5_kesh',KESH,upd5);upd5();}
+  if(pi===6){regSlicer('d6_dehk',DEHKS,upd6);regSlicer('d6_ostan',OSTANHA,upd6);regSlicer('d6_bakhsh',BAKHSH,upd6);regSlicer('d6_vazsh',VAZSH_M,upd6);upd6();}
+  if(pi===7){regSlicer('d7_dehk',DEHKS,upd7);regSlicer('d7_ostan',OSTANHA,upd7);regSlicer('d7_bakhsh',BAKHSH,upd7);regSlicer('d7_vazsh',VAZSH_A,upd7);regSlicer('d7_kesh',KESH,upd7);upd7();}
+}
+
+// ===== TABS =====
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const pid=tab.dataset.page;
+    document.querySelectorAll('.page').forEach(p=>{p.style.display='none';p.classList.remove('active');});
+    const pg=document.getElementById(pid);
+    if(pg){pg.style.display='flex';pg.classList.add('active');}
+    initPage(parseInt(pid.replace('p','')));
+  });
+});
+
+// ===== BOOT =====
+initPage(0);
+</script>
+</body>
+</html>
