@@ -1,0 +1,956 @@
+import { useState, useEffect } from "react";
+
+const WEEKS = [
+  { title: "هفته ۱ — معرفی و احوال‌پرسی", days: [1,2,3,4,5,6,7] },
+  { title: "هفته ۲ — خرید و رستوران", days: [8,9,10,11,12,13,14] },
+  { title: "هفته ۳ — مسیریابی و حمل‌ونقل", days: [15,16,17,18,19,20,21] },
+  { title: "هفته ۴ — فرودگاه، هتل و اضطراری", days: [22,23,24,25,26,27,28,29,30] },
+];
+
+const LESSONS = {
+  1: { topic: "سلام و احوال‌پرسی", phrases: [
+      { en: "Hi, how are you?", fa: "سلام، حالت چطوره؟" },
+      { en: "I'm good, thanks. And you?", fa: "خوبم، ممنون. تو چطوری؟" },
+      { en: "Nice to meet you.", fa: "از آشنایی‌تون خوشحالم." },
+      { en: "What's your name?", fa: "اسمت چیه؟" },
+      { en: "My name is...", fa: "اسم من ... هست." },
+      { en: "Where are you from?", fa: "اهل کجایی؟" },
+    ], listening: [
+      { audio: "Hi, how are you?", options: ["سلام، حالت چطوره؟", "خداحافظ، می‌بینمت", "اسمت چیه؟"], correct: 0 },
+      { audio: "Nice to meet you.", options: ["از آشنایی‌تون خوشحالم.", "ببخشید، متوجه نشدم.", "بزن بریم."], correct: 0 },
+      { audio: "Where are you from?", options: ["چند سالته؟", "اهل کجایی؟", "کارت چیه؟"], correct: 1 },
+    ], scenario: { setup: "شما تازه وارد یک کلاس زبان شدید و یک نفر کنارتون نشسته.", prompts: [
+        { question: "او می‌گوید: \"Hi! What's your name?\" — شما چی جواب می‌دید؟", options: ["My name is Sara, nice to meet you.", "I'm from Iran.", "See you later."], correct: 0 },
+        { question: "بعد می‌پرسد: \"Where are you from?\" — شما چی می‌گید؟", options: ["I'm 25 years old.", "I'm from Iran.", "Thank you very much."], correct: 1 },
+      ] } },
+  2: { topic: "معرفی خانواده و شغل", phrases: [
+      { en: "What do you do?", fa: "شغلت چیه؟" },
+      { en: "I'm a student / I work as a...", fa: "دانشجو هستم / به‌عنوان ... کار می‌کنم." },
+      { en: "I have two brothers.", fa: "دو تا برادر دارم." },
+      { en: "Are you married?", fa: "ازدواج کردی؟" },
+      { en: "This is my friend.", fa: "این دوست من هست." },
+      { en: "How old are you?", fa: "چند سالته؟" },
+    ], listening: [
+      { audio: "What do you do?", options: ["شغلت چیه؟", "اهل کجایی؟", "حالت چطوره؟"], correct: 0 },
+      { audio: "I have two brothers.", options: ["دو تا خواهر دارم.", "دو تا برادر دارم.", "تنها فرزند هستم."], correct: 1 },
+      { audio: "How old are you?", options: ["چند سالته؟", "کجا زندگی می‌کنی؟", "اسمت چیه؟"], correct: 0 },
+    ], scenario: { setup: "در یک مهمانی با یک نفر جدید آشنا می‌شید.", prompts: [
+        { question: "\"What do you do?\" — جواب می‌دید:", options: ["I'm a teacher.", "I'm from Tehran.", "I'm 30."], correct: 0 },
+        { question: "او می‌پرسد: \"Do you have any siblings?\" — جواب می‌دید:", options: ["Yes, I have one sister.", "Yes, I am married.", "No, I don't work."], correct: 0 },
+      ] } },
+  3: { topic: "زمان، روز و قرار ملاقات", phrases: [
+      { en: "What time is it?", fa: "ساعت چنده؟" },
+      { en: "What day is it today?", fa: "امروز چندشنبه‌ست؟" },
+      { en: "Let's meet at 5 PM.", fa: "ساعت ۵ بعدازظهر همدیگه رو ببینیم." },
+      { en: "I'm free tomorrow.", fa: "فردا وقت آزاد دارم." },
+      { en: "I'm busy today.", fa: "امروز سرم شلوغه." },
+      { en: "See you next week.", fa: "هفته دیگه می‌بینمت." },
+    ], listening: [
+      { audio: "Let's meet at 5 PM.", options: ["ساعت ۵ بعدازظهر همدیگه رو ببینیم.", "فردا وقت آزاد دارم.", "امروز سرم شلوغه."], correct: 0 },
+      { audio: "I'm busy today.", options: ["فردا وقت آزاد دارم.", "امروز سرم شلوغه.", "هفته دیگه می‌بینمت."], correct: 1 },
+      { audio: "What time is it?", options: ["امروز چندشنبه‌ست؟", "ساعت چنده؟", "کِی میای؟"], correct: 1 },
+    ], scenario: { setup: "می‌خواید با یک دوست قرار بذارید.", prompts: [
+        { question: "می‌پرسه: \"Are you free tomorrow?\" — جواب می‌دید:", options: ["Yes, I'm free tomorrow.", "It's 5 o'clock.", "Nice to meet you."], correct: 0 },
+        { question: "پیشنهاد می‌دید قرار بذارید ساعت ۶:", options: ["Let's meet at 6 PM.", "See you next week.", "What day is it?"], correct: 0 },
+      ] } },
+  4: { topic: "احساسات و حال‌وروز", phrases: [
+      { en: "I'm tired.", fa: "خسته‌ام." },
+      { en: "I'm happy / sad.", fa: "خوشحالم / ناراحتم." },
+      { en: "I'm a bit worried.", fa: "یه‌کم نگرانم." },
+      { en: "Don't worry.", fa: "نگران نباش." },
+      { en: "I'm excited about this.", fa: "درباره این هیجان‌زده‌ام." },
+      { en: "That's great news!", fa: "این خبر عالیه!" },
+    ], listening: [
+      { audio: "I'm a bit worried.", options: ["یه‌کم خوشحالم.", "یه‌کم نگرانم.", "یه‌کم خسته‌ام."], correct: 1 },
+      { audio: "That's great news!", options: ["این خبر عالیه!", "این خبر بدیه.", "نگران نباش."], correct: 0 },
+      { audio: "Don't worry.", options: ["نگران نباش.", "خسته نباش.", "ناراحت نباش."], correct: 0 },
+    ], scenario: { setup: "یک دوست می‌پرسه حالتون چطوره.", prompts: [
+        { question: "\"How are you feeling today?\" — می‌گید خسته‌اید:", options: ["I'm tired.", "I'm excited.", "Don't worry."], correct: 0 },
+        { question: "او خبر خوبی می‌ده، شما می‌گید:", options: ["That's great news!", "I'm worried.", "I'm sad."], correct: 0 },
+      ] } },
+  5: { topic: "درخواست کمک و توضیح‌خواهی", phrases: [
+      { en: "Can you help me, please?", fa: "می‌تونید کمکم کنید؟" },
+      { en: "I don't understand.", fa: "متوجه نمی‌شم." },
+      { en: "Could you repeat that?", fa: "می‌شه دوباره بگید؟" },
+      { en: "Can you speak slowly?", fa: "می‌شه آهسته‌تر صحبت کنید؟" },
+      { en: "What does this mean?", fa: "این یعنی چی؟" },
+      { en: "Thank you for your help.", fa: "ممنون بابت کمکتون." },
+    ], listening: [
+      { audio: "Could you repeat that?", options: ["می‌شه دوباره بگید؟", "متوجه نمی‌شم.", "ممنون بابت کمکتون."], correct: 0 },
+      { audio: "Can you speak slowly?", options: ["می‌تونید کمکم کنید؟", "می‌شه آهسته‌تر صحبت کنید؟", "این یعنی چی؟"], correct: 1 },
+      { audio: "What does this mean?", options: ["این یعنی چی؟", "متوجه نمی‌شم.", "می‌شه دوباره بگید؟"], correct: 0 },
+    ], scenario: { setup: "یک نفر خیلی سریع صحبت می‌کنه و متوجه نمی‌شید.", prompts: [
+        { question: "از او می‌خواید آهسته‌تر حرف بزنه:", options: ["Can you speak slowly?", "Thank you for your help.", "What's your name?"], correct: 0 },
+        { question: "باز هم متوجه نشدید، می‌گید:", options: ["I don't understand.", "I'm happy.", "See you later."], correct: 0 },
+      ] } },
+  6: { topic: "صحبت درباره علایق", phrases: [
+      { en: "I like reading books.", fa: "کتاب خوندن رو دوست دارم." },
+      { en: "I don't like coffee.", fa: "قهوه رو دوست ندارم." },
+      { en: "What's your hobby?", fa: "سرگرمیت چیه؟" },
+      { en: "I love traveling.", fa: "عاشق سفر کردنم." },
+      { en: "I'm interested in music.", fa: "به موسیقی علاقه دارم." },
+      { en: "Me too!", fa: "من هم همینطور!" },
+    ], listening: [
+      { audio: "What's your hobby?", options: ["سرگرمیت چیه؟", "شغلت چیه؟", "اهل کجایی؟"], correct: 0 },
+      { audio: "I love traveling.", options: ["عاشق سفر کردنم.", "قهوه رو دوست ندارم.", "به موسیقی علاقه دارم."], correct: 0 },
+      { audio: "Me too!", options: ["من هم همینطور!", "متوجه نمی‌شم.", "نگران نباش."], correct: 0 },
+    ], scenario: { setup: "درباره علایق با یک دوست جدید صحبت می‌کنید.", prompts: [
+        { question: "می‌پرسه: \"What do you like doing?\" جواب می‌دید:", options: ["I like reading books.", "I'm from Iran.", "It's 5 o'clock."], correct: 0 },
+        { question: "او هم میگه کتاب دوست داره، شما می‌گید:", options: ["Me too!", "I don't like it.", "Don't worry."], correct: 0 },
+      ] } },
+  7: { topic: "مرور هفته ۱", phrases: [
+      { en: "Nice to meet you. What's your name?", fa: "از آشناییت خوشحالم. اسمت چیه؟" },
+      { en: "I'm a student and I have one sister.", fa: "دانشجو هستم و یک خواهر دارم." },
+      { en: "Are you free tomorrow at 5?", fa: "فردا ساعت ۵ وقت آزاد داری؟" },
+      { en: "I'm a bit tired but happy.", fa: "یه‌کم خسته‌ام ولی خوشحالم." },
+      { en: "Could you repeat that, please?", fa: "می‌شه لطفاً دوباره بگید؟" },
+      { en: "I love music and traveling.", fa: "عاشق موسیقی و سفرم." },
+    ], listening: [
+      { audio: "I'm a bit tired but happy.", options: ["یه‌کم خسته‌ام ولی خوشحالم.", "خیلی نگرانم.", "امروز سرم شلوغه."], correct: 0 },
+      { audio: "Are you free tomorrow at 5?", options: ["فردا ساعت ۵ وقت آزاد داری؟", "ساعت چنده؟", "هفته دیگه می‌بینمت."], correct: 0 },
+      { audio: "I love music and traveling.", options: ["قهوه دوست ندارم.", "عاشق موسیقی و سفرم.", "سرگرمیت چیه؟"], correct: 1 },
+    ], scenario: { setup: "همه‌چیزهای این هفته رو با یک دوست جدید مرور می‌کنید.", prompts: [
+        { question: "اول خودتونو معرفی می‌کنید:", options: ["Nice to meet you, my name is...", "I don't understand.", "It's 5 PM."], correct: 0 },
+        { question: "بعد درباره سرگرمیتون می‌گید:", options: ["I love music and traveling.", "I'm busy today.", "Can you repeat that?"], correct: 0 },
+      ] } },
+
+  8: { topic: "خرید لباس", phrases: [
+      { en: "How much is this?", fa: "این چنده؟" },
+      { en: "Can I try this on?", fa: "می‌تونم اینو امتحان کنم؟" },
+      { en: "Do you have a smaller size?", fa: "سایز کوچیک‌تر دارید؟" },
+      { en: "I'll take this one.", fa: "این رو می‌برم." },
+      { en: "It's too expensive.", fa: "خیلی گرونه." },
+      { en: "Do you accept cards?", fa: "کارت قبول می‌کنید؟" },
+    ], listening: [
+      { audio: "Can I try this on?", options: ["می‌تونم اینو امتحان کنم؟", "این چنده؟", "این رو می‌برم."], correct: 0 },
+      { audio: "It's too expensive.", options: ["خیلی گرونه.", "خیلی ارزونه.", "خیلی بزرگه."], correct: 0 },
+      { audio: "Do you accept cards?", options: ["سایز کوچیک‌تر دارید؟", "کارت قبول می‌کنید؟", "این رو می‌برم."], correct: 1 },
+    ], scenario: { setup: "در یک فروشگاه لباس هستید.", prompts: [
+        { question: "می‌خواید قیمت یک پیراهن رو بپرسید:", options: ["How much is this?", "Can I try this on?", "It's too expensive."], correct: 0 },
+        { question: "تصمیم می‌گیرید بخریدش:", options: ["I'll take this one.", "Do you have a smaller size?", "It's too expensive."], correct: 0 },
+      ] } },
+  9: { topic: "سفارش در رستوران", phrases: [
+      { en: "Can I see the menu, please?", fa: "می‌شه منو رو ببینم؟" },
+      { en: "I'd like to order...", fa: "می‌خوام سفارش بدم..." },
+      { en: "What do you recommend?", fa: "چی پیشنهاد می‌دید؟" },
+      { en: "I'm allergic to nuts.", fa: "به آجیل حساسیت دارم." },
+      { en: "Could I have the bill, please?", fa: "می‌شه صورت‌حساب رو بیارید؟" },
+      { en: "This is delicious.", fa: "این خیلی خوشمزه‌ست." },
+    ], listening: [
+      { audio: "What do you recommend?", options: ["چی پیشنهاد می‌دید؟", "این چنده؟", "این خوشمزه‌ست."], correct: 0 },
+      { audio: "I'm allergic to nuts.", options: ["آجیل دوست دارم.", "به آجیل حساسیت دارم.", "آجیل می‌خوام."], correct: 1 },
+      { audio: "Could I have the bill, please?", options: ["می‌شه منو رو ببینم؟", "می‌شه صورت‌حساب رو بیارید؟", "چی پیشنهاد می‌دید؟"], correct: 1 },
+    ], scenario: { setup: "در یک رستوران نشستید و گارسون میاد.", prompts: [
+        { question: "اول می‌خواید منو رو ببینید:", options: ["Can I see the menu, please?", "Could I have the bill?", "This is delicious."], correct: 0 },
+        { question: "بعد از غذا خوردن، می‌خواید پول رو حساب کنید:", options: ["Could I have the bill, please?", "What do you recommend?", "I'd like to order."], correct: 0 },
+      ] } },
+  10: { topic: "در کافه", phrases: [
+      { en: "A coffee to go, please.", fa: "یک قهوه بیرون‌بر لطفاً." },
+      { en: "For here or to go?", fa: "اینجا میل می‌کنید یا بیرون‌بر؟" },
+      { en: "Can I get a refill?", fa: "می‌شه دوباره پر کنید؟" },
+      { en: "Is there free Wi-Fi here?", fa: "اینجا وای‌فای رایگان داره؟" },
+      { en: "No sugar, please.", fa: "بدون شکر لطفاً." },
+      { en: "Keep the change.", fa: "بقیه‌ش مال خودتون." },
+    ], listening: [
+      { audio: "For here or to go?", options: ["اینجا میل می‌کنید یا بیرون‌بر؟", "می‌شه دوباره پر کنید؟", "بقیه‌ش مال خودتون."], correct: 0 },
+      { audio: "Is there free Wi-Fi here?", options: ["بدون شکر لطفاً.", "اینجا وای‌فای رایگان داره؟", "یک قهوه بیرون‌بر."], correct: 1 },
+      { audio: "Keep the change.", options: ["بقیه‌ش مال خودتون.", "می‌شه دوباره پر کنید؟", "بدون شکر لطفاً."], correct: 0 },
+    ], scenario: { setup: "وارد یک کافه می‌شید و سفارش می‌دید.", prompts: [
+        { question: "باریستا می‌پرسه \"For here or to go?\" — جواب می‌دید:", options: ["To go, please.", "No sugar, please.", "Keep the change."], correct: 0 },
+        { question: "می‌خواید بدونید وای‌فای داره یا نه:", options: ["Is there free Wi-Fi here?", "Can I get a refill?", "A coffee, please."], correct: 0 },
+      ] } },
+  11: { topic: "غذا و طعم‌ها", phrases: [
+      { en: "This is too spicy.", fa: "این خیلی تنده." },
+      { en: "Can I have it without onions?", fa: "می‌شه بدون پیاز باشه؟" },
+      { en: "It tastes amazing.", fa: "طعمش فوق‌العاده‌ست." },
+      { en: "I'm still hungry.", fa: "هنوز گرسنه‌ام." },
+      { en: "I'm full, thank you.", fa: "سیر شدم، ممنون." },
+      { en: "Can we split the bill?", fa: "می‌شه صورت‌حساب رو تقسیم کنیم؟" },
+    ], listening: [
+      { audio: "This is too spicy.", options: ["این خیلی تنده.", "این خیلی شیرینه.", "طعمش فوق‌العاده‌ست."], correct: 0 },
+      { audio: "Can we split the bill?", options: ["می‌شه صورت‌حساب رو تقسیم کنیم؟", "می‌شه بدون پیاز باشه؟", "سیر شدم، ممنون."], correct: 0 },
+      { audio: "I'm still hungry.", options: ["سیر شدم.", "هنوز گرسنه‌ام.", "این تنده."], correct: 1 },
+    ], scenario: { setup: "با دوستان شام می‌خورید.", prompts: [
+        { question: "غذا خیلی تنده، می‌گید:", options: ["This is too spicy.", "I'm full.", "It tastes amazing."], correct: 0 },
+        { question: "وقت پرداخت، پیشنهاد می‌دید تقسیم کنید:", options: ["Can we split the bill?", "Can I have it without onions?", "I'm still hungry."], correct: 0 },
+      ] } },
+  12: { topic: "چانه‌زنی و قیمت", phrases: [
+      { en: "Can you give me a discount?", fa: "می‌شه تخفیف بدید؟" },
+      { en: "Is this the best price?", fa: "این بهترین قیمتشه؟" },
+      { en: "I'll think about it.", fa: "بهش فکر می‌کنم." },
+      { en: "That's a fair price.", fa: "این قیمت منصفانه‌ایه." },
+      { en: "Do you have any sales?", fa: "حراج دارید؟" },
+      { en: "I'm just looking, thanks.", fa: "فقط دارم نگاه می‌کنم، ممنون." },
+    ], listening: [
+      { audio: "Can you give me a discount?", options: ["می‌شه تخفیف بدید؟", "این بهترین قیمتشه؟", "بهش فکر می‌کنم."], correct: 0 },
+      { audio: "I'm just looking, thanks.", options: ["فقط دارم نگاه می‌کنم، ممنون.", "این قیمت منصفانه‌ایه.", "حراج دارید؟"], correct: 0 },
+      { audio: "That's a fair price.", options: ["این بهترین قیمتشه؟", "این قیمت منصفانه‌ایه.", "بهش فکر می‌کنم."], correct: 1 },
+    ], scenario: { setup: "در یک بازار محلی هستید.", prompts: [
+        { question: "فروشنده می‌پرسه کمکی می‌خواید، می‌گید:", options: ["I'm just looking, thanks.", "Keep the change.", "It's full."], correct: 0 },
+        { question: "قیمت بالاست، می‌خواید تخفیف بگیرید:", options: ["Can you give me a discount?", "I'll take this one.", "It tastes amazing."], correct: 0 },
+      ] } },
+  13: { topic: "در سوپرمارکت", phrases: [
+      { en: "Where can I find milk?", fa: "شیر رو کجا می‌تونم پیدا کنم؟" },
+      { en: "Do you have plastic bags?", fa: "کیسه پلاستیکی دارید؟" },
+      { en: "Is this fresh?", fa: "این تازه‌ست؟" },
+      { en: "I need a cart/basket.", fa: "یک گاری/سبد لازم دارم." },
+      { en: "Where is the checkout?", fa: "صندوق کجاست؟" },
+      { en: "Do you sell this by weight?", fa: "این رو وزنی می‌فروشید؟" },
+    ], listening: [
+      { audio: "Where is the checkout?", options: ["صندوق کجاست؟", "شیر رو کجا پیدا کنم؟", "این تازه‌ست؟"], correct: 0 },
+      { audio: "Do you have plastic bags?", options: ["کیسه پلاستیکی دارید؟", "یک گاری لازم دارم.", "این وزنی می‌فروشید؟"], correct: 0 },
+      { audio: "Is this fresh?", options: ["این تازه‌ست؟", "این تنده؟", "این گرونه؟"], correct: 0 },
+    ], scenario: { setup: "در سوپرمارکت دنبال یک محصول می‌گردید.", prompts: [
+        { question: "نمی‌دونید شیر کجاست:", options: ["Where can I find milk?", "Where is the checkout?", "Is this fresh?"], correct: 0 },
+        { question: "خرید تموم شده، دنبال صندوق می‌گردید:", options: ["Where is the checkout?", "Do you have plastic bags?", "I need a cart."], correct: 0 },
+      ] } },
+  14: { topic: "مرور هفته ۲", phrases: [
+      { en: "How much is this? It's too expensive.", fa: "این چنده؟ خیلی گرونه." },
+      { en: "Can I see the menu and order, please?", fa: "می‌شه منو رو ببینم و سفارش بدم؟" },
+      { en: "For here or to go? To go, please.", fa: "اینجا یا بیرون‌بر؟ بیرون‌بر لطفاً." },
+      { en: "This is delicious but too spicy.", fa: "این خوشمزه‌ست ولی خیلی تنده." },
+      { en: "Can you give me a discount?", fa: "می‌شه تخفیف بدید؟" },
+      { en: "Where can I find the checkout?", fa: "صندوق رو کجا می‌تونم پیدا کنم؟" },
+    ], listening: [
+      { audio: "This is delicious but too spicy.", options: ["این خوشمزه‌ست ولی خیلی تنده.", "این تازه‌ست.", "این بهترین قیمتشه."], correct: 0 },
+      { audio: "For here or to go?", options: ["اینجا یا بیرون‌بر؟", "صندوق کجاست؟", "شیر رو کجا پیدا کنم؟"], correct: 0 },
+      { audio: "Can you give me a discount?", options: ["می‌تونم اینو امتحان کنم؟", "می‌شه تخفیف بدید؟", "این تازه‌ست؟"], correct: 1 },
+    ], scenario: { setup: "یک روز کامل خرید و غذا خوردن رو مرور می‌کنید.", prompts: [
+        { question: "وارد فروشگاه می‌شید و قیمت می‌پرسید:", options: ["How much is this?", "Is there free Wi-Fi?", "This is delicious."], correct: 0 },
+        { question: "در رستوران سفارش می‌دید:", options: ["I'd like to order...", "Where is the checkout?", "Do you have plastic bags?"], correct: 0 },
+      ] } },
+
+  15: { topic: "پرسیدن آدرس", phrases: [
+      { en: "Excuse me, where is the station?", fa: "ببخشید، ایستگاه کجاست؟" },
+      { en: "How do I get to the museum?", fa: "چطور به موزه برسم؟" },
+      { en: "Is it far from here?", fa: "از اینجا دوره؟" },
+      { en: "Go straight ahead.", fa: "مستقیم برو." },
+      { en: "Turn left/right.", fa: "بپیچ چپ/راست." },
+      { en: "It's next to the bank.", fa: "کنار بانکه." },
+    ], listening: [
+      { audio: "How do I get to the museum?", options: ["چطور به موزه برسم؟", "ایستگاه کجاست؟", "از اینجا دوره؟"], correct: 0 },
+      { audio: "Turn left.", options: ["بپیچ چپ.", "مستقیم برو.", "کنار بانکه."], correct: 0 },
+      { audio: "It's next to the bank.", options: ["کنار بانکه.", "از اینجا دوره.", "بپیچ راست."], correct: 0 },
+    ], scenario: { setup: "در خیابون گم شدید و از یک رهگذر می‌پرسید.", prompts: [
+        { question: "می‌خواید بپرسید ایستگاه کجاست:", options: ["Excuse me, where is the station?", "Is it far from here?", "Turn left."], correct: 0 },
+        { question: "او می‌گه: \"Go straight, then turn right.\" یعنی:", options: ["مستقیم برو، بعد بپیچ راست.", "از اینجا دوره.", "کنار بانکه."], correct: 0 },
+      ] } },
+  16: { topic: "تاکسی و اوبر", phrases: [
+      { en: "Can you take me to this address?", fa: "می‌تونید منو به این آدرس ببرید؟" },
+      { en: "How much will it cost?", fa: "چقدر می‌شه؟" },
+      { en: "Please stop here.", fa: "لطفاً اینجا نگه دارید." },
+      { en: "How long will it take?", fa: "چقدر طول می‌کشه؟" },
+      { en: "I'm in a hurry.", fa: "عجله دارم." },
+      { en: "Keep the change.", fa: "بقیه‌ش مال خودتون." },
+    ], listening: [
+      { audio: "Can you take me to this address?", options: ["می‌تونید منو به این آدرس ببرید؟", "چقدر می‌شه؟", "لطفاً اینجا نگه دارید."], correct: 0 },
+      { audio: "I'm in a hurry.", options: ["عجله دارم.", "چقدر طول می‌کشه؟", "بقیه‌ش مال خودتون."], correct: 0 },
+      { audio: "How long will it take?", options: ["چقدر می‌شه؟", "چقدر طول می‌کشه؟", "اینجا نگه دارید."], correct: 1 },
+    ], scenario: { setup: "سوار تاکسی می‌شید.", prompts: [
+        { question: "آدرس مقصد رو می‌گید:", options: ["Can you take me to this address?", "How long will it take?", "Keep the change."], correct: 0 },
+        { question: "به مقصد رسیدید، می‌خواید نگه داره:", options: ["Please stop here.", "I'm in a hurry.", "How much will it cost?"], correct: 0 },
+      ] } },
+  17: { topic: "اتوبوس و مترو", phrases: [
+      { en: "Which bus goes to downtown?", fa: "کدوم اتوبوس به مرکز شهر می‌ره؟" },
+      { en: "Where can I buy a ticket?", fa: "بلیط رو کجا می‌تونم بخرم؟" },
+      { en: "What's the next stop?", fa: "ایستگاه بعدی چیه؟" },
+      { en: "Is this seat taken?", fa: "این صندلی خالیه؟" },
+      { en: "I need to get off here.", fa: "باید اینجا پیاده بشم." },
+      { en: "Does this train stop at...?", fa: "این قطار توی ... می‌ایسته؟" },
+    ], listening: [
+      { audio: "Which bus goes to downtown?", options: ["کدوم اتوبوس به مرکز شهر می‌ره؟", "بلیط رو کجا بخرم؟", "ایستگاه بعدی چیه؟"], correct: 0 },
+      { audio: "Is this seat taken?", options: ["این صندلی خالیه؟", "باید اینجا پیاده بشم.", "این قطار اونجا می‌ایسته؟"], correct: 0 },
+      { audio: "I need to get off here.", options: ["باید اینجا پیاده بشم.", "بلیط می‌خوام.", "ایستگاه بعدی چیه؟"], correct: 0 },
+    ], scenario: { setup: "در ایستگاه مترو هستید و مطمئن نیستید کدوم خط رو سوار بشید.", prompts: [
+        { question: "می‌خواید بدونید کدوم قطار به مقصدتون می‌ره:", options: ["Does this train stop at...?", "Is this seat taken?", "Keep the change."], correct: 0 },
+        { question: "نزدیک ایستگاه مقصدتون می‌شید:", options: ["I need to get off here.", "What's the next stop?", "Where can I buy a ticket?"], correct: 0 },
+      ] } },
+  18: { topic: "اجاره ماشین و رانندگی", phrases: [
+      { en: "I'd like to rent a car.", fa: "می‌خوام ماشین کرایه کنم." },
+      { en: "Where is the nearest gas station?", fa: "نزدیک‌ترین پمپ بنزین کجاست؟" },
+      { en: "Is parking available here?", fa: "اینجا پارکینگ داره؟" },
+      { en: "How do I get on the highway?", fa: "چطور به بزرگراه برم؟" },
+      { en: "I think I'm lost.", fa: "فکر کنم گم شدم." },
+      { en: "Can you show me on the map?", fa: "می‌تونید روی نقشه نشونم بدید؟" },
+    ], listening: [
+      { audio: "I'd like to rent a car.", options: ["می‌خوام ماشین کرایه کنم.", "نزدیک‌ترین پمپ بنزین کجاست؟", "فکر کنم گم شدم."], correct: 0 },
+      { audio: "I think I'm lost.", options: ["فکر کنم گم شدم.", "اینجا پارکینگ داره؟", "چطور به بزرگراه برم؟"], correct: 0 },
+      { audio: "Can you show me on the map?", options: ["می‌تونید روی نقشه نشونم بدید؟", "اینجا پارکینگ داره؟", "ماشین کرایه می‌خوام."], correct: 0 },
+    ], scenario: { setup: "در یک شهر جدید رانندگی می‌کنید و کمی گیج شدید.", prompts: [
+        { question: "احساس می‌کنید مسیر رو گم کردید:", options: ["I think I'm lost.", "Is parking available?", "I'd like to rent a car."], correct: 0 },
+        { question: "از یک نفر می‌خواید روی نقشه راهنماییتون کنه:", options: ["Can you show me on the map?", "Where is the gas station?", "How do I get on the highway?"], correct: 0 },
+      ] } },
+  19: { topic: "زمان و فاصله مسیر", phrases: [
+      { en: "How far is it?", fa: "چقدر فاصله داره؟" },
+      { en: "It's about 10 minutes away.", fa: "حدود ۱۰ دقیقه فاصله داره." },
+      { en: "Is it walking distance?", fa: "پیاده می‌شه رفت؟" },
+      { en: "What's the fastest way?", fa: "سریع‌ترین راه چیه؟" },
+      { en: "I'll walk there.", fa: "پیاده می‌رم اونجا." },
+      { en: "Let's take a taxi instead.", fa: "بهتره به‌جاش تاکسی بگیریم." },
+    ], listening: [
+      { audio: "How far is it?", options: ["چقدر فاصله داره؟", "چقدر طول می‌کشه؟", "پیاده می‌شه رفت؟"], correct: 0 },
+      { audio: "Is it walking distance?", options: ["پیاده می‌شه رفت؟", "سریع‌ترین راه چیه؟", "چقدر فاصله داره؟"], correct: 0 },
+      { audio: "It's about 10 minutes away.", options: ["حدود ۱۰ دقیقه فاصله داره.", "پیاده می‌رم اونجا.", "بهتره تاکسی بگیریم."], correct: 0 },
+    ], scenario: { setup: "می‌خواید به یک جای نزدیک برید و تصمیم می‌گیرید چطور.", prompts: [
+        { question: "می‌پرسید آیا پیاده می‌شه رفت:", options: ["Is it walking distance?", "Let's take a taxi.", "What's the fastest way?"], correct: 0 },
+        { question: "جواب می‌دن نزدیکه، تصمیم می‌گیرید:", options: ["I'll walk there.", "I'm lost.", "How much will it cost?"], correct: 0 },
+      ] } },
+  20: { topic: "تابلوها و علائم راهنما", phrases: [
+      { en: "No entry.", fa: "ورود ممنوع." },
+      { en: "One way street.", fa: "خیابان یک‌طرفه." },
+      { en: "Caution, wet floor.", fa: "احتیاط، کف خیس." },
+      { en: "Exit this way.", fa: "خروج از این طرف." },
+      { en: "Out of order.", fa: "خراب است." },
+      { en: "Push / Pull.", fa: "هل بدهید / بکشید." },
+    ], listening: [
+      { audio: "No entry.", options: ["ورود ممنوع.", "خروج از این طرف.", "خراب است."], correct: 0 },
+      { audio: "Out of order.", options: ["احتیاط، کف خیس.", "خراب است.", "هل بدهید."], correct: 1 },
+      { audio: "One way street.", options: ["خیابان یک‌طرفه.", "خروج از این طرف.", "ورود ممنوع."], correct: 0 },
+    ], scenario: { setup: "در حال قدم زدن در یک ساختمان عمومی هستید و باید تابلوها رو بفهمید.", prompts: [
+        { question: "تابلویی می‌بینید که می‌گه \"Exit this way\" یعنی:", options: ["خروج از این طرف.", "ورود ممنوع.", "خراب است."], correct: 0 },
+        { question: "آسانسور کار نمی‌کنه، روش نوشته:", options: ["Out of order.", "One way street.", "Push."], correct: 0 },
+      ] } },
+  21: { topic: "مرور هفته ۳", phrases: [
+      { en: "Excuse me, how do I get to the station?", fa: "ببخشید، چطور به ایستگاه برم؟" },
+      { en: "Can you take me to this address, please?", fa: "می‌تونید منو به این آدرس ببرید؟" },
+      { en: "Which bus goes downtown? Is it far?", fa: "کدوم اتوبوس به مرکز شهر می‌ره؟ دوره؟" },
+      { en: "I think I'm lost, can you help?", fa: "فکر کنم گم شدم، می‌تونید کمک کنید؟" },
+      { en: "Is it walking distance or should I take a taxi?", fa: "پیاده می‌شه رفت یا تاکسی بگیرم؟" },
+      { en: "Watch out, no entry here.", fa: "مراقب باش، اینجا ورود ممنوعه." },
+    ], listening: [
+      { audio: "I think I'm lost, can you help?", options: ["فکر کنم گم شدم، می‌تونید کمک کنید؟", "این صندلی خالیه؟", "نزدیک‌ترین پمپ بنزین کجاست؟"], correct: 0 },
+      { audio: "Is it walking distance or should I take a taxi?", options: ["پیاده می‌شه رفت یا تاکسی بگیرم؟", "ایستگاه بعدی چیه؟", "بلیط رو کجا بخرم؟"], correct: 0 },
+      { audio: "Watch out, no entry here.", options: ["مراقب باش، اینجا ورود ممنوعه.", "خروج از این طرفه.", "خرابه."], correct: 0 },
+    ], scenario: { setup: "یک روز کامل سفر در شهر رو مرور می‌کنید.", prompts: [
+        { question: "گم شدید و از کسی کمک می‌خواید:", options: ["Excuse me, how do I get to the station?", "Is this seat taken?", "Keep the change."], correct: 0 },
+        { question: "تصمیم می‌گیرید تاکسی بگیرید:", options: ["Can you take me to this address?", "What's the next stop?", "No entry."], correct: 0 },
+      ] } },
+
+  22: { topic: "چک‌این فرودگاه", phrases: [
+      { en: "Here is my passport and ticket.", fa: "اینم پاسپورت و بلیطم." },
+      { en: "I'd like a window seat.", fa: "صندلی کنار پنجره می‌خوام." },
+      { en: "How many bags can I check in?", fa: "چند تا چمدون می‌تونم تحویل بدم؟" },
+      { en: "Is this flight on time?", fa: "این پرواز به‌موقعه؟" },
+      { en: "Where is gate 12?", fa: "گیت ۱۲ کجاست؟" },
+      { en: "I'm traveling with one carry-on.", fa: "یک چمدون دستی همراه دارم." },
+    ], listening: [
+      { audio: "I'd like a window seat.", options: ["صندلی کنار پنجره می‌خوام.", "گیت ۱۲ کجاست؟", "این پرواز به‌موقعه؟"], correct: 0 },
+      { audio: "Is this flight on time?", options: ["این پرواز به‌موقعه؟", "چند تا چمدون می‌تونم تحویل بدم؟", "اینم پاسپورتم."], correct: 0 },
+      { audio: "Where is gate 12?", options: ["گیت ۱۲ کجاست؟", "صندلی کنار پنجره می‌خوام.", "یک چمدون دستی دارم."], correct: 0 },
+    ], scenario: { setup: "در باجه چک‌این فرودگاه هستید.", prompts: [
+        { question: "مدارکتون رو تحویل می‌دید:", options: ["Here is my passport and ticket.", "Where is gate 12?", "I'm traveling alone."], correct: 0 },
+        { question: "می‌پرسید پرواز به‌موقع هست یا نه:", options: ["Is this flight on time?", "I'd like a window seat.", "How many bags?"], correct: 0 },
+      ] } },
+  23: { topic: "در هواپیما", phrases: [
+      { en: "Excuse me, this is my seat.", fa: "ببخشید، این صندلی منه." },
+      { en: "Can I have some water, please?", fa: "می‌شه آب بدید؟" },
+      { en: "Could you help me with my bag?", fa: "می‌شه با چمدونم کمک کنید؟" },
+      { en: "What time do we land?", fa: "کِی فرود میایم؟" },
+      { en: "Could I have a blanket?", fa: "می‌شه یک پتو بدید؟" },
+      { en: "Is the seat belt sign on?", fa: "علامت کمربند روشنه؟" },
+    ], listening: [
+      { audio: "Excuse me, this is my seat.", options: ["ببخشید، این صندلی منه.", "می‌شه آب بدید؟", "کِی فرود میایم؟"], correct: 0 },
+      { audio: "What time do we land?", options: ["می‌شه پتو بدید؟", "کِی فرود میایم؟", "علامت کمربند روشنه؟"], correct: 1 },
+      { audio: "Could I have a blanket?", options: ["می‌شه یک پتو بدید؟", "می‌شه آب بدید؟", "این صندلی منه."], correct: 0 },
+    ], scenario: { setup: "سوار هواپیما شدید و یک نفر روی صندلیتون نشسته.", prompts: [
+        { question: "مودبانه می‌گید این صندلی شماست:", options: ["Excuse me, this is my seat.", "Could I have a blanket?", "What time do we land?"], correct: 0 },
+        { question: "از مهماندار آب می‌خواید:", options: ["Can I have some water, please?", "Could you help me with my bag?", "Is the seat belt sign on?"], correct: 0 },
+      ] } },
+  24: { topic: "چک‌این هتل", phrases: [
+      { en: "I have a reservation under...", fa: "یک رزرو به نام ... دارم." },
+      { en: "What time is check-out?", fa: "ساعت تخلیه چنده؟" },
+      { en: "Does the room have Wi-Fi?", fa: "اتاق وای‌فای داره؟" },
+      { en: "Can I get a wake-up call?", fa: "می‌شه برام بیدارباش بذارید؟" },
+      { en: "Is breakfast included?", fa: "صبحونه شامل می‌شه؟" },
+      { en: "Could I have a room with a view?", fa: "می‌شه یه اتاق با چشم‌انداز بدید؟" },
+    ], listening: [
+      { audio: "I have a reservation under...", options: ["یک رزرو به نام ... دارم.", "ساعت تخلیه چنده؟", "صبحونه شامل می‌شه؟"], correct: 0 },
+      { audio: "Is breakfast included?", options: ["صبحونه شامل می‌شه؟", "اتاق وای‌فای داره؟", "می‌شه بیدارباش بذارید؟"], correct: 0 },
+      { audio: "What time is check-out?", options: ["ساعت تخلیه چنده؟", "اتاق وای‌فای داره؟", "یک رزرو دارم."], correct: 0 },
+    ], scenario: { setup: "وارد لابی هتل می‌شید تا چک‌این کنید.", prompts: [
+        { question: "می‌گید رزرو از قبل دارید:", options: ["I have a reservation under...", "Is breakfast included?", "What time is check-out?"], correct: 0 },
+        { question: "می‌پرسید صبحونه جزو قیمته:", options: ["Is breakfast included?", "Does the room have Wi-Fi?", "Can I get a wake-up call?"], correct: 0 },
+      ] } },
+  25: { topic: "مشکلات در هتل", phrases: [
+      { en: "The AC isn't working.", fa: "کولر کار نمی‌کنه." },
+      { en: "Can I change my room?", fa: "می‌تونم اتاقم رو عوض کنم؟" },
+      { en: "There's no hot water.", fa: "آب گرم نیست." },
+      { en: "Can you send someone to fix this?", fa: "می‌شه یک نفر بفرستید درستش کنه؟" },
+      { en: "The room is too noisy.", fa: "اتاق خیلی شلوغه (سروصدا داره)." },
+      { en: "Could I get extra towels?", fa: "می‌شه حوله اضافه بدید؟" },
+    ], listening: [
+      { audio: "The AC isn't working.", options: ["کولر کار نمی‌کنه.", "آب گرم نیست.", "اتاق شلوغه."], correct: 0 },
+      { audio: "Can you send someone to fix this?", options: ["می‌تونم اتاقم رو عوض کنم؟", "می‌شه یک نفر بفرستید درستش کنه؟", "می‌شه حوله اضافه بدید؟"], correct: 1 },
+      { audio: "There's no hot water.", options: ["آب گرم نیست.", "کولر کار نمی‌کنه.", "اتاق شلوغه."], correct: 0 },
+    ], scenario: { setup: "در اتاق هتل مشکلی پیش اومده و با پذیرش تماس می‌گیرید.", prompts: [
+        { question: "متوجه می‌شید کولر خراب شده:", options: ["The AC isn't working.", "Could I get extra towels?", "Can I change my room?"], correct: 0 },
+        { question: "از اونا می‌خواید کسی رو بفرستن درستش کنه:", options: ["Can you send someone to fix this?", "Is breakfast included?", "What time is check-out?"], correct: 0 },
+      ] } },
+  26: { topic: "وضعیت‌های اضطراری ۱", phrases: [
+      { en: "I need help!", fa: "کمک لازم دارم!" },
+      { en: "Call the police, please.", fa: "لطفاً پلیس رو خبر کنید." },
+      { en: "I lost my passport.", fa: "پاسپورتم رو گم کردم." },
+      { en: "Where is the nearest hospital?", fa: "نزدیک‌ترین بیمارستان کجاست؟" },
+      { en: "I need a doctor.", fa: "به دکتر نیاز دارم." },
+      { en: "Someone stole my bag.", fa: "یکی کیفم رو دزدید." },
+    ], listening: [
+      { audio: "I lost my passport.", options: ["پاسپورتم رو گم کردم.", "کیفم دزدیده شد.", "به دکتر نیاز دارم."], correct: 0 },
+      { audio: "Where is the nearest hospital?", options: ["نزدیک‌ترین بیمارستان کجاست؟", "نزدیک‌ترین پمپ بنزین کجاست؟", "گیت ۱۲ کجاست؟"], correct: 0 },
+      { audio: "Someone stole my bag.", options: ["یکی کیفم رو دزدید.", "پاسپورتم رو گم کردم.", "کمک لازم دارم."], correct: 0 },
+    ], scenario: { setup: "یک موقعیت اضطراری پیش اومده و باید کمک بخواید.", prompts: [
+        { question: "متوجه می‌شید پاسپورتتون نیست:", options: ["I lost my passport.", "I need a doctor.", "Call the police."], correct: 0 },
+        { question: "می‌خواید پلیس خبر بشه:", options: ["Call the police, please.", "Where is the hospital?", "I need help!"], correct: 0 },
+      ] } },
+  27: { topic: "وضعیت‌های اضطراری ۲ (سلامتی)", phrases: [
+      { en: "I don't feel well.", fa: "حالم خوب نیست." },
+      { en: "I have a headache.", fa: "سردرد دارم." },
+      { en: "I'm allergic to penicillin.", fa: "به پنی‌سیلین حساسیت دارم." },
+      { en: "Can you call an ambulance?", fa: "می‌شه آمبولانس خبر کنید؟" },
+      { en: "It hurts here.", fa: "اینجا درد می‌کنه." },
+      { en: "I need my medication.", fa: "به داروم نیاز دارم." },
+    ], listening: [
+      { audio: "I don't feel well.", options: ["حالم خوب نیست.", "سردرد دارم.", "اینجا درد می‌کنه."], correct: 0 },
+      { audio: "Can you call an ambulance?", options: ["می‌شه پلیس خبر کنید؟", "می‌شه آمبولانس خبر کنید؟", "به دکتر نیاز دارم."], correct: 1 },
+      { audio: "I'm allergic to penicillin.", options: ["به پنی‌سیلین حساسیت دارم.", "سردرد دارم.", "حالم خوب نیست."], correct: 0 },
+    ], scenario: { setup: "احساس ناخوشی می‌کنید و به یک داروخانه یا کلینیک می‌رید.", prompts: [
+        { question: "می‌گید حالتون خوب نیست و سردرد دارید:", options: ["I don't feel well, I have a headache.", "I lost my passport.", "Someone stole my bag."], correct: 0 },
+        { question: "دکتر می‌خواد دارو بده، می‌گید به یک دارو حساسیت دارید:", options: ["I'm allergic to penicillin.", "I need a doctor.", "It hurts here."], correct: 0 },
+      ] } },
+  28: { topic: "بانک و پول", phrases: [
+      { en: "I'd like to exchange money.", fa: "می‌خوام پول تبدیل کنم." },
+      { en: "Where is the nearest ATM?", fa: "نزدیک‌ترین خودپرداز کجاست؟" },
+      { en: "My card isn't working.", fa: "کارتم کار نمی‌کنه." },
+      { en: "What's the exchange rate?", fa: "نرخ تبدیل چقدره؟" },
+      { en: "Can I pay in cash?", fa: "می‌شه نقدی پرداخت کنم؟" },
+      { en: "I'd like to withdraw some money.", fa: "می‌خوام مقداری پول برداشت کنم." },
+    ], listening: [
+      { audio: "Where is the nearest ATM?", options: ["نزدیک‌ترین خودپرداز کجاست؟", "نرخ تبدیل چقدره؟", "کارتم کار نمی‌کنه."], correct: 0 },
+      { audio: "My card isn't working.", options: ["کارتم کار نمی‌کنه.", "می‌خوام پول تبدیل کنم.", "می‌شه نقدی پرداخت کنم؟"], correct: 0 },
+      { audio: "What's the exchange rate?", options: ["نرخ تبدیل چقدره؟", "نزدیک‌ترین خودپرداز کجاست؟", "می‌خوام برداشت کنم."], correct: 0 },
+    ], scenario: { setup: "در یک صرافی یا بانک هستید.", prompts: [
+        { question: "می‌خواید دلار به یورو تبدیل کنید:", options: ["I'd like to exchange money.", "My card isn't working.", "Can I pay in cash?"], correct: 0 },
+        { question: "می‌پرسید نرخ امروز چنده:", options: ["What's the exchange rate?", "Where is the nearest ATM?", "I'd like to withdraw money."], correct: 0 },
+      ] } },
+  29: { topic: "خداحافظی و جمع‌بندی سفر", phrases: [
+      { en: "It was a pleasure meeting you.", fa: "از آشنایی باهاتون خوشحال شدم." },
+      { en: "I had a great time here.", fa: "اینجا وقت خیلی خوبی داشتم." },
+      { en: "Let's stay in touch.", fa: "بیاید در ارتباط بمونیم." },
+      { en: "Thank you for everything.", fa: "بابت همه‌چیز ممنونم." },
+      { en: "Safe travels!", fa: "سفر خوبی داشته باشید!" },
+      { en: "I hope to visit again.", fa: "امیدوارم دوباره بیام." },
+    ], listening: [
+      { audio: "It was a pleasure meeting you.", options: ["از آشنایی باهاتون خوشحال شدم.", "بابت همه‌چیز ممنونم.", "سفر خوبی داشته باشید!"], correct: 0 },
+      { audio: "Safe travels!", options: ["سفر خوبی داشته باشید!", "بیاید در ارتباط بمونیم.", "اینجا وقت خوبی داشتم."], correct: 0 },
+      { audio: "Let's stay in touch.", options: ["بیاید در ارتباط بمونیم.", "امیدوارم دوباره بیام.", "از آشناییتون خوشحال شدم."], correct: 0 },
+    ], scenario: { setup: "سفرتون داره تموم می‌شه و با دوستان جدید خداحافظی می‌کنید.", prompts: [
+        { question: "از وقتی که باهم گذروندید تشکر می‌کنید:", options: ["Thank you for everything.", "My card isn't working.", "Where is the ATM?"], correct: 0 },
+        { question: "آرزوی سفر خوب می‌کنید:", options: ["Safe travels!", "I need help!", "I don't feel well."], correct: 0 },
+      ] } },
+  30: { topic: "مرور نهایی کل دوره", phrases: [
+      { en: "Hi, nice to meet you. I'm from Iran.", fa: "سلام، از آشناییت خوشحالم. من اهل ایرانم." },
+      { en: "Could I see the menu? I'd like to order.", fa: "می‌شه منو رو ببینم؟ می‌خوام سفارش بدم." },
+      { en: "Excuse me, how do I get to the airport?", fa: "ببخشید، چطور به فرودگاه برم؟" },
+      { en: "I have a reservation, and is breakfast included?", fa: "یک رزرو دارم، و صبحونه شامل می‌شه؟" },
+      { en: "I don't feel well, can you help me?", fa: "حالم خوب نیست، می‌تونید کمکم کنید؟" },
+      { en: "Thank you for everything, safe travels!", fa: "بابت همه‌چیز ممنون، سفر خوبی داشته باشید!" },
+    ], listening: [
+      { audio: "I have a reservation, and is breakfast included?", options: ["یک رزرو دارم، و صبحونه شامل می‌شه؟", "کولر کار نمی‌کنه.", "نرخ تبدیل چقدره؟"], correct: 0 },
+      { audio: "I don't feel well, can you help me?", options: ["حالم خوب نیست، می‌تونید کمکم کنید؟", "پاسپورتم رو گم کردم.", "سفر خوبی داشته باشید!"], correct: 0 },
+      { audio: "Excuse me, how do I get to the airport?", options: ["ببخشید، چطور به فرودگاه برم؟", "نزدیک‌ترین خودپرداز کجاست؟", "این صندلی منه."], correct: 0 },
+    ], scenario: { setup: "یک روز کامل سفر رو از اول تا آخر مرور می‌کنید — از معرفی خود تا خداحافظی.", prompts: [
+        { question: "اول خودتونو معرفی می‌کنید:", options: ["Hi, nice to meet you. I'm from Iran.", "Safe travels!", "I need a doctor."], correct: 0 },
+        { question: "در پایان سفر خداحافظی می‌کنید:", options: ["Thank you for everything, safe travels!", "Can I try this on?", "Is this seat taken?"], correct: 0 },
+      ] } },
+};
+
+function getLesson(day) {
+  return LESSONS[day];
+}
+
+const TOTAL_DAYS = 30;
+const STORAGE_KEY = "progress_v2";
+
+export default function App() {
+  const [completedDays, setCompletedDays] = useState([]);
+  const [results, setResults] = useState({}); // { day: { correct, total } }
+  const [currentDay, setCurrentDay] = useState(1);
+  const [view, setView] = useState("home"); // home | lesson | weekly
+  const [stage, setStage] = useState("phrases");
+  const [listenIdx, setListenIdx] = useState(0);
+  const [scenarioIdx, setScenarioIdx] = useState(0);
+  const [feedback, setFeedback] = useState(null);
+  const [sessionScore, setSessionScore] = useState({ correct: 0, total: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await window.storage.get(STORAGE_KEY);
+        if (res && res.value) {
+          const parsed = JSON.parse(res.value);
+          setCompletedDays(parsed.completedDays || []);
+          setResults(parsed.results || {});
+        }
+      } catch (e) {
+        // no saved progress
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  async function persist(newCompleted, newResults) {
+    setCompletedDays(newCompleted);
+    setResults(newResults);
+    try {
+      await window.storage.set(STORAGE_KEY, JSON.stringify({ completedDays: newCompleted, results: newResults }));
+    } catch (e) {
+      console.error("save failed", e);
+    }
+  }
+
+  function openDay(day) {
+    setCurrentDay(day);
+    setStage("phrases");
+    setListenIdx(0);
+    setScenarioIdx(0);
+    setFeedback(null);
+    setSessionScore({ correct: 0, total: 0 });
+    setView("lesson");
+  }
+
+  function finishDay() {
+    const newResults = { ...results, [currentDay]: sessionScore };
+    const newCompleted = completedDays.includes(currentDay) ? completedDays : [...completedDays, currentDay].sort((a, b) => a - b);
+    persist(newCompleted, newResults);
+    setView("home");
+  }
+
+  function recordAnswer(correct) {
+    setSessionScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }));
+  }
+
+  function handleListenAnswer(optIdx) {
+    const lesson = getLesson(currentDay);
+    const isCorrect = lesson.listening[listenIdx].correct === optIdx;
+    recordAnswer(isCorrect);
+    setFeedback(isCorrect ? "correct" : "wrong");
+    setTimeout(() => {
+      setFeedback(null);
+      if (listenIdx + 1 < lesson.listening.length) {
+        setListenIdx(listenIdx + 1);
+      } else {
+        setStage("scenario");
+      }
+    }, 700);
+  }
+
+  function handleScenarioAnswer(optIdx) {
+    const lesson = getLesson(currentDay);
+    const isCorrect = lesson.scenario.prompts[scenarioIdx].correct === optIdx;
+    recordAnswer(isCorrect);
+    setFeedback(isCorrect ? "correct" : "wrong");
+    setTimeout(() => {
+      setFeedback(null);
+      if (scenarioIdx + 1 < lesson.scenario.prompts.length) {
+        setScenarioIdx(scenarioIdx + 1);
+      } else {
+        setStage("done");
+      }
+    }, 700);
+  }
+
+  if (loading) {
+    return (
+      <div style={{ padding: "3rem 1rem", textAlign: "center", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }} dir="rtl">
+        در حال بارگذاری...
+      </div>
+    );
+  }
+
+  return (
+    <div dir="rtl" style={{ fontFamily: "var(--font-sans)", maxWidth: 480, margin: "0 auto", padding: "1rem" }}>
+      {view === "home" && (
+        <HomeView completedDays={completedDays} results={results} openDay={openDay} goWeekly={() => setView("weekly")} />
+      )}
+      {view === "lesson" && (
+        <LessonView
+          day={currentDay}
+          lesson={getLesson(currentDay)}
+          stage={stage}
+          setStage={setStage}
+          listenIdx={listenIdx}
+          scenarioIdx={scenarioIdx}
+          feedback={feedback}
+          handleListenAnswer={handleListenAnswer}
+          handleScenarioAnswer={handleScenarioAnswer}
+          finishDay={finishDay}
+          goHome={() => setView("home")}
+          isCompleted={completedDays.includes(currentDay)}
+          sessionScore={sessionScore}
+        />
+      )}
+      {view === "weekly" && (
+        <WeeklyView results={results} completedDays={completedDays} goHome={() => setView("home")} />
+      )}
+    </div>
+  );
+}
+
+function overallStats(results) {
+  const days = Object.keys(results);
+  let correct = 0, total = 0;
+  days.forEach((d) => { correct += results[d].correct; total += results[d].total; });
+  return { correct, total, pct: total ? Math.round((correct / total) * 100) : null, daysCount: days.length };
+}
+
+function HomeView({ completedDays, results, openDay, goWeekly }) {
+  const pct = Math.round((completedDays.length / TOTAL_DAYS) * 100);
+  const stats = overallStats(results);
+
+  return (
+    <div>
+      <div style={{ textAlign: "center", padding: "0.5rem 0 1.5rem" }}>
+        <h1 style={{ margin: 0 }}>۳۰ روز انگلیسی کاربردی</h1>
+        <p style={{ color: "var(--color-text-secondary)", marginTop: 4 }}>شنیدن، صحبت کردن، بدون اتلاف وقت</p>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "1rem" }}>
+        <div style={{ flex: 1, height: 8, borderRadius: 999, background: "var(--color-background-secondary)", overflow: "hidden" }}>
+          <div style={{ width: `${pct}%`, height: "100%", background: "var(--color-text-info)", borderRadius: 999, transition: "width 0.3s" }} />
+        </div>
+        <span style={{ fontSize: 14, fontWeight: 500, minWidth: 70, textAlign: "left" }}>{completedDays.length}/{TOTAL_DAYS} روز</span>
+      </div>
+
+      {stats.total > 0 && (
+        <div
+          onClick={goWeekly}
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: "1.5rem", cursor: "pointer" }}
+        >
+          <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-md)", padding: "1rem" }}>
+            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>دقت کلی</p>
+            <p style={{ fontSize: 24, fontWeight: 500, margin: "4px 0 0" }}>{stats.pct}%</p>
+          </div>
+          <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-md)", padding: "1rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <p style={{ fontSize: 13, color: "var(--color-text-info)", margin: 0, display: "flex", alignItems: "center", gap: 4 }}>
+              <i className="ti ti-chart-bar" style={{ fontSize: 16 }} aria-hidden="true" />
+              مشاهده خلاصه هفتگی
+            </p>
+          </div>
+        </div>
+      )}
+
+      {WEEKS.map((week, wi) => (
+        <div key={wi} style={{ marginBottom: "1.5rem" }}>
+          <h3 style={{ marginBottom: 8 }}>{week.title}</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8 }}>
+            {week.days.map((day) => {
+              const done = completedDays.includes(day);
+              const r = results[day];
+              const dayPct = r && r.total ? Math.round((r.correct / r.total) * 100) : null;
+              return (
+                <button
+                  key={day}
+                  onClick={() => openDay(day)}
+                  style={{
+                    aspectRatio: "1",
+                    borderRadius: "var(--border-radius-md)",
+                    border: "0.5px solid var(--color-border-tertiary)",
+                    background: done ? "var(--color-background-success)" : "var(--color-background-primary)",
+                    color: done ? "var(--color-text-success)" : "var(--color-text-primary)",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    gap: 2,
+                  }}
+                >
+                  {done ? (
+                    <>
+                      <i className="ti ti-check" style={{ fontSize: 14 }} aria-hidden="true" />
+                      {dayPct !== null && <span style={{ fontSize: 10 }}>{dayPct}%</span>}
+                    </>
+                  ) : day}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", textAlign: "center", marginTop: "1rem" }}>
+        هر روز ۳۰-۴۵ دقیقه — همین الان شروع کن
+      </p>
+    </div>
+  );
+}
+
+function LessonView({ day, lesson, stage, setStage, listenIdx, scenarioIdx, feedback, handleListenAnswer, handleScenarioAnswer, finishDay, goHome, isCompleted, sessionScore }) {
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+        <button onClick={goHome} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14 }}>
+          <i className="ti ti-arrow-right" style={{ fontSize: 16 }} aria-hidden="true" />
+          بازگشت
+        </button>
+        <span style={{ fontSize: 13, color: "var(--color-text-secondary)" }}>روز {day}</span>
+      </div>
+
+      <h2 style={{ marginBottom: 4 }}>{lesson.topic}</h2>
+
+      <StageIndicator stage={stage} />
+
+      {stage === "phrases" && (
+        <PhrasesStage lesson={lesson} onNext={() => setStage("listening")} />
+      )}
+      {stage === "listening" && (
+        <ListeningStage item={lesson.listening[listenIdx]} index={listenIdx} total={lesson.listening.length} feedback={feedback} onAnswer={handleListenAnswer} />
+      )}
+      {stage === "scenario" && (
+        <ScenarioStage scenario={lesson.scenario} index={scenarioIdx} feedback={feedback} onAnswer={handleScenarioAnswer} />
+      )}
+      {stage === "done" && (
+        <DoneStage isCompleted={isCompleted} onFinish={finishDay} sessionScore={sessionScore} />
+      )}
+    </div>
+  );
+}
+
+function StageIndicator({ stage }) {
+  const steps = [
+    { key: "phrases", label: "عبارات", icon: "ti-book" },
+    { key: "listening", label: "شنیداری", icon: "ti-headphones" },
+    { key: "scenario", label: "مکالمه", icon: "ti-messages" },
+  ];
+  const activeIdx = steps.findIndex((s) => s.key === stage);
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: "1.5rem" }}>
+      {steps.map((s, i) => (
+        <div
+          key={s.key}
+          style={{
+            flex: 1,
+            padding: "8px",
+            borderRadius: "var(--border-radius-md)",
+            background: i <= activeIdx || stage === "done" ? "var(--color-background-secondary)" : "transparent",
+            border: "0.5px solid var(--color-border-tertiary)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 4,
+            fontSize: 12,
+            color: i <= activeIdx || stage === "done" ? "var(--color-text-primary)" : "var(--color-text-tertiary)",
+          }}
+        >
+          <i className={`ti ${s.icon}`} style={{ fontSize: 18 }} aria-hidden="true" />
+          {s.label}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PhrasesStage({ lesson, onNext }) {
+  return (
+    <div>
+      <p style={{ fontSize: 14, color: "var(--color-text-secondary)", marginBottom: "1rem" }}>
+        این عبارات کلیدی امروز هستن. چند بار با صدای بلند تکرارشون کن.
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {lesson.phrases.map((p, i) => (
+          <div key={i} style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-lg)", padding: "0.75rem 1rem" }}>
+            <p style={{ margin: 0, fontWeight: 500, fontSize: 16 }}>{p.en}</p>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--color-text-secondary)" }}>{p.fa}</p>
+          </div>
+        ))}
+      </div>
+      <button onClick={onNext} style={{ width: "100%", marginTop: "1.5rem", background: "var(--color-text-info)", color: "white", border: "none", fontWeight: 500 }}>
+        ادامه به تمرین شنیداری
+      </button>
+    </div>
+  );
+}
+
+function ListeningStage({ item, index, total, feedback, onAnswer }) {
+  return (
+    <div>
+      <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 8 }}>سوال {index + 1} از {total}</p>
+      <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-lg)", padding: "1.25rem", textAlign: "center", marginBottom: "1rem" }}>
+        <i className="ti ti-volume" style={{ fontSize: 28, marginBottom: 8, display: "block" }} aria-hidden="true" />
+        <p style={{ fontWeight: 500, fontSize: 18, margin: 0 }}>"{item.audio}"</p>
+        <p style={{ fontSize: 12, color: "var(--color-text-tertiary)", marginTop: 8 }}>این جمله رو با صدای بلند بخون، بعد معنیش رو انتخاب کن</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {item.options.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => onAnswer(i)}
+            disabled={feedback !== null}
+            style={{
+              textAlign: "right",
+              padding: "0.75rem 1rem",
+              borderColor: feedback && item.correct === i ? "var(--color-border-success)" : "var(--color-border-tertiary)",
+              background: feedback && item.correct === i ? "var(--color-background-success)" : "var(--color-background-primary)",
+            }}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ScenarioStage({ scenario, index, feedback, onAnswer }) {
+  const prompt = scenario.prompts[index];
+  return (
+    <div>
+      {index === 0 && (
+        <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-lg)", padding: "1rem", marginBottom: "1rem", fontSize: 14 }}>
+          <i className="ti ti-theater" style={{ fontSize: 18, marginLeft: 6, verticalAlign: "-3px" }} aria-hidden="true" />
+          {scenario.setup}
+        </div>
+      )}
+      <p style={{ fontWeight: 500, fontSize: 16, marginBottom: "1rem" }}>{prompt.question}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {prompt.options.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => onAnswer(i)}
+            disabled={feedback !== null}
+            style={{
+              textAlign: "right",
+              padding: "0.75rem 1rem",
+              borderColor: feedback && prompt.correct === i ? "var(--color-border-success)" : "var(--color-border-tertiary)",
+              background: feedback && prompt.correct === i ? "var(--color-background-success)" : "var(--color-background-primary)",
+            }}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function feedbackMessage(pct) {
+  if (pct === 100) return { text: "عالی بود! همه رو درست زدی.", icon: "ti-trophy" };
+  if (pct >= 70) return { text: "خیلی خوب پیش رفتی.", icon: "ti-thumb-up" };
+  if (pct >= 40) return { text: "بد نبود، یه‌کم بیشتر مرور کن.", icon: "ti-refresh" };
+  return { text: "این درس رو دوباره مرور کن، مهم نیست — یادگیری همینطوریه.", icon: "ti-book" };
+}
+
+function DoneStage({ isCompleted, onFinish, sessionScore }) {
+  const pct = sessionScore.total ? Math.round((sessionScore.correct / sessionScore.total) * 100) : null;
+  const msg = pct !== null ? feedbackMessage(pct) : null;
+  return (
+    <div style={{ textAlign: "center", padding: "2rem 0" }}>
+      <i className="ti ti-circle-check" style={{ fontSize: 40, color: "var(--color-text-success)" }} aria-hidden="true" />
+      <h3 style={{ margin: "1rem 0 4px" }}>{isCompleted ? "این درس دوباره تمرین شد" : "آفرین! درس امروز تموم شد"}</h3>
+
+      {pct !== null && (
+        <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-lg)", padding: "1rem", margin: "1rem auto", maxWidth: 280 }}>
+          <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>نتیجه امروز</p>
+          <p style={{ fontSize: 28, fontWeight: 500, margin: "4px 0" }}>{pct}%</p>
+          <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", margin: 0 }}>{sessionScore.correct} از {sessionScore.total} پاسخ درست</p>
+          {msg && (
+            <p style={{ fontSize: 13, marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+              <i className={`ti ${msg.icon}`} style={{ fontSize: 15 }} aria-hidden="true" />
+              {msg.text}
+            </p>
+          )}
+        </div>
+      )}
+
+      <button onClick={onFinish} style={{ marginTop: "1rem", background: "var(--color-text-info)", color: "white", border: "none", fontWeight: 500, padding: "0.6rem 1.5rem" }}>
+        بازگشت به خانه
+      </button>
+    </div>
+  );
+}
+
+function WeeklyView({ results, completedDays, goHome }) {
+  const weeklyData = WEEKS.map((week, wi) => {
+    let correct = 0, total = 0, daysDone = 0;
+    week.days.forEach((d) => {
+      if (results[d]) {
+        correct += results[d].correct;
+        total += results[d].total;
+      }
+      if (completedDays.includes(d)) daysDone += 1;
+    });
+    return { title: week.title, pct: total ? Math.round((correct / total) * 100) : null, daysDone, totalDays: week.days.length, wi };
+  });
+
+  const overall = overallStats(results);
+  const trend = Object.keys(results).map(Number).sort((a, b) => a - b).map((d) => ({
+    day: d,
+    pct: results[d].total ? Math.round((results[d].correct / results[d].total) * 100) : 0,
+  }));
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1.5rem" }}>
+        <button onClick={goHome} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14 }}>
+          <i className="ti ti-arrow-right" style={{ fontSize: 16 }} aria-hidden="true" />
+          بازگشت
+        </button>
+        <h2 style={{ margin: 0 }}>خلاصه پیشرفت</h2>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: "1.5rem" }}>
+        <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-md)", padding: "1rem" }}>
+          <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>دقت کلی</p>
+          <p style={{ fontSize: 24, fontWeight: 500, margin: "4px 0 0" }}>{overall.pct}%</p>
+        </div>
+        <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-md)", padding: "1rem" }}>
+          <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>روزهای تمرین‌شده</p>
+          <p style={{ fontSize: 24, fontWeight: 500, margin: "4px 0 0" }}>{overall.daysCount}</p>
+        </div>
+      </div>
+
+      {trend.length > 1 && (
+        <div style={{ marginBottom: "1.5rem" }}>
+          <h3 style={{ marginBottom: 8 }}>روند روزانه</h3>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 100, padding: "0 4px" }}>
+            {trend.map((t) => (
+              <div key={t.day} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                <div style={{ width: "100%", height: `${Math.max(t.pct, 4)}%`, background: "var(--color-text-info)", borderRadius: "2px 2px 0 0", maxWidth: 16 }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 4, padding: "0 4px", marginTop: 4 }}>
+            {trend.map((t) => (
+              <div key={t.day} style={{ flex: 1, textAlign: "center", fontSize: 9, color: "var(--color-text-tertiary)" }}>{t.day}</div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <h3 style={{ marginBottom: 8 }}>بر اساس هفته</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {weeklyData.map((w) => (
+          <div key={w.wi} style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-lg)", padding: "0.9rem 1rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+              <span style={{ fontSize: 14, fontWeight: 500 }}>{w.title}</span>
+              <span style={{ fontSize: 13, color: "var(--color-text-secondary)" }}>{w.daysDone}/{w.totalDays} روز</span>
+            </div>
+            {w.pct !== null ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ flex: 1, height: 6, borderRadius: 999, background: "var(--color-background-secondary)", overflow: "hidden" }}>
+                  <div style={{ width: `${w.pct}%`, height: "100%", background: "var(--color-text-success)", borderRadius: 999 }} />
+                </div>
+                <span style={{ fontSize: 13, fontWeight: 500, minWidth: 36, textAlign: "left" }}>{w.pct}%</span>
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: "var(--color-text-tertiary)", margin: 0 }}>هنوز شروع نشده</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
