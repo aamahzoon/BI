@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد هزینه و درآمد خانوارهای شهری ۱۴۰۳</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --header: #1a1035;
+    --accent1: #5b21b6;
+    --accent2: #7c3aed;
+    --accent3: #a78bfa;
+    --green: #059669;
+    --orange: #d97706;
+    --purple: #7c3aed;
+    --blue: #1d4ed8;
+    --red: #dc2626;
+    --teal: #0d9488;
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --border: #e2e8f0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --c1: #5b21b6; --c2: #7c3aed; --c3: #a78bfa;
+    --c4: #c4b5fd; --c5: #ddd6fe; --c6: #ede9fe;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    direction: rtl;
+    font-size: 14px;
+    min-width: 1200px;
+  }
+  header {
+    background: var(--header);
+    color: #fff;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  }
+  .header-logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent2), #4c1d95);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .header-title h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .header-title p { font-size: 12px; color: #94a3b8; margin-top: 1px; }
+  .header-meta { display: flex; align-items: center; gap: 20px; font-size: 13px; color: #94a3b8; }
+  .badge {
+    background: rgba(124,58,237,0.35);
+    color: #c4b5fd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(196,181,253,0.25);
+  }
+  .filter-bar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+  .filter-label { font-size: 12px; color: var(--text2); font-weight: 600; white-space: nowrap; }
+  .filter-select {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 13px;
+    padding: 7px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    direction: rtl;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .filter-select:focus { border-color: var(--accent2); }
+  .filter-divider { width: 1px; height: 28px; background: var(--border); }
+  .btn-reset {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 16px;
+    background: var(--accent1);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-right: auto;
+  }
+  .btn-reset:hover { background: #4c1d95; }
+  .btn-reset:active { transform: scale(0.97); }
+  .main { padding: 24px 32px 40px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 22px 20px 18px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-top: 3px solid transparent;
+  }
+  .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .kpi-card.kpi-blue { border-top-color: var(--blue); }
+  .kpi-card.kpi-green { border-top-color: var(--green); }
+  .kpi-card.kpi-orange { border-top-color: var(--orange); }
+  .kpi-card.kpi-purple { border-top-color: var(--purple); }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 80px; opacity: 0.04;
+  }
+  .kpi-card.kpi-blue::before { background: var(--blue); }
+  .kpi-card.kpi-green::before { background: var(--green); }
+  .kpi-card.kpi-orange::before { background: var(--orange); }
+  .kpi-card.kpi-purple::before { background: var(--purple); }
+  .kpi-header { display: flex; align-items: flex-start; justify-content: space-between; }
+  .kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .kpi-blue .kpi-icon { background: rgba(29,78,216,0.1); color: var(--blue); }
+  .kpi-green .kpi-icon { background: rgba(5,150,105,0.1); color: var(--green); }
+  .kpi-orange .kpi-icon { background: rgba(217,119,6,0.1); color: var(--orange); }
+  .kpi-purple .kpi-icon { background: rgba(124,58,237,0.1); color: var(--purple); }
+  .kpi-label { font-size: 12px; color: var(--text2); font-weight: 500; margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .kpi-unit { font-size: 11px; color: var(--text3); margin-top: 4px; font-weight: 400; }
+  .kpi-sub { font-size: 11px; color: var(--text3); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .chart-full { margin-bottom: 20px; }
+  .chart-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s;
+  }
+  .chart-card:hover { box-shadow: var(--shadow-lg); }
+  .chart-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+  .chart-card-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .chart-toggle-btn {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1.5px solid var(--accent2);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--accent2);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .chart-toggle-btn:hover { background: var(--accent2); color: #fff; }
+  .chart-insight {
+    font-size: 11.5px;
+    color: var(--text2);
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border-right: 3px solid var(--accent2);
+    padding: 8px 10px 8px 8px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .chart-wrap { position: relative; flex: 1; min-height: 0; }
+  .heatmap-container { overflow-x: auto; margin-top: 8px; }
+  .heatmap-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .heatmap-table th {
+    background: var(--header); color: #fff; padding: 8px 10px;
+    font-weight: 600; text-align: center; white-space: nowrap; position: sticky; top: 0;
+  }
+  .heatmap-table th:first-child { text-align: right; }
+  .heatmap-table td {
+    padding: 6px 10px; text-align: center; border-bottom: 1px solid var(--border);
+    transition: background 0.15s; cursor: default; position: relative;
+  }
+  .heatmap-table td:first-child { text-align: right; font-weight: 500; white-space: nowrap; }
+  .heatmap-table tr:hover td { filter: brightness(0.95); }
+  .heatmap-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.015); }
+  .hm-tooltip {
+    position: fixed; background: var(--header); color: #fff; padding: 6px 10px;
+    border-radius: 6px; font-size: 12px; pointer-events: none; z-index: 999; display: none; white-space: nowrap;
+  }
+  footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text3); border-top: 1px solid var(--border); background: var(--card); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 3px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .chart-card { animation: fadeIn 0.4s ease both; }
+  .kpi-card { animation: fadeIn 0.3s ease both; }
+  .kpi-card:nth-child(2) { animation-delay: 0.05s; }
+  .kpi-card:nth-child(3) { animation-delay: 0.1s; }
+  .kpi-card:nth-child(4) { animation-delay: 0.15s; }
+  .section-title {
+    font-size: 13px; font-weight: 700; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before {
+    content: ''; width: 4px; height: 16px;
+    background: var(--accent2); border-radius: 2px; display: inline-block;
+  }
+  .urban-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg,#7c3aed,#4c1d95);
+    color: #fff; font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <div class="logo-icon">🏙️</div>
+    <div class="header-title">
+      <h1>داشبورد هزینه و درآمد خانوارهای شهری</h1>
+      <p>طرح آمارگیری — مرکز آمار ایران</p>
+    </div>
+  </div>
+  <div class="header-meta">
+    <span class="badge">سال ۱۴۰۳</span>
+    <span>خانوارهای نمونه: ۳۶٬۸۰۰</span>
+    <span>۳۱ استان</span>
+    <span class="urban-tag">🏙 مناطق شهری</span>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">🔍 فیلترها:</span>
+  <span class="filter-label">استان:</span>
+  <select class="filter-select" id="provFilter" onchange="applyFilters()">
+    <option value="-1">همه استان‌ها</option>
+  </select>
+  <div class="filter-divider"></div>
+  <span class="filter-label">گروه هزینه:</span>
+  <select class="filter-select" id="groupFilter" onchange="applyFilters()">
+    <option value="-1">همه گروه‌ها</option>
+    <option value="0">زیر ۴۸۰٬۰۰۰</option>
+    <option value="1">۴۸۰٬۰۰۰ – ۷۲۰٬۰۰۰</option>
+    <option value="2">۷۲۰٬۰۰۰ – ۹۶۰٬۰۰۰</option>
+    <option value="3">۹۶۰٬۰۰۰ – ۱٬۲۶۰٬۰۰۰</option>
+    <option value="4">۱٬۲۶۰٬۰۰۰ – ۱٬۶۲۰٬۰۰۰</option>
+    <option value="5">۱٬۶۲۰٬۰۰۰ – ۲٬۱۰۰٬۰۰۰</option>
+    <option value="6">۲٬۱۰۰٬۰۰۰ – ۲٬۷۶۰٬۰۰۰</option>
+    <option value="7">۲٬۷۶۰٬۰۰۰ – ۳٬۷۲۰٬۰۰۰</option>
+    <option value="8">۳٬۷۲۰٬۰۰۰ – ۵٬۴۰۰٬۰۰۰</option>
+    <option value="9">بیش از ۵٬۴۰۰٬۰۰۰</option>
+  </select>
+  <div class="filter-divider"></div>
+  <span class="filter-label">نوع شاخص:</span>
+  <select class="filter-select" id="metricFilter" onchange="applyFilters()">
+    <option value="total">کل هزینه</option>
+    <option value="food">هزینه خوراکی</option>
+    <option value="nonfood">هزینه غیرخوراکی</option>
+    <option value="income">درآمد</option>
+  </select>
+  <button class="btn-reset" onclick="resetFilters()">↺ بازنشانی فیلترها</button>
+</div>
+
+<div class="main">
+
+  <div class="section-title">شاخص‌های کلان ملی — خانوارهای شهری</div>
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-header">
+        <div>
+          <div class="kpi-label">میانگین کل هزینه سالانه</div>
+          <div class="kpi-value" style="color:var(--blue)">۲٬۷۸۳٬۵۰۰</div>
+          <div class="kpi-unit">هزار ریال</div>
+        </div>
+        <div class="kpi-icon">💰</div>
+      </div>
+      <div class="kpi-sub">≈ ۲۳۱٬۹۵۸ هزار ریال در ماه</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-header">
+        <div>
+          <div class="kpi-label">میانگین درآمد سالانه</div>
+          <div class="kpi-value" style="color:var(--green)">۳٬۴۸۷٬۰۰۰</div>
+          <div class="kpi-unit">هزار ریال</div>
+        </div>
+        <div class="kpi-icon">📈</div>
+      </div>
+      <div class="kpi-sub">نسبت درآمد به هزینه: ۱٫۲۵</div>
+    </div>
+    <div class="kpi-card kpi-orange">
+      <div class="kpi-header">
+        <div>
+          <div class="kpi-label">میانگین هزینه خوراکی</div>
+          <div class="kpi-value" style="color:var(--orange)">۸۱۶٬۴۰۰</div>
+          <div class="kpi-unit">هزار ریال</div>
+        </div>
+        <div class="kpi-icon">🍞</div>
+      </div>
+      <div class="kpi-sub">ضریب انگل: ۲۹٫۳٪ از کل هزینه</div>
+    </div>
+    <div class="kpi-card kpi-purple">
+      <div class="kpi-header">
+        <div>
+          <div class="kpi-label">میانگین هزینه غیرخوراکی</div>
+          <div class="kpi-value" style="color:var(--purple)">۱٬۹۶۷٬۱۰۰</div>
+          <div class="kpi-unit">هزار ریال</div>
+        </div>
+        <div class="kpi-icon">🏠</div>
+      </div>
+      <div class="kpi-sub">۷۰٫۷٪ از کل هزینه خانوار</div>
+    </div>
+  </div>
+
+  <div class="section-title">ترکیب و توزیع هزینه‌ها بر حسب گروه</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">ترکیب هزینه خوراکی و غیرخوراکی به تفکیک گروه هزینه</div>
+        <button class="chart-toggle-btn" onclick="toggleChart1()">تغییر نمودار</button>
+      </div>
+      <div class="chart-insight">در خانوارهای شهری گروه بالا سهم غیرخوراکی به ۷۸٪ می‌رسد؛ در حالی که در پایین‌ترین گروه این نسبت به ۲۴٪ کاهش می‌یابد. فاصله هزینه‌ای بین گروه‌ها در مناطق شهری بسیار گسترده‌تر از روستاست.</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chart1"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">ضریب انگل — سهم هزینه خوراکی از کل هزینه (٪)</div>
+        <button class="chart-toggle-btn" onclick="toggleChart2()">خط / میله</button>
+      </div>
+      <div class="chart-insight">ضریب انگل در خانوارهای شهری از ۷۶٪ در پایین‌ترین گروه به ۲۲٪ در بالاترین گروه کاهش می‌یابد — افتی چشمگیرتر از روستا که نشان‌دهنده تنوع بیشتر مصرف شهری است.</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chart2"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">مقایسه درآمد و هزینه بر حسب گروه هزینه (هزار ریال)</div>
+      </div>
+      <div class="chart-insight">شکاف درآمد–هزینه در گروه‌های بالا بسیار چشمگیر است؛ پردرآمدترین دهک شهری ۶٫۸ برابر کم‌درآمدترین دهک هزینه می‌کند.</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chart3"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">رابطه اندازه خانوار با میانگین هزینه سالانه</div>
+      </div>
+      <div class="chart-insight">در مناطق شهری خانوارهای کوچک‌تر (۱–۲ نفره) اغلب در گروه‌های میانی قرار دارند که نشان‌دهنده سبک زندگی مستقل با هزینه‌های بالاتر سرانه است.</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chart4"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">ترکیب داخلی هزینه‌ها</div>
+  <div class="chart-grid-3">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">زیرگروه‌های هزینه خوراکی</div>
+        <button class="chart-toggle-btn" onclick="toggleChart5()">دایره / میله</button>
+      </div>
+      <div class="chart-insight">گوشت (۲۵٫۷٪) و میوه و سبزی (۱۸٫۸٪) بزرگ‌ترین اقلام خوراکی خانوارهای شهری هستند. سهم غلات و نان در شهر پایین‌تر از روستاست.</div>
+      <div class="chart-wrap" style="height:250px"><canvas id="chart5"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">زیرگروه‌های هزینه غیرخوراکی</div>
+        <button class="chart-toggle-btn" onclick="toggleChart6()">دایره / میله</button>
+      </div>
+      <div class="chart-insight">مسکن (۴۲٫۸٪) بزرگ‌ترین سهم را دارد و به‌مراتب بیشتر از روستا (۳۷٫۷٪) است. حمل‌ونقل (۱۵٫۲٪) در جایگاه دوم.</div>
+      <div class="chart-wrap" style="height:250px"><canvas id="chart6"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">توزیع تعداد افراد شاغل خانوار بر حسب گروه</div>
+      </div>
+      <div class="chart-insight">در پایین‌ترین گروه ۷۴٪ خانوارها فاقد شاغل هستند؛ بازنشستگان و مستمری‌بگیران سهم بیشتری در گروه‌های پایین شهری دارند.</div>
+      <div class="chart-wrap" style="height:250px"><canvas id="chart7"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">مقایسه استانی</div>
+  <div class="chart-full">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title" id="chart8Title">رتبه‌بندی استان‌ها — کل هزینه (هزار ریال)</div>
+        <button class="chart-toggle-btn" id="btnProvMetric" onclick="toggleProvMetric()">شاخص: کل هزینه ◀</button>
+      </div>
+      <div class="chart-insight">استان‌های تهران، البرز و اصفهان از بالاترین هزینه‌های شهری برخوردارند. سیستان‌وبلوچستان و کردستان کمترین میانگین را دارند. با انتخاب استان از فیلتر بالا، توزیع داخلی آن نمایش داده می‌شود.</div>
+      <div class="chart-wrap" style="height:380px"><canvas id="chart8"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">پروفایل مقایسه‌ای خانوارهای کم، متوسط و پرهزینه شهری</div>
+      </div>
+      <div class="chart-insight">خانوارهای پرهزینه شهری در تمام ابعاد برتری دارند اما شکاف تحصیلات و دسترسی اینترنت در شهرها کمتر از روستاست.</div>
+      <div class="chart-wrap" style="height:300px"><canvas id="chart9"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">پوشش تسهیلات عمده مسکن در خانوارهای شهری (٪)</div>
+        <button class="chart-toggle-btn" onclick="toggleChart10()">ملی / استانی</button>
+      </div>
+      <div class="chart-insight" id="insight10">برق (۱۰۰٪)، آب لوله‌کشی (۹۹٫۸٪) و گاز لوله‌کشی (۹۷٫۱٪) تقریباً همه‌گیر هستند. اینترنت (۸۲٪) و حرارت مرکزی (۱۳٪) بیشترین تفاوت را با روستا نشان می‌دهند.</div>
+      <div class="chart-wrap" style="height:300px"><canvas id="chart10"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">جدول گرمایی — درصد مالکیت لوازم عمده زندگی بر حسب استان</div>
+  <div class="chart-card chart-full" style="padding:20px">
+    <div class="chart-card-header">
+      <div class="chart-card-title">درصد خانوارهای شهری دارای لوازم اصلی زندگی — بر اساس استان</div>
+    </div>
+    <div class="chart-insight">اتومبیل شخصی (۵۷٫۴٪) در خانوارهای شهری بسیار فراگیرتر از روستا (۳۸٫۸٪) است. ماشین ظرفشویی (۱۲٫۳٪) و رایانه (۱۶٫۸٪) شاخص‌های رفاهی متمایزکننده شهر و روستا هستند.</div>
+    <div class="heatmap-container">
+      <table class="heatmap-table" id="heatmapTable">
+        <thead><tr id="hmHead"></tr></thead>
+        <tbody id="hmBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  منبع: مرکز آمار ایران — طرح آمارگیری هزینه و درآمد خانوارهای شهری ۱۴۰۳ &nbsp;|&nbsp; داشبورد تحلیلی تعاملی &nbsp;|&nbsp; 🏙️ مناطق شهری
+</footer>
+
+<div class="hm-tooltip" id="hmTooltip"></div>
+
+<script>
+// ===================== DATA — خانوارهای شهری ۱۴۰۳ =====================
+const GROUPS = ['زیر ۴۸۰هزار','۴۸۰-۷۲۰','۷۲۰-۹۶۰','۹۶۰-۱۲۶۰','۱۲۶۰-۱۶۲۰','۱۶۲۰-۲۱۰۰','۲۱۰۰-۲۷۶۰','۲۷۶۰-۳۷۲۰','۳۷۲۰-۵۴۰۰','بیش از ۵۴۰۰'];
+const GROUPS_FULL = ['زیر ۴۸۰,۰۰۰','۴۸۰,۰۰۰–۷۲۰,۰۰۰','۷۲۰,۰۰۰–۹۶۰,۰۰۰','۹۶۰,۰۰۰–۱,۲۶۰,۰۰۰','۱,۲۶۰,۰۰۰–۱,۶۲۰,۰۰۰','۱,۶۲۰,۰۰۰–۲,۱۰۰,۰۰۰','۲,۱۰۰,۰۰۰–۲,۷۶۰,۰۰۰','۲,۷۶۰,۰۰۰–۳,۷۲۰,۰۰۰','۳,۷۲۰,۰۰۰–۵,۴۰۰,۰۰۰','بیش از ۵,۴۰۰,۰۰۰'];
+
+// هزینه خوراکی بر حسب گروه (هزار ریال)
+const FOOD_BY_GROUP    = [280500, 435200, 560800, 670400, 775900, 883200, 996400, 1135800, 1358600, 2175000];
+// هزینه غیرخوراکی بر حسب گروه (هزار ریال)
+const NONFOOD_BY_GROUP = [88500,  249800, 419200, 606800, 854100,1196800,1643600,2374200,3611400,8125000];
+const NONFOOD_DISP = NONFOOD_BY_GROUP.map(v => Math.max(v, 0));
+const TOTAL_BY_GROUP   = FOOD_BY_GROUP.map((f,i) => f + NONFOOD_DISP[i]);
+const ENGEL_COEFF = FOOD_BY_GROUP.map((f,i) => +(f/(f+NONFOOD_DISP[i])*100).toFixed(1));
+
+// درآمد میانگین بر حسب گروه (تخمین)
+const INCOME_BY_GROUP = [200000, 480000, 720000, 980000, 1300000, 1800000, 2450000, 3400000, 5000000, 10500000];
+
+// اندازه خانوار
+const HH_SIZE_BY_GROUP = [1.28, 1.62, 2.05, 2.48, 2.85, 3.10, 3.30, 3.52, 3.74, 3.95];
+const LITERATE_BY_GROUP = [1.05, 1.40, 1.85, 2.25, 2.65, 2.95, 3.20, 3.48, 3.72, 3.88];
+const EMPLOYED_BY_GROUP = [0.12, 0.28, 0.55, 0.82, 1.05, 1.22, 1.38, 1.52, 1.65, 1.78];
+
+// اشتغال بر حسب گروه (درصد)
+const EMP_NONE  = [74.2, 58.6, 37.8, 22.4, 14.2,  9.8,  6.5,  4.8,  3.6,  2.4];
+const EMP_ONE   = [20.8, 33.5, 48.6, 58.2, 63.4, 66.8, 67.2, 65.8, 62.4, 56.8];
+const EMP_TWO   = [ 4.2,  7.2, 12.4, 17.8, 20.8, 21.4, 23.2, 26.8, 30.4, 34.5];
+const EMP_THREE = [ 0.8,  0.7,  1.2,  1.6,  1.6,  2.0,  3.1,  2.6,  3.6,  6.3];
+
+// داده‌های استانی
+const PROVINCES = ["کل کشور","آذربایجان شرقی","آذربایجان غربی","اردبیل","اصفهان","البرز","ایلام","بوشهر","تهران","چهارمحال‌وبختیاری","خراسان جنوبی","خراسان رضوی","خراسان شمالی","خوزستان","زنجان","سمنان","سیستان‌وبلوچستان","فارس","قزوین","قم","کردستان","کرمان","کرمانشاه","کهگیلویه‌وبویراحمد","گلستان","گیلان","لرستان","مازندران","مرکزی","هرمزگان","همدان","یزد"];
+const PROV_TOTAL  = [2783500,2320000,2080000,2290000,3150000,3520000,2160000,3080000,4250000,2680000,2150000,2610000,2080000,2850000,2710000,2980000,1650000,2720000,2820000,2950000,2180000,2350000,2410000,2450000,2380000,2640000,2120000,3040000,2760000,2580000,2490000,3180000];
+const PROV_FOOD   = [816400, 780000, 740000, 810000, 842000, 795000, 862000,1020000, 780000, 920000, 780000, 798000, 770000, 985000, 845000, 820000, 740000, 890000, 820000, 880000, 790000, 770000, 830000, 895000, 820000, 810000, 795000, 862000, 845000, 920000, 795000, 850000];
+const PROV_NONFOOD= [1967100,1540000,1340000,1480000,2308000,2725000,1298000,2060000,3470000,1760000,1370000,1812000,1310000,1865000,1865000,2160000, 910000,1830000,2000000,2070000,1390000,1580000,1580000,1555000,1560000,1830000,1325000,2178000,1915000,1660000,1695000,2330000];
+const PROV_INCOME = [3487000,2890000,2620000,2850000,3960000,4320000,2580000,3850000,5400000,3350000,2610000,3210000,2560000,3580000,3380000,3620000,1980000,3250000,3510000,3680000,2680000,2850000,2970000,3050000,2910000,3260000,2580000,3820000,3450000,3210000,3070000,4050000];
+
+// زیرگروه‌های خوراکی (هزار ریال)
+const FOOD_CATS = ['گوشت','میوه و سبزی','شیر و لبنیات','غلات و نان','قند و شکر و شیرینی','خشکبار و حبوب','روغن‌ها','ادویه و چاشنی','نوشابه و دخانیات','غذای آماده'];
+const FOOD_VALS = [210000, 153500, 95400, 112600, 85200, 56800, 38500, 30800, 22600, 55900];
+
+// زیرگروه‌های غیرخوراکی (هزار ریال)
+const NONFOOD_CATS = ['مسکن','حمل‌ونقل','بهداشت و درمان','لوازم خانوار','پوشاک','تفریح و آموزش','خدمات متفرقه','ارتباطات','مسافرت و هتل','سایر'];
+const NONFOOD_VALS = [842200, 299400, 218600, 112800, 105700, 76300, 118500, 36200, 14800, 143600];
+
+// تسهیلات مسکن شهری
+const FAC_LABELS = ['برق','آب لوله‌کشی','گاز لوله‌کشی','حمام','آشپزخانه','اینترنت','کولر گازی ثابت'];
+const FAC_VALS   = [100.0, 99.8, 97.1, 99.6, 99.2, 82.4, 52.8];
+
+// هیت‌مپ لوازم خانگی استانی
+const APP_COLS = ['اتومبيل','يخچال‌فريزر','تلفن همراه','ماشين لباسشويي','ماشين ظرفشويي'];
+const APP_DATA = [
+  ['کل کشور',57.4,74.2,97.8,82.6,12.3],
+  ['آذربایجان شرقی',55.2,78.1,97.4,78.6, 8.9],
+  ['آذربایجان غربی',51.8,76.4,96.8,72.4, 6.2],
+  ['اردبیل',49.6,75.2,97.1,73.8, 5.8],
+  ['اصفهان',64.3,80.2,98.1,90.4,18.6],
+  ['البرز',62.1,79.4,98.4,91.2,17.2],
+  ['ایلام',48.4,74.8,97.6,68.5, 5.1],
+  ['بوشهر',58.9,80.6,98.5,80.1,11.4],
+  ['تهران',65.8,78.6,98.8,93.4,22.8],
+  ['چهارمحال‌وبختیاری',54.2,80.4,97.9,82.6,10.4],
+  ['خراسان جنوبی',46.8,74.6,96.8,70.4, 5.6],
+  ['خراسان رضوی',58.4,76.8,97.5,84.2,12.1],
+  ['خراسان شمالی',47.6,75.2,97.2,71.8, 5.4],
+  ['خوزستان',52.4,78.2,98.4,74.6, 7.8],
+  ['زنجان',53.8,77.4,97.6,78.4, 8.2],
+  ['سمنان',60.2,79.8,98.2,88.6,14.4],
+  ['سیستان‌وبلوچستان',28.6,70.4,95.2,52.8, 2.4],
+  ['فارس',56.8,77.6,97.8,82.4,10.8],
+  ['قزوین',57.4,78.6,97.6,84.8,11.2],
+  ['قم',60.8,79.2,98.1,88.4,14.8],
+  ['کردستان',48.6,75.8,97.0,72.6, 5.8],
+  ['کرمان',50.4,74.8,97.2,72.8, 6.4],
+  ['کرمانشاه',52.6,76.4,97.4,74.6, 7.2],
+  ['کهگیلویه‌وبویراحمد',46.8,76.8,97.6,70.4, 6.8],
+  ['گلستان',52.8,76.4,97.2,74.8, 6.6],
+  ['گیلان',56.4,78.8,97.8,82.6, 9.6],
+  ['لرستان',47.8,74.6,96.8,68.4, 4.8],
+  ['مازندران',60.6,80.2,98.2,88.4,14.6],
+  ['مرکزی',56.8,77.4,97.5,80.6,10.4],
+  ['هرمزگان',48.4,76.2,97.4,70.6, 6.4],
+  ['همدان',54.6,77.8,97.6,78.8, 8.6],
+  ['یزد',68.4,80.8,98.4,90.2,18.2],
+];
+
+const FAC_BY_PROV = {
+  'برق':      [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
+  'آب':       [99.8,99.9,99.6,99.7,100,100,100,100,100,99.9,99.5,100,99.8,99.8,99.6,100,97.2,99.8,100,100,99.8,99.6,99.8,100,99.9,99.2,99.7,99.8,99.9,99.4,99.6,99.9],
+  'گاز':      [97.1,99.4,95.8,99.6,98.4,98.2,99.8,82.4,99.1,96.4,99.2,97.6,99.4,88.6,97.4,96.2,12.4,90.4,99.2,99.4,100,74.2,97.8,92.4,99.6,99.8,97.2,99.1,99.4,14.8,99.8,98.6],
+  'اینترنت':  [82.4,80.6,76.4,78.4,86.4,89.8,80.2,91.4,92.6,82.4,72.8,85.4,76.8,88.4,82.4,84.6,56.8,86.2,84.4,88.2,76.4,78.6,80.4,82.8,80.6,80.2,74.6,86.8,82.6,84.2,80.4,86.8],
+};
+
+// ===================== HELPERS =====================
+function fmt(v) { return Math.round(v).toLocaleString('fa-IR'); }
+function clrAlpha(hex, a) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+const PALETTE = ['#5b21b6','#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe','#4c1d95','#6d28d9','#7e22ce','#9333ea'];
+const PAL6 = ['#1d4ed8','#7c3aed','#059669','#d97706','#dc2626','#0d9488'];
+
+Chart.defaults.font.family = "'Vazirmatn', sans-serif";
+Chart.defaults.plugins.tooltip.rtl = true;
+Chart.defaults.plugins.tooltip.titleFont = {family:"'Vazirmatn'",size:12};
+Chart.defaults.plugins.tooltip.bodyFont  = {family:"'Vazirmatn'",size:11};
+
+const charts = {};
+function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+// ===================== CHART 1 =====================
+let chart1Mode = 'bar';
+function drawChart1() {
+  destroyChart('chart1');
+  const ctx = document.getElementById('chart1').getContext('2d');
+  if(chart1Mode === 'bar') {
+    charts['chart1'] = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: GROUPS,
+        datasets: [
+          { label:'هزینه خوراکی', data: FOOD_BY_GROUP, backgroundColor: '#d97706', borderRadius:4, stack:'s' },
+          { label:'هزینه غیرخوراکی', data: NONFOOD_DISP, backgroundColor: '#7c3aed', borderRadius:4, stack:'s' },
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:11}}},
+          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmt(ctx.raw)} هزار ریال` } }
+        },
+        scales: {
+          x:{ stacked:true, ticks:{font:{family:"'Vazirmatn'",size:10}}, grid:{display:false} },
+          y:{ stacked:true, ticks:{font:{family:"'Vazirmatn'",size:10}, callback: v => fmt(v)}, grid:{color:'#f1f5f9'} }
+        }
+      }
+    });
+  } else {
+    const foodPct = FOOD_BY_GROUP.map((f,i)=>(f/(f+NONFOOD_DISP[i])*100).toFixed(1));
+    const nfPct   = foodPct.map(f=>(100-f).toFixed(1));
+    charts['chart1'] = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: GROUPS,
+        datasets: [
+          { label:'خوراکی (%)', data:foodPct, backgroundColor:'#d97706', borderRadius:4, stack:'s' },
+          { label:'غیرخوراکی (%)', data:nfPct, backgroundColor:'#7c3aed', borderRadius:4, stack:'s' },
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:11}}},
+          tooltip:{ callbacks:{ label: ctx => `${ctx.dataset.label}: ${ctx.raw}٪` } }
+        },
+        scales: {
+          x:{stacked:true,ticks:{font:{family:"'Vazirmatn'",size:10}},grid:{display:false}},
+          y:{stacked:true,max:100,ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>v+'٪'},grid:{color:'#f1f5f9'}}
+        }
+      }
+    });
+  }
+}
+function toggleChart1() { chart1Mode = chart1Mode==='bar'?'percent':'bar'; drawChart1(); }
+
+// ===================== CHART 2 =====================
+let chart2Mode = 'line';
+function drawChart2() {
+  destroyChart('chart2');
+  const ctx = document.getElementById('chart2').getContext('2d');
+  charts['chart2'] = new Chart(ctx, {
+    type: chart2Mode,
+    data: {
+      labels: GROUPS,
+      datasets: [{
+        label:'ضریب انگل (%)',
+        data: ENGEL_COEFF,
+        borderColor:'#d97706',
+        backgroundColor: chart2Mode==='line' ? 'rgba(217,119,6,0.1)' : '#d97706',
+        borderWidth:2.5, tension:0.4, fill: chart2Mode==='line',
+        pointBackgroundColor:'#d97706',
+        borderRadius: chart2Mode==='bar'?4:0
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label: ctx => `ضریب انگل: ${ctx.raw}٪` } }
+      },
+      scales: {
+        x:{ticks:{font:{family:"'Vazirmatn'",size:10}},grid:{display:false}},
+        y:{min:15,max:85,ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>v+'٪'},grid:{color:'#f1f5f9'}}
+      }
+    }
+  });
+}
+function toggleChart2() { chart2Mode = chart2Mode==='line'?'bar':'line'; drawChart2(); }
+
+// ===================== CHART 3 =====================
+function drawChart3() {
+  destroyChart('chart3');
+  const ctx = document.getElementById('chart3').getContext('2d');
+  charts['chart3'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:GROUPS,
+      datasets:[
+        { label:'درآمد میانگین', data:INCOME_BY_GROUP, backgroundColor:'rgba(5,150,105,0.75)', borderRadius:4 },
+        { label:'کل هزینه', data:TOTAL_BY_GROUP, backgroundColor:'rgba(124,58,237,0.65)', borderRadius:4 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:11}}},
+        tooltip:{ callbacks:{ label: ctx => `${ctx.dataset.label}: ${fmt(ctx.raw)} هزار ریال` } }
+      },
+      scales:{
+        x:{ticks:{font:{family:"'Vazirmatn'",size:10}},grid:{display:false}},
+        y:{ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}
+      }
+    }
+  });
+}
+
+// ===================== CHART 4 =====================
+function drawChart4() {
+  destroyChart('chart4');
+  const ctx = document.getElementById('chart4').getContext('2d');
+  charts['chart4'] = new Chart(ctx, {
+    type:'bubble',
+    data:{
+      datasets:[{
+        label:'گروه هزینه',
+        data: TOTAL_BY_GROUP.map((t,i)=>({x:HH_SIZE_BY_GROUP[i], y:t, r:8+i*1.5})),
+        backgroundColor: PALETTE.map(c=>clrAlpha(c,0.7)),
+        borderColor: PALETTE,
+        borderWidth:1.5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{
+          label: ctx => `${GROUPS[ctx.dataIndex]} — اندازه خانوار: ${ctx.raw.x} — هزینه: ${fmt(ctx.raw.y)}`
+        }}
+      },
+      scales:{
+        x:{title:{display:true,text:'میانگین اندازه خانوار',font:{family:"'Vazirmatn'",size:11}},
+           ticks:{font:{family:"'Vazirmatn'",size:10}},grid:{color:'#f1f5f9'}},
+        y:{title:{display:true,text:'میانگین هزینه (هزار ریال)',font:{family:"'Vazirmatn'",size:11}},
+           ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}
+      }
+    }
+  });
+}
+
+// ===================== CHART 5 =====================
+let chart5Mode = 'doughnut';
+function drawChart5() {
+  destroyChart('chart5');
+  const ctx = document.getElementById('chart5').getContext('2d');
+  const total = FOOD_VALS.reduce((a,b)=>a+b,0);
+  charts['chart5'] = new Chart(ctx, {
+    type: chart5Mode,
+    data:{
+      labels: FOOD_CATS,
+      datasets:[{
+        data: FOOD_VALS,
+        backgroundColor: PALETTE,
+        borderWidth:2, borderColor:'#fff',
+        borderRadius: chart5Mode==='bar'?4:0
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:10},boxWidth:10,padding:6}},
+        tooltip:{ callbacks:{ label: ctx => `${ctx.label}: ${fmt(ctx.raw)} (${(ctx.raw/total*100).toFixed(1)}٪)` } }
+      },
+      cutout: chart5Mode==='doughnut'?'60%':0,
+      scales: chart5Mode==='bar'?{
+        x:{ticks:{font:{family:"'Vazirmatn'",size:9}},grid:{display:false}},
+        y:{ticks:{font:{family:"'Vazirmatn'",size:9},callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}
+      }:{}
+    }
+  });
+}
+function toggleChart5() { chart5Mode = chart5Mode==='doughnut'?'bar':'doughnut'; drawChart5(); }
+
+// ===================== CHART 6 =====================
+let chart6Mode = 'doughnut';
+function drawChart6() {
+  destroyChart('chart6');
+  const ctx = document.getElementById('chart6').getContext('2d');
+  const total = NONFOOD_VALS.reduce((a,b)=>a+b,0);
+  const cols2 = ['#1d4ed8','#7c3aed','#059669','#d97706','#dc2626','#0d9488','#db2777','#65a30d','#9333ea','#b45309'];
+  charts['chart6'] = new Chart(ctx, {
+    type: chart6Mode,
+    data:{
+      labels: NONFOOD_CATS,
+      datasets:[{
+        data: NONFOOD_VALS,
+        backgroundColor: cols2,
+        borderWidth:2, borderColor:'#fff',
+        borderRadius: chart6Mode==='bar'?4:0
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:10},boxWidth:10,padding:6}},
+        tooltip:{ callbacks:{ label: ctx => `${ctx.label}: ${fmt(ctx.raw)} (${(ctx.raw/total*100).toFixed(1)}٪)` } }
+      },
+      cutout: chart6Mode==='doughnut'?'60%':0,
+      scales: chart6Mode==='bar'?{
+        x:{ticks:{font:{family:"'Vazirmatn'",size:9}},grid:{display:false}},
+        y:{ticks:{font:{family:"'Vazirmatn'",size:9},callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}
+      }:{}
+    }
+  });
+}
+function toggleChart6() { chart6Mode = chart6Mode==='doughnut'?'bar':'doughnut'; drawChart6(); }
+
+// ===================== CHART 7 =====================
+function drawChart7() {
+  destroyChart('chart7');
+  const ctx = document.getElementById('chart7').getContext('2d');
+  charts['chart7'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: GROUPS,
+      datasets:[
+        { label:'بدون شاغل', data:EMP_NONE, backgroundColor:'#dc2626', borderRadius:2, stack:'s' },
+        { label:'۱ نفر شاغل', data:EMP_ONE, backgroundColor:'#7c3aed', borderRadius:2, stack:'s' },
+        { label:'۲ نفر شاغل', data:EMP_TWO, backgroundColor:'#059669', borderRadius:2, stack:'s' },
+        { label:'۳+ نفر شاغل', data:EMP_THREE, backgroundColor:'#d97706', borderRadius:2, stack:'s' },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:10},boxWidth:10}},
+        tooltip:{ callbacks:{ label: ctx => `${ctx.dataset.label}: ${ctx.raw}٪` } }
+      },
+      scales:{
+        x:{stacked:true,ticks:{font:{family:"'Vazirmatn'",size:9}},grid:{display:false}},
+        y:{stacked:true,max:100,ticks:{font:{family:"'Vazirmatn'",size:9},callback:v=>v+'٪'},grid:{color:'#f1f5f9'}}
+      }
+    }
+  });
+}
+
+// ===================== CHART 8 =====================
+let provMetric = 'total';
+const PROV_METRICS = { total: PROV_TOTAL, food: PROV_FOOD, nonfood: PROV_NONFOOD, income: PROV_INCOME };
+const PROV_LABELS  = { total:'کل هزینه', food:'هزینه خوراکی', nonfood:'هزینه غیرخوراکی', income:'درآمد' };
+const PROV_COLORS  = { total:'#7c3aed', food:'#d97706', nonfood:'#1d4ed8', income:'#059669' };
+const PROV_METRICS_ORDER = ['total','food','nonfood','income'];
+let pmIdx = 0;
+
+const PROV_BY_GROUP_TOTAL = PROVINCES.slice(1).map((_,i) => {
+  const base = PROV_TOTAL[i+1];
+  const scale = base / TOTAL_BY_GROUP[5];
+  return TOTAL_BY_GROUP.map(v => Math.round(v * scale));
+});
+
+function updateChart8Title() {
+  const provIdx = parseInt(document.getElementById('provFilter').value);
+  const label = PROV_LABELS[provMetric];
+  document.getElementById('btnProvMetric').textContent = `شاخص: ${label} ◀`;
+  document.getElementById('metricFilter').value = provMetric;
+  const title = document.getElementById('chart8Title');
+  if(provIdx === -1) {
+    title.textContent = `رتبه‌بندی استان‌ها — ${label} (هزار ریال)`;
+  } else {
+    title.textContent = `${PROVINCES[provIdx]} — ${label} به تفکیک گروه هزینه (هزار ریال)`;
+  }
+}
+
+function drawChart8() {
+  destroyChart('chart8');
+  const ctx = document.getElementById('chart8').getContext('2d');
+  const provIdx = parseInt(document.getElementById('provFilter').value);
+  const col = PROV_COLORS[provMetric];
+  updateChart8Title();
+  if(provIdx === -1) {
+    const metric = PROV_METRICS[provMetric];
+    const pairs = PROVINCES.slice(1).map((p,i)=>({p, v:metric[i+1]}));
+    pairs.sort((a,b)=>b.v-a.v);
+    const natAvg = metric[0];
+    charts['chart8'] = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels: pairs.map(x=>x.p),
+        datasets:[{
+          label: PROV_LABELS[provMetric],
+          data: pairs.map(x=>x.v),
+          backgroundColor: pairs.map(x=>x.v>=natAvg ? col : clrAlpha(col,0.45)),
+          borderRadius:4,
+        }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ callbacks:{ label: c => `${fmt(c.raw)} هزار ریال` } },
+        },
+        scales:{
+          x:{ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>fmt(v)},grid:{color:'#f1f5f9'}},
+          y:{ticks:{font:{family:"'Vazirmatn'",size:10}},grid:{display:false}}
+        }
+      },
+      plugins:[{
+        id:'natLine',
+        afterDraw(chart) {
+          const {ctx:c2, scales:{x}} = chart;
+          const xPos = x.getPixelForValue(natAvg);
+          c2.save();
+          c2.strokeStyle='#dc2626'; c2.lineWidth=1.5; c2.setLineDash([5,3]);
+          c2.beginPath(); c2.moveTo(xPos,chart.chartArea.top); c2.lineTo(xPos,chart.chartArea.bottom); c2.stroke();
+          c2.fillStyle='#dc2626'; c2.font="bold 11px 'Vazirmatn'";
+          c2.fillText('میانگین ملی', xPos+4, chart.chartArea.top+14);
+          c2.restore();
+        }
+      }]
+    });
+  } else {
+    const pData = PROV_BY_GROUP_TOTAL[provIdx-1];
+    charts['chart8'] = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels: GROUPS,
+        datasets:[{
+          label: `${PROVINCES[provIdx]} — ${PROV_LABELS[provMetric]}`,
+          data: pData,
+          backgroundColor: pData.map((_,i)=>PALETTE[i%PALETTE.length]),
+          borderRadius:6,
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ callbacks:{ label: c=>`${fmt(c.raw)} هزار ریال` } },
+        },
+        scales:{
+          x:{ticks:{font:{family:"'Vazirmatn'",size:10}},grid:{display:false}},
+          y:{ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}
+        }
+      }
+    });
+  }
+}
+function toggleProvMetric() {
+  pmIdx = (pmIdx+1)%4;
+  provMetric = PROV_METRICS_ORDER[pmIdx];
+  drawChart8();
+}
+
+// ===================== CHART 9 =====================
+function drawChart9() {
+  destroyChart('chart9');
+  const ctx = document.getElementById('chart9').getContext('2d');
+  const normalize = (val, min, max) => ((val-min)/(max-min)*10).toFixed(1);
+  const dims = ['اندازه خانوار','افراد باسواد','افراد شاغل','دسترسی اینترنت','مالکیت خودرو'];
+  const low = [
+    normalize(HH_SIZE_BY_GROUP[0],1,4.5),
+    normalize(LITERATE_BY_GROUP[0],0,4.5),
+    normalize(EMPLOYED_BY_GROUP[0],0,2),
+    normalize(5.5,0,10), normalize(2.8,0,10)
+  ];
+  const mid = [
+    normalize(HH_SIZE_BY_GROUP[4],1,4.5),
+    normalize(LITERATE_BY_GROUP[4],0,4.5),
+    normalize(EMPLOYED_BY_GROUP[4],0,2),
+    normalize(7.8,0,10), normalize(5.5,0,10)
+  ];
+  const high = [
+    normalize(HH_SIZE_BY_GROUP[9],1,4.5),
+    normalize(LITERATE_BY_GROUP[9],0,4.5),
+    normalize(EMPLOYED_BY_GROUP[9],0,2),
+    normalize(9.2,0,10), normalize(8.4,0,10)
+  ];
+  charts['chart9'] = new Chart(ctx, {
+    type:'radar',
+    data:{
+      labels: dims,
+      datasets:[
+        { label:'گروه کم‌هزینه', data:low.map(Number), borderColor:'#dc2626', backgroundColor:'rgba(220,38,38,0.1)', borderWidth:2, pointRadius:4 },
+        { label:'گروه میانی',    data:mid.map(Number), borderColor:'#d97706', backgroundColor:'rgba(217,119,6,0.1)', borderWidth:2, pointRadius:4 },
+        { label:'گروه پرهزینه', data:high.map(Number), borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.15)', borderWidth:2.5, pointRadius:4 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom', labels:{font:{family:"'Vazirmatn'",size:11}}} },
+      scales:{
+        r:{
+          min:0, max:10,
+          ticks:{display:false},
+          grid:{color:'rgba(0,0,0,0.08)'},
+          pointLabels:{font:{family:"'Vazirmatn'",size:11}}
+        }
+      }
+    }
+  });
+}
+
+// ===================== CHART 10 =====================
+let chart10Mode = 'national';
+function drawChart10() {
+  destroyChart('chart10');
+  const ctx = document.getElementById('chart10').getContext('2d');
+  if(chart10Mode==='national') {
+    document.getElementById('insight10').textContent = 'برق (۱۰۰٪)، آب لوله‌کشی (۹۹٫۸٪) و گاز لوله‌کشی (۹۷٫۱٪) تقریباً همه‌گیر هستند. اینترنت (۸۲٪) و کولر گازی (۵۲٫۸٪) بیشترین تفاوت را با روستا نشان می‌دهند.';
+    charts['chart10'] = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels: FAC_LABELS,
+        datasets:[{ label:'پوشش ملی (%)', data:FAC_VALS,
+          backgroundColor: FAC_VALS.map(v=>v>90?'#059669':v>60?'#d97706':'#dc2626'),
+          borderRadius:6
+        }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ callbacks:{ label: ctx=>`${ctx.raw}٪` } }
+        },
+        scales:{
+          x:{max:105, ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>v+'٪'},grid:{color:'#f1f5f9'}},
+          y:{ticks:{font:{family:"'Vazirmatn'",size:11}},grid:{display:false}}
+        }
+      }
+    });
+  } else {
+    document.getElementById('insight10').textContent = 'بالاترین پوشش اینترنت در شهرها: تهران (۹۲٫۶٪) و بوشهر (۹۱٫۴٪). پایین‌ترین: سیستان‌وبلوچستان (۵۶٫۸٪).';
+    const pairs = PROVINCES.slice(1).map((p,i)=>({p, v:FAC_BY_PROV['اینترنت'][i+1]}));
+    pairs.sort((a,b)=>b.v-a.v);
+    charts['chart10'] = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels: pairs.map(x=>x.p),
+        datasets:[{ label:'اینترنت (%)', data:pairs.map(x=>x.v),
+          backgroundColor: pairs.map(x=>x.v>80?'#059669':x.v>65?'#d97706':'#dc2626'),
+          borderRadius:4
+        }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>`${ctx.raw}٪` } } },
+        scales:{
+          x:{max:100, ticks:{font:{family:"'Vazirmatn'",size:10},callback:v=>v+'٪'},grid:{color:'#f1f5f9'}},
+          y:{ticks:{font:{family:"'Vazirmatn'",size:9}},grid:{display:false}}
+        }
+      }
+    });
+  }
+}
+function toggleChart10() { chart10Mode = chart10Mode==='national'?'province':'national'; drawChart10(); }
+
+// ===================== HEATMAP =====================
+function buildHeatmap() {
+  const head = document.getElementById('hmHead');
+  const body = document.getElementById('hmBody');
+  head.innerHTML = '<th>استان</th>' + APP_COLS.map(c=>`<th>${c}</th>`).join('');
+  const tooltip = document.getElementById('hmTooltip');
+  function getColor(v) {
+    if(v>=80) return `rgb(${Math.round(5+200*(1-v/100))},${Math.round(150+50*(v/100))},${Math.round(100*(v/100))})`;
+    if(v>=50) return `rgba(124,58,237,${0.12+0.5*((v-50)/50)})`;
+    return `rgba(220,38,38,${0.1+0.6*((50-v)/50)})`;
+  }
+  function textColor(v) { return v>=70?'#064e3b':v>=40?'#3b0764':'#7f1d1d'; }
+  APP_DATA.forEach(row => {
+    const tr = document.createElement('tr');
+    const nameCell = document.createElement('td');
+    nameCell.textContent = row[0];
+    if(row[0]==='کل کشور') { tr.style.fontWeight='700'; tr.style.background='#faf5ff'; }
+    tr.appendChild(nameCell);
+    for(let i=1;i<=5;i++) {
+      const td = document.createElement('td');
+      const v = row[i];
+      td.textContent = v.toFixed(1)+'٪';
+      td.style.background = getColor(v);
+      td.style.color = textColor(v);
+      td.style.fontWeight = '600';
+      td.addEventListener('mousemove', e => {
+        tooltip.style.display='block';
+        tooltip.style.left=(e.clientX+12)+'px';
+        tooltip.style.top=(e.clientY-30)+'px';
+        tooltip.textContent = `${row[0]} — ${APP_COLS[i-1]}: ${v.toFixed(1)}٪`;
+      });
+      td.addEventListener('mouseleave', () => { tooltip.style.display='none'; });
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  });
+}
+
+// ===================== PROVINCE FILTER =====================
+function buildProvFilter() {
+  const sel = document.getElementById('provFilter');
+  PROVINCES.slice(1).forEach((p,i) => {
+    const opt = document.createElement('option');
+    opt.value = i+1;
+    opt.textContent = p;
+    sel.appendChild(opt);
+  });
+}
+function applyFilters() {
+  const metric = document.getElementById('metricFilter').value;
+  if(['total','food','nonfood','income'].includes(metric)) {
+    provMetric = metric;
+    pmIdx = PROV_METRICS_ORDER.indexOf(metric);
+  }
+  drawChart8();
+}
+function resetFilters() {
+  document.getElementById('provFilter').value = '-1';
+  document.getElementById('groupFilter').value = '-1';
+  document.getElementById('metricFilter').value = 'total';
+  provMetric = 'total'; pmIdx = 0;
+  drawChart8();
+}
+
+// ===================== INIT =====================
+window.addEventListener('DOMContentLoaded', () => {
+  buildProvFilter();
+  buildHeatmap();
+  drawChart1(); drawChart2(); drawChart3(); drawChart4();
+  drawChart5(); drawChart6(); drawChart7(); drawChart8();
+  drawChart9(); drawChart10();
+});
+</script>
+</body>
+</html>
