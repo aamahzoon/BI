@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد سرشماری ثبتی‌مبنا ۱۴۰۵ – مرکز آمار ایران</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* Census Professional Palette */
+  --navy:#0d2744;
+  --navy-mid:#1a3a5c;
+  --navy-light:#1e4976;
+  --navy-soft:#e8f0f8;
+  --cobalt:#1a5fa8;
+  --cobalt-m:#3178c6;
+  --cobalt-l:#dbeafe;
+  --teal:#0a7060;
+  --teal-m:#0d9e85;
+  --teal-l:#d1faf2;
+  --amber:#8b5a08;
+  --amber-m:#c4820e;
+  --amber-l:#fef3c7;
+  --crimson:#8b1c1c;
+  --crimson-m:#c83232;
+  --crimson-l:#fee2e2;
+  --violet:#4338a0;
+  --violet-m:#6457d4;
+  --violet-l:#ede9fe;
+  --forest:#2d5a12;
+  --forest-m:#3f8219;
+  --forest-l:#dcfce7;
+  --slate:#3d4a5c;
+  --slate-m:#64748b;
+  --slate-l:#f1f5f9;
+
+  /* Backgrounds */
+  --bg:#f0f4f8;
+  --bg2:#ffffff;
+  --bg3:#f7f9fc;
+  --border:#d4dce8;
+  --border2:#b8c8dc;
+
+  /* Text */
+  --text:#0d1f35;
+  --text2:#2c3e50;
+  --text3:#637085;
+
+  /* Radius & Shadow */
+  --r:10px;
+  --r-lg:16px;
+  --r-xl:20px;
+  --shadow-sm:0 1px 4px rgba(13,39,68,.08);
+  --shadow:0 4px 16px rgba(13,39,68,.12);
+  --shadow-lg:0 8px 32px rgba(13,39,68,.16);
+}
+
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;direction:rtl}
+
+/* ── Header ── */
+.header{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 50%,var(--navy-light) 100%);
+  color:#fff;padding:0 36px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;height:68px;
+  box-shadow:0 4px 20px rgba(13,39,68,.4);
+}
+.header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--teal-m),var(--cobalt-m),var(--violet-m),var(--amber-m));
+}
+.header-logo{display:flex;align-items:center;gap:14px}
+.logo-icon{width:40px;height:40px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.header-title{font-size:17px;font-weight:800;letter-spacing:.3px;line-height:1.2}
+.header-sub{font-size:11px;opacity:.7;margin-top:1px;font-weight:400}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-badge{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+  border-radius:20px;padding:5px 16px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+.pulse{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+
+/* ── Nav ── */
+.nav{background:var(--bg2);border-bottom:2px solid var(--border);padding:0 36px;display:flex;gap:0;position:sticky;top:68px;z-index:99;box-shadow:var(--shadow-sm)}
+.nav-btn{padding:13px 20px;font-family:inherit;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--text3);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;position:relative;margin-bottom:-2px}
+.nav-btn:hover{color:var(--text);background:var(--bg3)}
+.nav-btn.active{color:var(--cobalt);border-bottom-color:var(--cobalt);background:var(--cobalt-l)}
+
+/* ── Sections ── */
+.section{display:none;padding:28px 36px;max-width:1500px;margin:0 auto}
+.section.active{display:block}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px 26px;margin-bottom:20px;box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow)}
+.card-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1.5px solid var(--border)}
+.card-title::before{content:'';display:inline-block;width:4px;height:18px;background:linear-gradient(180deg,var(--cobalt),var(--teal-m));border-radius:3px;flex-shrink:0}
+
+/* ── KPI Grid ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px}
+.kpi-card{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-lg);
+  padding:18px 16px;text-align:center;position:relative;overflow:hidden;
+  transition:all .25s;cursor:default;
+}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.kpi-card.blue::before{background:linear-gradient(90deg,var(--cobalt),var(--cobalt-m))}
+.kpi-card.teal::before{background:linear-gradient(90deg,var(--teal),var(--teal-m))}
+.kpi-card.amber::before{background:linear-gradient(90deg,var(--amber),var(--amber-m))}
+.kpi-card.violet::before{background:linear-gradient(90deg,var(--violet),var(--violet-m))}
+.kpi-card.crimson::before{background:linear-gradient(90deg,var(--crimson),var(--crimson-m))}
+.kpi-card.forest::before{background:linear-gradient(90deg,var(--forest),var(--forest-m))}
+.kpi-card:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+.kpi-icon{font-size:24px;margin-bottom:6px}
+.kpi-value{font-size:30px;font-weight:800;line-height:1;margin-bottom:4px}
+.kpi-label{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:3px}
+.kpi-sub{font-size:10px;color:var(--text3)}
+.kpi-card.blue .kpi-value{color:var(--cobalt)}
+.kpi-card.teal .kpi-value{color:var(--teal)}
+.kpi-card.amber .kpi-value{color:var(--amber)}
+.kpi-card.violet .kpi-value{color:var(--violet)}
+.kpi-card.crimson .kpi-value{color:var(--crimson)}
+.kpi-card.forest .kpi-value{color:var(--forest)}
+
+/* ── Performance KPI row ── */
+.perf-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.perf-kpi{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow-sm)}
+.perf-kpi-ring{flex-shrink:0;position:relative;width:64px;height:64px}
+.perf-kpi-ring svg{transform:rotate(-90deg)}
+.perf-kpi-ring .ring-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;font-weight:800;color:var(--text)}
+.perf-kpi-info{}
+.perf-kpi-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.perf-kpi-target{font-size:12px;color:var(--text3)}
+.perf-kpi-status{font-size:11px;font-weight:600;margin-top:6px;padding:2px 10px;border-radius:12px;display:inline-block}
+
+/* ── Grid ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;gap:4px}
+.b-blue{background:var(--cobalt-l);color:var(--cobalt)}
+.b-teal{background:var(--teal-l);color:var(--teal)}
+.b-amber{background:var(--amber-l);color:var(--amber)}
+.b-crimson{background:var(--crimson-l);color:var(--crimson)}
+.b-violet{background:var(--violet-l);color:var(--violet)}
+.b-forest{background:var(--forest-l);color:var(--forest)}
+.b-slate{background:var(--slate-l);color:var(--slate)}
+
+/* ── Progress ── */
+.progress-track{height:8px;background:var(--bg3);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{height:100%;border-radius:6px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* ── Phase Cards ── */
+.phase-card{border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;position:relative;overflow:hidden;cursor:pointer;transition:all .25s;background:var(--bg2)}
+.phase-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.phase-card-num{font-size:52px;font-weight:900;position:absolute;left:12px;bottom:-8px;opacity:.06;color:var(--text);line-height:1}
+.phase-card-name{font-size:14px;font-weight:700;margin-bottom:5px}
+.phase-card-dates{font-size:11px;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:4px}
+.phase-card-dates::before{content:'📅';font-size:10px}
+
+/* ── Tables ── */
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+th{background:var(--navy);color:#fff;padding:11px 16px;text-align:right;font-weight:700;font-size:12px;letter-spacing:.3px}
+th:first-child{border-radius:0 var(--r) 0 0}
+th:last-child{border-radius:var(--r) 0 0 0}
+td{padding:9px 16px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--navy-soft)}
+tfoot td,tfoot th{background:var(--navy-soft);font-weight:700;color:var(--cobalt);border-top:2px solid var(--border2)}
+
+/* ── Timeline ── */
+.gantt-wrap{overflow-x:auto;padding-bottom:8px}
+.gantt-row{display:flex;align-items:center;margin-bottom:5px;gap:10px}
+.gantt-label{width:180px;min-width:180px;font-size:12px;font-weight:600;color:var(--text2);text-align:right;line-height:1.3}
+.gantt-track{flex:1;position:relative;height:28px;background:var(--bg3);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.gantt-bar{height:100%;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;position:absolute;top:0;transition:all .3s;cursor:pointer;white-space:nowrap;overflow:hidden;padding:0 6px;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.gantt-bar:hover{filter:brightness(1.1);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.gantt-today-line{position:absolute;top:0;bottom:0;width:2px;background:var(--crimson-m);z-index:10;opacity:.8}
+.gantt-today-line::after{content:'امروز';position:absolute;top:-18px;right:-18px;font-size:9px;font-weight:700;color:var(--crimson-m);white-space:nowrap;font-family:'Vazirmatn',sans-serif}
+.gantt-phase-header{font-size:12px;font-weight:800;padding:8px 0 4px 0;display:flex;align-items:center;gap:6px}
+
+/* ── Status dots ── */
+.sdot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.s-done{background:var(--teal-m);box-shadow:0 0 0 2px rgba(13,158,133,.25)}
+.s-active{background:var(--amber-m);box-shadow:0 0 0 2px rgba(196,130,14,.25);animation:pulse 2s infinite}
+.s-future{background:var(--slate-m)}
+
+/* ── Milestone cards ── */
+.milestone-card{border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;background:var(--bg2);display:flex;align-items:flex-start;gap:12px;transition:all .2s}
+.milestone-card:hover{box-shadow:var(--shadow);transform:translateX(-2px)}
+.milestone-date{font-size:13px;font-weight:800;flex-shrink:0;padding:6px 10px;border-radius:var(--r);text-align:center;min-width:80px}
+.milestone-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.milestone-desc{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* ── Recommendations ── */
+.rec-card{border:1.5px solid var(--border);border-radius:var(--r-lg);padding:18px 22px;margin-bottom:12px;background:var(--bg2);transition:all .2s;display:flex;gap:14px;align-items:flex-start}
+.rec-card:hover{box-shadow:var(--shadow);transform:translateX(-2px)}
+.rec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.rec-title{font-size:14px;font-weight:700;margin-bottom:5px}
+.rec-body{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* ── Risk items ── */
+.risk-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.risk-item:last-child{border-bottom:none}
+.risk-level{padding:3px 12px;border-radius:12px;font-size:11px;font-weight:700;flex-shrink:0}
+.risk-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.risk-desc{font-size:12px;color:var(--text3)}
+
+/* ── Registry items ── */
+.reg-item{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-bottom:1px solid var(--bg3)}
+.reg-item:last-child{border-bottom:none}
+.reg-num{background:var(--cobalt-l);color:var(--cobalt);font-weight:800;font-size:11px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* ── Filter bar ── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.filter-btn{padding:6px 16px;border:1.5px solid var(--border);border-radius:20px;font-family:inherit;font-size:12px;cursor:pointer;background:var(--bg2);color:var(--text2);transition:all .2s;font-weight:600}
+.filter-btn:hover,.filter-btn.active{background:var(--cobalt);color:#fff;border-color:var(--cobalt);box-shadow:0 2px 8px rgba(26,95,168,.3)}
+.search-box{padding:7px 14px;border:1.5px solid var(--border);border-radius:20px;font-family:inherit;font-size:12px;background:var(--bg2);color:var(--text);width:230px;margin-right:auto}
+.search-box:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(26,95,168,.15)}
+
+/* ── Diagram wrappers ── */
+.diagram-wrap{overflow-x:auto;background:var(--bg3);border-radius:var(--r);border:1.5px solid var(--border);padding:16px}
+svg.diag{max-width:100%;height:auto}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(13,39,68,.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border-radius:var(--r-xl);padding:30px 34px;max-width:640px;width:92%;max-height:82vh;overflow-y:auto;position:relative;box-shadow:var(--shadow-lg);border:1.5px solid var(--border)}
+.modal-close{position:absolute;top:16px;left:18px;background:var(--bg3);border:1.5px solid var(--border);font-size:16px;cursor:pointer;color:var(--text3);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--crimson-l);color:var(--crimson);border-color:var(--crimson)}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:10px}
+
+/* ── Footer ── */
+.footer{background:var(--navy);color:rgba(255,255,255,.6);padding:18px 36px;text-align:center;font-size:12px;margin-top:40px;display:flex;align-items:center;justify-content:center;gap:12px}
+.footer-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.3)}
+
+/* ── Section heading ── */
+.section-heading{font-size:18px;font-weight:800;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-heading::before{content:'';display:inline-block;width:5px;height:22px;background:linear-gradient(180deg,var(--cobalt),var(--teal-m));border-radius:3px}
+
+/* ── Responsive ── */
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.perf-kpi-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}.nav{overflow-x:auto}.header{padding:0 18px}.section{padding:18px 16px}.perf-kpi-grid{grid-template-columns:1fr}}
+@media print{.nav,.header{position:relative}.section{display:block!important}}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-logo">
+    <div class="logo-icon">📊</div>
+    <div>
+      <div class="header-title">داشبورد سرشماری عمومی نفوس و مسکن ثبتی‌مبنا – ۱۴۰۵</div>
+      <div class="header-sub">مرکز آمار ایران &nbsp;|&nbsp; دبیرخانه ستاد سرشماری &nbsp;|&nbsp; نسخه ۲.۰ </div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-badge" style="gap:10px">
+      <span class="pulse"></span> <span id="today-badge-text">در حال اجرا</span>
+      <span style="opacity:.6">|</span>
+      <label style="display:flex;align-items:center;gap:6px;font-weight:600">
+        روز گزارش:
+        <input type="text" id="report-date-input" value="" placeholder="۱۴۰۵/۰۳/۲۱" dir="ltr"
+          style="width:88px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-family:inherit;font-size:12px;font-weight:700;text-align:center;padding:3px 6px">
+      </label>
+      <button onclick="applyReportDate()" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:4px 12px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">اعمال</button>
+      <button onclick="resetReportDate()" title="بازگشت به امروز واقعی" style="background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">امروز</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('overview')">🏠 نمای کلی</button>
+  <button class="nav-btn" onclick="showSection('kpis')">📈 شاخص‌های کلیدی</button>
+  <button class="nav-btn" onclick="showSection('architecture')">🏗 معماری سیستم</button>
+  <button class="nav-btn" onclick="showSection('data-items')">🗂 اقلام اطلاعاتی</button>
+  <button class="nav-btn" onclick="showSection('timeline')">📅 برنامه زمانی</button>
+  <button class="nav-btn" onclick="showSection('committees')">👥 کمیته‌ها</button>
+  <button class="nav-btn" onclick="showSection('recommendations')">✅ توصیه‌ها و ریسک‌ها</button>
+</nav>
+
+<!-- ══════════ SECTION 1: OVERVIEW ══════════ -->
+<div class="section active" id="overview">
+
+  <!-- Top KPI strip -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-icon">📆</div>
+      <div class="kpi-value">۸۶۲</div>
+      <div class="kpi-label">روز مدت پروژه</div>
+      <div class="kpi-sub">اسفند ۱۴۰۳ – تیر ۱۴۰۶</div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-icon">⚙️</div>
+      <div class="kpi-value">۱۳۰</div>
+      <div class="kpi-label">فعالیت کل</div>
+      <div class="kpi-sub">در ۷ فاز اصلی</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-icon">🏛</div>
+      <div class="kpi-value">۱۱</div>
+      <div class="kpi-label">کمیته تخصصی</div>
+      <div class="kpi-sub">با ۹۸ عضو فعال</div>
+    </div>
+    <div class="kpi-card violet">
+      <div class="kpi-icon">📋</div>
+      <div class="kpi-value">۶۴</div>
+      <div class="kpi-label">قلم اطلاعاتی ثبتی</div>
+      <div class="kpi-sub">از ۷ دستگاه اجرایی</div>
+    </div>
+    <div class="kpi-card crimson">
+      <div class="kpi-icon">🗺</div>
+      <div class="kpi-value">۶</div>
+      <div class="kpi-label">لایه اطلاعات مکانی</div>
+      <div class="kpi-sub">GIS – ۶ دستگاه</div>
+    </div>
+    <div class="kpi-card forest">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-value">۱۰۰٪</div>
+      <div class="kpi-label">پوشش جمعیتی هدف</div>
+      <div class="kpi-sub">مدل ترکیبی ثبتی + میدانی</div>
+    </div>
+  </div>
+
+  <!-- Combined model diagram -->
+  <div class="card">
+    <div class="card-title">مدل ترکیبی سرشماری ثبتی‌مبنا ۱۴۰۵</div>
+    <svg class="diag" viewBox="0 0 960 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a5fa8"/><stop offset="1" stop-color="#3178c6"/></linearGradient>
+        <linearGradient id="gTeal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a7060"/><stop offset="1" stop-color="#0d9e85"/></linearGradient>
+        <linearGradient id="gAmber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b5a08"/><stop offset="1" stop-color="#c4820e"/></linearGradient>
+        <marker id="a1" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M2 2L10 6L2 10" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <filter id="fsh" x="-5%" y="-5%" width="110%" height="115%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.12)"/>
+        </filter>
+      </defs>
+
+      <!-- Zone 1: Register -->
+      <rect x="18" y="32" width="288" height="272" rx="16" fill="#dbeafe" stroke="#1a5fa8" stroke-width="2" filter="url(#fsh)"/>
+      <rect x="18" y="32" width="288" height="44" rx="16" fill="url(#gBlue)"/>
+      <rect x="18" y="60" width="288" height="16" fill="url(#gBlue)"/>
+      <text x="162" y="55" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#fff">داده‌های ثبتی (اداری)</text>
+      <text x="162" y="90" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" font-weight="600" fill="#1a3a5c">پوشش ۱۰۰٪ جمعیت</text>
+      <g font-family="Vazirmatn,sans-serif" font-size="12" fill="#0d2744">
+        <rect x="34" y="104" width="256" height="26" rx="6" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+        <text x="162" y="121" text-anchor="middle" font-weight="600">ثبت جمعیت – ثبت احوال و اتباع (37 قلم)</text>
+        <rect x="34" y="136" width="256" height="26" rx="6" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+        <text x="162" y="153" text-anchor="middle" font-weight="600">ثبت خانوار – یارانه‌ها (5 قلم)</text>
+        <rect x="34" y="168" width="256" height="26" rx="6" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+        <text x="162" y="185" text-anchor="middle" font-weight="600">ثبت نشانی – پست و املاک و اسکان (10 قلم)</text>
+        <rect x="34" y="200" width="256" height="26" rx="6" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+        <text x="162" y="217" text-anchor="middle" font-weight="600">ثبت مسکن – راه و شهرسازی (14 قلم)</text>
+        <rect x="34" y="232" width="256" height="26" rx="6" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+        <text x="162" y="249" text-anchor="middle" font-weight="600">اطلاعات مکانی GIS – 7 دستگاه</text>
+        <rect x="34" y="264" width="256" height="24" rx="6" fill="#1a5fa8"/>
+        <text x="162" y="280" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">خروجی: جمعیت، خانوار، توزیع جغرافیایی</text>
+      </g>
+
+      <!-- Connector -->
+      <line x1="308" y1="172" x2="340" y2="172" stroke="#64748b" stroke-width="2" marker-end="url(#a1)"/>
+      <text x="323" y="162" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#1a5fa8">+</text>
+
+      <!-- Zone 2: Field Survey -->
+      <rect x="342" y="32" width="288" height="272" rx="16" fill="#d1faf2" stroke="#0a7060" stroke-width="2" filter="url(#fsh)"/>
+      <rect x="342" y="32" width="288" height="44" rx="16" fill="url(#gTeal)"/>
+      <rect x="342" y="60" width="288" height="16" fill="url(#gTeal)"/>
+      <text x="486" y="55" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#fff">پیمایش نمونه‌گیری (میدانی)</text>
+      <text x="486" y="90" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" font-weight="600" fill="#0a4a3c">برآورد تا سطح شهرستان</text>
+      <g font-family="Vazirmatn,sans-serif" font-size="12" fill="#0d2744">
+        <rect x="358" y="104" width="256" height="26" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1"/>
+        <text x="486" y="121" text-anchor="middle" font-weight="600">وضع سواد و سطح تحصیلات</text>
+        <rect x="358" y="136" width="256" height="26" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1"/>
+        <text x="486" y="153" text-anchor="middle" font-weight="600">وضع فعالیت (اشتغال و بیکاری)</text>
+        <rect x="358" y="168" width="256" height="26" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1"/>
+        <text x="486" y="185" text-anchor="middle" font-weight="600">وضع زناشویی و باروری</text>
+        <rect x="358" y="200" width="256" height="26" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1"/>
+        <text x="486" y="217" text-anchor="middle" font-weight="600">مهاجرت داخلی و بین‌المللی</text>
+        <rect x="358" y="232" width="256" height="26" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1"/>
+        <text x="486" y="249" text-anchor="middle" font-weight="600">ویژگی‌های مسکن</text>
+        <rect x="358" y="264" width="256" height="24" rx="6" fill="#0a7060"/>
+        <text x="486" y="280" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">خروجی: ویژگی اجتماعی-اقتصادی</text>
+      </g>
+
+      <!-- Connector 2 -->
+      <line x1="632" y1="172" x2="664" y2="172" stroke="#64748b" stroke-width="2" marker-end="url(#a1)"/>
+      <text x="647" y="162" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#0a7060">=</text>
+
+      <!-- Zone 3: Integrated -->
+      <rect x="666" y="68" width="276" height="200" rx="16" fill="#fef3c7" stroke="#8b5a08" stroke-width="2.5" filter="url(#fsh)"/>
+      <rect x="666" y="68" width="276" height="44" rx="16" fill="url(#gAmber)"/>
+      <rect x="666" y="96" width="276" height="16" fill="url(#gAmber)"/>
+      <text x="804" y="91" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#fff">پایگاه یکپارچه سرشماری ۱۴۰۵</text>
+      <g font-family="Vazirmatn,sans-serif" font-size="12" fill="#3d1a04">
+        <rect x="682" y="122" width="244" height="26" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+        <text x="804" y="139" text-anchor="middle" font-weight="600">جداول آماری قابل انتشار</text>
+        <rect x="682" y="154" width="244" height="26" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+        <text x="804" y="171" text-anchor="middle" font-weight="600">گزارش‌های تفصیلی استانی</text>
+        <rect x="682" y="186" width="244" height="26" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+        <text x="804" y="203" text-anchor="middle" font-weight="600">چارچوب آماری</text>
+        <rect x="682" y="218" width="244" height="26" rx="6" fill="#8b5a08"/>
+        <text x="804" y="235" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">📅 انتشار: اسفند ۱۴۰۵</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Phase cards -->
+  <div class="card">
+    <div class="card-title">فازهای هفت‌گانه پروژه – وضعیت جاری</div>
+    <div class="grid-2" id="phase-cards"></div>
+  </div>
+
+  <!-- Progress bars -->
+  <div class="card">
+    <div class="card-title">نمای کلی پیشرفت پروژه — وضعیت تا ۱۴۰۵/۰۳/۲۱</div>
+    <div id="progress-overview"></div>
+  </div>
+
+</div>
+
+<!-- ══════════ SECTION 2: KPIs ══════════ -->
+<div class="section" id="kpis">
+  <div class="section-heading">شاخص‌های کلیدی عملکرد (KPIs) سرشماری ثبتی‌مبنا ۱۴۰۵</div>
+
+  <!-- Ring chart KPIs -->
+  <div class="perf-kpi-grid" id="kpi-rings"></div>
+
+  <!-- Main KPI cards with charts -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">شاخص‌های کمّی کلیدی</div>
+      <div style="position:relative;height:300px"><canvas id="kpiBarChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">توزیع فعالیت‌ها در فازها</div>
+      <div style="position:relative;height:300px"><canvas id="phaseDonut"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Detailed KPI table -->
+  <div class="card">
+    <div class="card-title">جدول جامع شاخص‌های پایش پیشرفت</div>
+    <table id="kpi-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>شاخص</th>
+          <th>هدف مقداری</th>
+          <th>وضعیت فعلی</th>
+          <th>اهمیت</th>
+          <th>مرحله پایش</th>
+        </tr>
+      </thead>
+      <tbody id="kpi-table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Data coverage chart -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">پوشش اقلام اطلاعاتی بر اساس دستگاه</div>
+      <div style="position:relative;height:280px"><canvas id="agencyBar"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">توزیع فعالیت‌ها بر اساس کمیته</div>
+      <div style="position:relative;height:280px"><canvas id="committeeBar"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 3: ARCHITECTURE ══════════ -->
+<div class="section" id="architecture">
+
+  <div class="card">
+    <div class="card-title">معماری کلان سیستم – جریان داده از دستگاه‌ها تا انتشار</div>
+    <div class="diagram-wrap">
+    <svg class="diag" viewBox="0 0 960 640" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <linearGradient id="gN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d2744"/><stop offset="1" stop-color="#1a3a5c"/></linearGradient>
+        <marker id="aA" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M2 2L10 6L2 10" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+        </marker>
+        <filter id="fs2"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(0,0,0,.14)"/></filter>
+      </defs>
+
+      <!-- Layer label: Agencies -->
+      <rect x="8" y="8" width="150" height="26" rx="6" fill="url(#gN)"/>
+      <text x="83" y="25" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="700" fill="#fff">دستگاه‌های ارسال‌کننده</text>
+
+      <!-- Agency boxes -->
+      <g font-family="Vazirmatn,sans-serif">
+        <rect x="8" y="44" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">ثبت احوال</text>
+        <text x="83" y="75" text-anchor="middle" font-size="10" fill="#3178c6">۱۴ قلم – ثبت جمعیت</text>
+
+        <rect x="8" y="92" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">اداره اتباع</text>
+        <text x="83" y="123" text-anchor="middle" font-size="10" fill="#3178c6">۲۳ قلم – ثبت جمعیت </text>
+
+        <rect x="8" y="140" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="156" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">یارانه‌ها</text>
+        <text x="83" y="171" text-anchor="middle" font-size="10" fill="#3178c6">۵ قلم – خانوار</text>
+
+        <rect x="8" y="188" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">شرکت ملی پست</text>
+        <text x="83" y="219" text-anchor="middle" font-size="10" fill="#3178c6">۴ قلم – نشانی</text>
+
+        <rect x="8" y="236" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="252" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">راه و شهرسازی</text>
+        <text x="83" y="267" text-anchor="middle" font-size="10" fill="#3178c6">۶ قلم – اسکان</text>
+
+        <rect x="8" y="284" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="300" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">انتظامی (فراجا)</text>
+        <text x="83" y="315" text-anchor="middle" font-size="10" fill="#3178c6">۵ قلم – مهاجرت</text>
+
+        <rect x="8" y="332" width="150" height="38" rx="8" fill="#dbeafe" stroke="#1a5fa8" stroke-width="1.5" filter="url(#fs2)"/>
+        <text x="83" y="348" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">نقشه‌برداری + ۵ دستگاه</text>
+        <text x="83" y="363" text-anchor="middle" font-size="10" fill="#3178c6">۶ لایه – GIS</text>
+      </g>
+
+      <!-- Arrows to Secure Room -->
+      <g stroke="#64748b" stroke-width="1.3" marker-end="url(#aA)" stroke-dasharray="4 2">
+        <line x1="160" y1="63" x2="248" y2="190"/>
+        <line x1="160" y1="111" x2="248" y2="210"/>
+        <line x1="160" y1="159" x2="248" y2="230"/>
+        <line x1="160" y1="207" x2="248" y2="250"/>
+        <line x1="160" y1="255" x2="248" y2="265"/>
+        <line x1="160" y1="303" x2="248" y2="280"/>
+        <line x1="160" y1="351" x2="248" y2="295"/>
+      </g>
+
+      <!-- Secure Room -->
+      <rect x="250" y="100" width="196" height="300" rx="14" fill="#fef3c7" stroke="#8b5a08" stroke-width="2.5" filter="url(#fs2)"/>
+      <rect x="250" y="100" width="196" height="38" rx="14" fill="url(#gAmber)"/>
+      <rect x="250" y="124" width="196" height="14" fill="url(#gAmber)"/>
+      <text x="348" y="122" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="13" font-weight="800" fill="#fff">🔒 محیط امن (Secure Room)</text>
+      <g font-family="Vazirmatn,sans-serif" font-size="11" fill="#3d1a04">
+        <rect x="264" y="150" width="168" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="348" y="168" text-anchor="middle" font-weight="700">دریافت و ناشناس‌سازی</text>
+        <rect x="264" y="184" width="168" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="348" y="202" text-anchor="middle" font-weight="700">پاکسازی و استانداردسازی</text>
+        <rect x="264" y="218" width="168" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="348" y="236" text-anchor="middle" font-weight="700">کدگذاری هوشمند</text>
+        <rect x="264" y="252" width="168" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="348" y="270" text-anchor="middle" font-weight="700">ارزیابی کیفیت مستمر</text>
+        <rect x="264" y="286" width="168" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="348" y="304" text-anchor="middle" font-weight="700">حفاظت حریم خصوصی</text>
+        <rect x="264" y="320" width="168" height="28" rx="6" fill="#8b5a08"/>
+        <text x="348" y="338" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">الزامات امنیتی</text>
+        <text x="348" y="375" text-anchor="middle" font-size="10" fill="#7a5230">مرکز آمار ایران</text>
+      </g>
+
+      <!-- Arrow to Statistical Registers -->
+      <line x1="448" y1="250" x2="490" y2="250" stroke="#64748b" stroke-width="2" marker-end="url(#aA)"/>
+
+      <!-- Statistical Registers -->
+      <rect x="492" y="60" width="200" height="380" rx="14" fill="#d1faf2" stroke="#0a7060" stroke-width="2" filter="url(#fs2)"/>
+      <rect x="492" y="60" width="200" height="38" rx="14" fill="url(#gTeal)"/>
+      <rect x="492" y="84" width="200" height="14" fill="url(#gTeal)"/>
+      <text x="592" y="82" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="13" font-weight="800" fill="#fff">ثبت‌های آماری پایه</text>
+      <g font-family="Vazirmatn,sans-serif" font-size="11" fill="#0a4a3c">
+        <rect x="506" y="106" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="124" text-anchor="middle" font-weight="700">ثبت جمعیت ایرانیان</text>
+        <rect x="506" y="140" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="158" text-anchor="middle" font-weight="700">ثبت اتباع خارجی</text>
+        <rect x="506" y="174" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="192" text-anchor="middle" font-weight="700">ثبت خانوار</text>
+        <rect x="506" y="208" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="226" text-anchor="middle" font-weight="700">ثبت نشانی / آدرس</text>
+        <rect x="506" y="242" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="260" text-anchor="middle" font-weight="700">ثبت آموزش</text>
+        <rect x="506" y="276" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="294" text-anchor="middle" font-weight="700">ثبت مهاجرت</text>
+        <rect x="506" y="310" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="328" text-anchor="middle" font-weight="700">ثبت مکانی (GIS)</text>
+        <rect x="506" y="344" width="172" height="28" rx="6" fill="#fff" stroke="#5eead4" stroke-width="1.2"/>
+        <text x="592" y="362" text-anchor="middle" font-weight="700">ثبت مسکن و ساختمان</text>
+        <rect x="506" y="378" width="172" height="28" rx="6" fill="#0a7060"/>
+        <text x="592" y="396" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">انبار داده یکپارچه</text>
+      </g>
+
+      <!-- Field Survey -->
+      <rect x="280" y="450" width="200" height="74" rx="12" fill="#ede9fe" stroke="#4338a0" stroke-width="2" filter="url(#fs2)"/>
+      <text x="380" y="474" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="13" font-weight="800" fill="#26215c">پیمایش نمونه‌ای</text>
+      <text x="380" y="494" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" fill="#4338a0">عملیات میدانی تبلت – آبان ۱۴۰۵</text>
+      <text x="380" y="512" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" fill="#4338a0">سرشماری اینترنتی – مهر ۱۴۰۵</text>
+
+      <!-- Arrow from field to registers -->
+      <path d="M480 487 L592 487 L592 442" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#aA)"/>
+
+      <!-- Integrated DB -->
+      <rect x="736" y="130" width="210" height="220" rx="14" fill="#fef3c7" stroke="#8b5a08" stroke-width="2.5" filter="url(#fs2)"/>
+      <rect x="736" y="130" width="210" height="38" rx="14" fill="url(#gAmber)"/>
+      <rect x="736" y="154" width="210" height="14" fill="url(#gAmber)"/>
+      <text x="841" y="152" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="13" font-weight="800" fill="#fff">پایگاه یکپارچه ۱۴۰۵</text>
+      <g font-family="Vazirmatn,sans-serif" font-size="11" fill="#3d1a04">
+        <rect x="750" y="178" width="182" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="841" y="196" text-anchor="middle" font-weight="700">جداول آماری</text>
+        <rect x="750" y="212" width="182" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="841" y="230" text-anchor="middle" font-weight="700">گزارش‌های تفصیلی</text>
+        <rect x="750" y="246" width="182" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="841" y="264" text-anchor="middle" font-weight="700">چارچوب آماری</text>
+        <rect x="750" y="280" width="182" height="28" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="1.2"/>
+        <text x="841" y="298" text-anchor="middle" font-weight="700">پورتال عمومی</text>
+        <rect x="750" y="314" width="182" height="28" rx="6" fill="#8b5a08"/>
+        <text x="841" y="332" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">📅 انتشار: اسفند ۱۴۰۵</text>
+      </g>
+
+      <!-- Arrow stats to integrated -->
+      <line x1="694" y1="250" x2="734" y2="250" stroke="#64748b" stroke-width="2" marker-end="url(#aA)"/>
+    </svg>
+    </div>
+  </div>
+
+  <!-- Data Quality Cycle -->
+  <div class="card">
+    <div class="card-title">چرخه کیفیت داده‌های ثبتی – فرآیند ۶ مرحله‌ای</div>
+    <div class="diagram-wrap">
+    <svg class="diag" viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="aC" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M2 2L10 6L2 10" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+        </marker>
+      </defs>
+      <!-- Center -->
+      <circle cx="360" cy="200" r="62" fill="#fef3c7" stroke="#8b5a08" stroke-width="2.5"/>
+      <circle cx="360" cy="200" r="56" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
+      <text x="360" y="195" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#3d1a04">چرخه</text>
+      <text x="360" y="215" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="700" fill="#8b5a08">کیفیت داده</text>
+
+      <!-- Step boxes -->
+      <rect x="278" y="16" width="164" height="52" rx="10" fill="#dbeafe" stroke="#1a5fa8" stroke-width="2"/>
+      <text x="360" y="36" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="800" fill="#0d2744">۱. دریافت ریزداده</text>
+      <text x="360" y="56" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="10" fill="#3178c6">از ۷ دستگاه اجرایی</text>
+
+      <rect x="530" y="74" width="172" height="52" rx="10" fill="#dbeafe" stroke="#1a5fa8" stroke-width="2"/>
+      <text x="616" y="94" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="800" fill="#0d2744">۲. پاکسازی اولیه</text>
+      <text x="616" y="114" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="10" fill="#3178c6">حذف تکراری + رفع ناسازگاری</text>
+
+      <rect x="540" y="274" width="164" height="52" rx="10" fill="#d1faf2" stroke="#0a7060" stroke-width="2"/>
+      <text x="622" y="294" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="800" fill="#0a4a3c">۳. کدگذاری</text>
+      <text x="622" y="314" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="10" fill="#0a7060">استانداردسازی متغیرها</text>
+
+      <rect x="278" y="332" width="164" height="52" rx="10" fill="#dcfce7" stroke="#2d5a12" stroke-width="2"/>
+      <text x="360" y="352" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="800" fill="#1a3a0a">۴. پاکسازی موضوعی</text>
+      <text x="360" y="372" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="10" fill="#2d5a12">جانهی + ادغام ثبت‌ها</text>
+
+      <rect x="16" y="274" width="164" height="52" rx="10" fill="#fef3c7" stroke="#8b5a08" stroke-width="2"/>
+      <text x="98" y="294" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="800" fill="#3d1a04">۵. ارزیابی کیفیت</text>
+      <text x="98" y="314" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="10" fill="#8b5a08">سازگاری + مقایسه مرجع</text>
+
+      <rect x="16" y="74" width="164" height="52" rx="10" fill="#fee2e2" stroke="#8b1c1c" stroke-width="2"/>
+      <text x="98" y="94" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="800" fill="#4a1010">۶. بهبود مستمر</text>
+      <text x="98" y="114" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="10" fill="#8b1c1c">بازخورد به دستگاه‌ها</text>
+
+      <!-- Curved arrows between steps -->
+      <path d="M442 42 Q560 42 532 74" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#aC)"/>
+      <path d="M704 126 Q720 200 706 274" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#aC)"/>
+      <path d="M620 326 Q540 370 444 370" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#aC)"/>
+      <path d="M278 358 Q160 380 100 326" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#aC)"/>
+      <path d="M16 270 Q0 200 14 126" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#aC)"/>
+      <path d="M100 74 Q200 36 278 42" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#aC)"/>
+    </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 4: DATA ITEMS ══════════ -->
+<div class="section" id="data-items">
+  <div class="card">
+    <div class="card-title">فیلتر اقلام اطلاعاتی ثبتی</div>
+    <div class="filter-bar">
+      <span style="font-size:12px;color:var(--text3);font-weight:700">نوع ثبت:</span>
+      <button class="filter-btn active" onclick="filterItems(this,'all')">همه (۶۴)</button>
+      <button class="filter-btn" onclick="filterItems(this,'ثبت جمعیت')">ثبت جمعیت (۴۳)</button>
+      <button class="filter-btn" onclick="filterItems(this,'ثبت آدرس')">ثبت آدرس (۱۱)</button>
+      <button class="filter-btn" onclick="filterItems(this,'ثبت مسکن')">ثبت مسکن (۴)</button>
+      <button class="filter-btn" onclick="filterItems(this,'geo')">اطلاعات مکانی (۶)</button>
+      <input class="search-box" placeholder="🔍 جستجو در اقلام..." oninput="searchItems(this.value)">
+    </div>
+    <div id="data-items-list"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">ماتریس اقلام اطلاعاتی – دستگاه در برابر نوع ثبت</div>
+    <div id="matrix-chart"></div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 5: TIMELINE ══════════ -->
+<div class="section" id="timeline">
+  <div class="card">
+    <div class="card-title">برنامه زمانی تفصیلی – نمودار گانت</div>
+    <div class="filter-bar">
+      <span style="font-size:12px;color:var(--text3);font-weight:700">فاز:</span>
+      <button class="filter-btn active" onclick="filterTimeline(this,'all')">همه فازها</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'1')">فاز ۱</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'2')">فاز ۲</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'3')">فاز ۳</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'4')">فاز ۴</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'5')">فاز ۵</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'6')">فاز ۶</button>
+      <button class="filter-btn" onclick="filterTimeline(this,'7')">فاز ۷</button>
+      <input class="search-box" placeholder="🔍 جستجوی فعالیت..." oninput="searchTimeline(this.value)">
+    </div>
+    <div id="gantt-chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">نقاط عطف کلیدی پروژه</div>
+    <div id="milestones" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 6: COMMITTEES ══════════ -->
+<div class="section" id="committees">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">سهم هر کمیته از فعالیت‌ها</div>
+      <div style="position:relative;height:340px"><canvas id="committeeChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">توزیع فعالیت‌ها بر اساس کمیته</div>
+      <div id="committee-list"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">هرم سازمانی کمیته‌های اجرایی</div>
+    <div class="diagram-wrap">
+    <svg class="diag" viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <linearGradient id="gNN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d2744"/><stop offset="1" stop-color="#1e4976"/></linearGradient>
+        <filter id="fsc"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.12)"/></filter>
+      </defs>
+
+      <!-- Top: ستاد -->
+      <rect x="230" y="16" width="300" height="52" rx="12" fill="url(#gNN)" filter="url(#fsc)"/>
+      <text x="380" y="36" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="14" font-weight="800" fill="#fff">ستاد ملی سرشماری</text>
+      <text x="380" y="56" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" fill="rgba(255,255,255,.75)">دبیرخانه – رئیس مرکز آمار ایران</text>
+
+      <!-- Connect lines -->
+      <line x1="380" y1="68" x2="380" y2="92" stroke="#b8c8dc" stroke-width="1.5"/>
+      <line x1="80" y1="92" x2="680" y2="92" stroke="#b8c8dc" stroke-width="1.5"/>
+
+      <!-- Row 1 -->
+      <g font-family="Vazirmatn,sans-serif">
+        <line x1="80" y1="92" x2="80" y2="112" stroke="#b8c8dc" stroke-width="1.5"/>
+        <rect x="24" y="112" width="112" height="48" rx="10" fill="#fef3c7" stroke="#8b5a08" stroke-width="2" filter="url(#fsc)"/>
+        <text x="80" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#3d1a04">کمیته طراحی</text>
+        <text x="80" y="148" text-anchor="middle" font-size="10" fill="#8b5a08">۱۸ فعالیت</text>
+
+        <line x1="210" y1="92" x2="210" y2="112" stroke="#b8c8dc" stroke-width="1.5"/>
+        <rect x="154" y="112" width="112" height="48" rx="10" fill="#ede9fe" stroke="#4338a0" stroke-width="2" filter="url(#fsc)"/>
+        <text x="210" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1560">فناوری اطلاعات</text>
+        <text x="210" y="148" text-anchor="middle" font-size="10" fill="#4338a0">۲۶ فعالیت</text>
+
+        <line x1="380" y1="92" x2="380" y2="112" stroke="#b8c8dc" stroke-width="1.5"/>
+        <rect x="310" y="112" width="140" height="48" rx="10" fill="#d1faf2" stroke="#0a7060" stroke-width="2" filter="url(#fsc)"/>
+        <text x="380" y="128" text-anchor="middle" font-size="11" font-weight="700" fill="#0a4a3c">استاندارد و ارزیابی</text>
+        <text x="380" y="144" text-anchor="middle" font-size="10" fill="#0a7060">کیفیت – ۱۷ فعالیت</text>
+        <text x="380" y="156" text-anchor="middle" font-size="9" fill="#0a7060">نظارت</text>
+
+        <line x1="540" y1="92" x2="540" y2="112" stroke="#b8c8dc" stroke-width="1.5"/>
+        <rect x="480" y="112" width="120" height="48" rx="10" fill="#dcfce7" stroke="#2d5a12" stroke-width="2" filter="url(#fsc)"/>
+        <text x="540" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a0a">کمیته نقشه</text>
+        <text x="540" y="148" text-anchor="middle" font-size="10" fill="#2d5a12">۱۰ فعالیت</text>
+
+        <line x1="680" y1="92" x2="680" y2="112" stroke="#b8c8dc" stroke-width="1.5"/>
+        <rect x="618" y="112" width="120" height="48" rx="10" fill="#fee2e2" stroke="#8b1c1c" stroke-width="2" filter="url(#fsc)"/>
+        <text x="678" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#4a1010">مدیریت داده</text>
+        <text x="678" y="148" text-anchor="middle" font-size="10" fill="#8b1c1c">ثبتی – ۴ فعالیت</text>
+      </g>
+
+      <!-- Second tier connector -->
+      <line x1="80" y1="160" x2="80" y2="196" stroke="#b8c8dc" stroke-width="1"/>
+      <line x1="80" y1="196" x2="680" y2="196" stroke="#b8c8dc" stroke-width="1"/>
+
+      <!-- Row 2 -->
+      <g font-family="Vazirmatn,sans-serif">
+        <line x1="160" y1="196" x2="160" y2="216" stroke="#b8c8dc" stroke-width="1"/>
+        <rect x="100" y="216" width="120" height="48" rx="10" fill="#dbeafe" stroke="#1a5fa8" stroke-width="2" filter="url(#fsc)"/>
+        <text x="160" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#0d2744">روش‌شناسی</text>
+        <text x="160" y="252" text-anchor="middle" font-size="10" fill="#3178c6">۴ فعالیت</text>
+
+        <line x1="320" y1="196" x2="320" y2="216" stroke="#b8c8dc" stroke-width="1"/>
+        <rect x="250" y="216" width="140" height="48" rx="10" fill="#fef3c7" stroke="#8b5a08" stroke-width="2" filter="url(#fsc)"/>
+        <text x="320" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#3d1a04">سازماندهی</text>
+        <text x="320" y="252" text-anchor="middle" font-size="10" fill="#8b5a08">و پشتیبانی – ۶</text>
+
+        <line x1="470" y1="196" x2="470" y2="216" stroke="#b8c8dc" stroke-width="1"/>
+        <rect x="400" y="216" width="140" height="48" rx="10" fill="#ede9fe" stroke="#4338a0" stroke-width="2" filter="url(#fsc)"/>
+        <text x="470" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1560">کمیته امنیت</text>
+        <text x="470" y="252" text-anchor="middle" font-size="10" fill="#4338a0">۳ فعالیت</text>
+
+        <line x1="620" y1="196" x2="620" y2="216" stroke="#b8c8dc" stroke-width="1"/>
+        <rect x="548" y="216" width="148" height="48" rx="10" fill="#d1faf2" stroke="#0a7060" stroke-width="2" filter="url(#fsc)"/>
+        <text x="622" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#0a4a3c">تبلیغات</text>
+        <text x="622" y="252" text-anchor="middle" font-size="10" fill="#0a7060">و فرهنگ‌سازی– ۱</text>
+      </g>
+
+      <!-- Note box -->
+      <rect x="160" y="296" width="440" height="68" rx="12" fill="#f1f5f9" stroke="#d4dce8" stroke-width="1.5"/>
+      <text x="380" y="318" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="12" font-weight="700" fill="#0d2744">🔗 نقاط تلاقی کلیدی میان کمیته‌ها</text>
+      <text x="380" y="338" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" fill="#3d4a5c">کمیته فناوری اطلاعات: همکار اصلی در ۴۰+ فعالیت از ۷ فاز</text>
+      <text x="380" y="356" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-size="11" fill="#3d4a5c">کمیته طراحی: تعیین‌کننده اصلی اقلام، روش‌شناسی و چارچوب مفهومی</text>
+    </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 7: RECOMMENDATIONS ══════════ -->
+<div class="section" id="recommendations">
+  <div class="grid-2">
+    <div>
+      <div class="section-heading" style="font-size:15px">توصیه‌های کلیدی برای موفقیت پروژه</div>
+      <div id="rec-list"></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">ریسک‌های حیاتی پروژه</div>
+        <div id="risk-list"></div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="card-title">شاخص‌های پایش پیشرفت – خلاصه</div>
+        <div id="kpi-summary-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>مرکز آمار ایران</span><span class="footer-dot"></span>
+  <span>سرشماری ثبتی‌مبنا ۱۴۰۵</span><span class="footer-dot"></span>
+  <span>نسخه ۲.۰ – خرداد ۱۴۰۵</span><span class="footer-dot"></span>
+  <span>جهت استفاده داخلی</span>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ════════ DATA ════════
+const phases = [
+  {id:1,name:'تعیین نیازها و طراحی مفهومی',start:'1404/03/19',end:'1405/03/31',color:'#1a5fa8',bg:'#dbeafe',count:15,
+   desc:'شناسایی اهداف، نیازسنجی داده‌ها، مطالعات تطبیقی، شناسایی متغیرها، بررسی محدودیت‌های قانونی، اخذ مصوبات، انعقاد تفاهم‌نامه‌ها'},
+  {id:2,name:'طراحی معماری سیستم',start:'1403/12/23',end:'1405/03/11',color:'#4338a0',bg:'#ede9fe',count:18,
+   desc:'سند تحلیل نیازمندی، تحلیل و طراحی سامانه، محیط امن Secure Room، طراحی ثبت‌های آماری، تأمین زیرساخت سخت‌افزاری'},
+  {id:3,name:'آماده‌سازی نقشه و فایل‌های مکانی',start:'1404/12/01',end:'1405/07/15',color:'#0a7060',bg:'#d1faf2',count:14,
+   desc:'بهنگام‌سازی نقشه‌های آماری، ساخت فایل جغرافیایی، عملیات حوزه‌بندی، فایل فهرست جغرافیایی، ثبت نشانی'},
+  {id:4,name:'دریافت داده و ساخت ثبت‌های آماری',start:'1405/02/31',end:'1405/08/30',color:'#8b5a08',bg:'#fef3c7',count:25,
+   desc:'دریافت فراداده و ریزداده از دستگاه‌ها، پاکسازی، کدگذاری، ساخت ثبت‌های آماری، ایجاد انبار داده'},
+  {id:5,name:'اجرای عملیات میدانی و پیمایش',start:'1405/04/24',end:'1405/08/30',color:'#8b1c1c',bg:'#fee2e2',count:14,
+   desc:'طرح نمونه‌گیری، ساخت نرم‌افزار، آموزش مأموران، سرشماری اینترنتی ۱۴۰۵/۰۷، عملیات تبلت ۱۴۰۵/۰۸'},
+  {id:6,name:'پردازش و ساخت پایگاه یکپارچه',start:'1405/08/10',end:'1405/12/24',color:'#2d5a12',bg:'#dcfce7',count:12,
+   desc:'ادیت و جانهی داده‌ها، یکپارچه‌سازی ثبت‌ها با داده میدانی، ساخت پایگاه یکپارچه، انتشار نتایج اولیه'},
+  {id:7,name:'تحلیل، انتشار و ارزیابی',start:'1405/10/01',end:'1406/04/31',color:'#3d4a5c',bg:'#f1f5f9',count:12,
+   desc:'استخراج جداول، تحلیل توصیفی، کنترل افشا، تهیه گزارش‌ها، ارزیابی کیفیت، به‌روزرسانی مستمر'}
+];
+
+const dataItems = [
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'نام و نام خانوادگی',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'شماره ملی',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'کدپستی محل اقامت فعلی',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'جنس',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'تاریخ تولد (سال، ماه و روز)',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'محل تولد',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'دین',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'کدپستی محل اقامت قبلی',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'تاریخ ورود به محل اقامت فعلی',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'وضع زناشویی',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'سن در اولین ازدواج',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'سن در اولین زایمان زنده',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'شناسه یکتای خانواده / خانوار',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (سازمان ثبت احوال کشور)',item:'بستگی با سرپرست خانواده / خانوار',type:'ثبت جمعیت'},
+  {agency:'سازمان هدفمندی یارانه‌ها',item:'شناسه خانوار',type:'ثبت جمعیت'},
+  {agency:'سازمان هدفمندی یارانه‌ها',item:'شماره ملی سرپرست',type:'ثبت جمعیت'},
+  {agency:'سازمان هدفمندی یارانه‌ها',item:'نام و نام خانوادگی اعضای خانوار',type:'ثبت جمعیت'},
+  {agency:'سازمان هدفمندی یارانه‌ها',item:'شماره ملی اعضای خانوار',type:'ثبت جمعیت'},
+  {agency:'سازمان هدفمندی یارانه‌ها',item:'بستگی با سرپرست خانوار',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'استان محل اقامت تبعه',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'شهرستان محل اقامت تبعه',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'بخش محل اقامت تبعه',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'دهستان محل اقامت تبعه',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'شهر/روستا/آبادی محل اقامت تبعه',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'نام و نام خانوادگی',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'شناسه منحصربه‌فرد و یکتای اتباع',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'کدپستی محل اقامت فعلی',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'جنس',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'تاریخ تولد',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'محل تولد',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'دین',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'کدپستی محل اقامت قبلی',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'تاریخ ورود به محل اقامت فعلی',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'وضع زناشویی',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'شناسه یکتای خانواده / خانوار',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'بستگی با سرپرست خانواده',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'تابعیت (کشور متبوع)',type:'ثبت جمعیت'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'نوع مدرک اقامتی',type:'ثبت جمعیت'},
+  {agency:'فرماندهی انتظامی (فراجا)',item:'شماره ملی/کد اتباع/شناسه یکتای فاقدین',type:'ثبت جمعیت'},
+  {agency:'فرماندهی انتظامی (فراجا)',item:'وضع مهاجرت (مهاجر وارد/خارج/غیرمهاجر)',type:'ثبت جمعیت'},
+  {agency:'فرماندهی انتظامی (فراجا)',item:'نوع تردد (ورود/خروج)',type:'ثبت جمعیت'},
+  {agency:'فرماندهی انتظامی (فراجا)',item:'نام کشور محل اقامت قبلی/مقصد',type:'ثبت جمعیت'},
+  {agency:'فرماندهی انتظامی (فراجا)',item:'تاریخ ورود به / خروج از کشور',type:'ثبت جمعیت'},
+  {agency:'وزارت کشور (تقسیمات کشوری)',item:'آخرین فهرست تقسیمات کشوری تا سطح شهر و روستا',type:'ثبت آدرس'},
+  {agency:'شرکت ملی پست',item:'کد پستی و ژئوکد پستی',type:'ثبت آدرس'},
+  {agency:'شرکت ملی پست',item:'بلوک آماری متناظر با کد پستی',type:'ثبت آدرس'},
+  {agency:'شرکت ملی پست',item:'تقسیمات کشوری و شرح نشانی',type:'ثبت آدرس'},
+  {agency:'شرکت ملی پست',item:'وضعیت مکان',type:'ثبت آدرس'},
+  {agency:'وزارت راه و شهرسازی (سامانه املاک و اسکان)',item:'شناسه یکتای خانواده / خانوار',type:'ثبت آدرس'},
+  {agency:'ثبت احوال (سامانه سببی-نسبی)',item:'بستگی با سرپرست خانواده',type:'ثبت آدرس'},
+  {agency:'وزارت راه و شهرسازی (سامانه املاک و اسکان)',item:'وضعیت مکان',type:'ثبت آدرس'},
+  {agency:'وزارت راه و شهرسازی (سامانه املاک و اسکان)',item:'کدپستی محل اقامت فعلی',type:'ثبت آدرس'},
+  {agency:'وزارت راه و شهرسازی (سامانه املاک و اسکان)',item:'کدپستی محل اقامت قبلی',type:'ثبت آدرس'},
+  {agency:'وزارت راه و شهرسازی (سامانه املاک و اسکان)',item:'تاریخ ورود به محل اقامت فعلی',type:'ثبت آدرس'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'وضعیت باسوادی',type:'ثبت آموزش'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'وضع تحصیل',type:'ثبت آموزش'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'دوره/مدرک/پایه تحصیلی',type:'ثبت آموزش'},
+  {agency:'اداره کل اتباع وزارت کشور',item:'رشته تحصیلی',type:'ثبت آموزش'},
+  {agency:'وزارت کشور',item:'نقشه عناصر تقسیمات کشوری',type:'geo'},
+  {agency:'سازمان نقشه‌برداری کشور',item:'نقشه شهرها شامل بلوک و پارسل',type:'geo'},
+  {agency:'شرکت ملی پست',item:'نقشه پارسلی شهرها و نقاط ژئوکد',type:'geo'},
+  {agency:'بنیاد مسکن انقلاب اسلامی',item:'نقشه روستاها شامل بلوک و پارسل',type:'geo'},
+  {agency:'سازمان ثبت اسناد و املاک',item:'نقشه‌های شهرها و روستاها',type:'geo'},
+  {agency:'وزارت راه و شهرسازی / شهرداری‌ها',item:'نقشه شهرهای کشور (کاربری و حریم)',type:'geo'}
+];
+
+const timelineData = [
+  {phase:1,id:4,title:'شناسایی اهداف و نیازسنجی داده‌ها',owner:'کمیته طراحی',start:'1404/04/16',end:'1404/05/15'},
+  {phase:1,id:5,title:'مطالعات تطبیقی تجربیات سایر کشورها',owner:'دبیرخانه ستاد',start:'1404/04/16',end:'1404/07/13'},
+  {phase:1,id:6,title:'شناسایی متغیرها و منابع اداری',owner:'کمیته طراحی',start:'1404/05/16',end:'1404/06/16'},
+  {phase:1,id:9,title:'بررسی محدودیت‌های قانونی',owner:'کمیته سازماندهی',start:'1404/06/17',end:'1404/09/06'},
+  {phase:1,id:10,title:'دریافت مصوبات مورد نیاز',owner:'دبیرخانه ستاد',start:'1404/09/07',end:'1404/10/30'},
+  {phase:1,id:11,title:'ایجاد تفاهم‌نامه‌های همکاری داده‌ای',owner:'دبیرخانه ستاد',start:'1404/05/08',end:'1404/08/30'},
+  {phase:1,id:18,title:'تعیین استانداردهای تبادل داده',owner:'کمیته استاندارد',start:'1404/03/19',end:'1405/02/31'},
+  {phase:2,id:23,title:'سند تحلیل نیازمندی سامانه',owner:'کمیته طراحی',start:'1404/07/14',end:'1405/03/11'},
+  {phase:2,id:24,title:'تحلیل و طراحی سامانه ثبتی‌مبنا',owner:'کمیته فناوری',start:'1404/08/14',end:'1405/03/11'},
+  {phase:2,id:25,title:'طراحی محیط عملیاتی امن',owner:'کمیته تأمین داده',start:'1404/05/07',end:'1405/02/31'},
+  {phase:2,id:56,title:'تهیه و تأمین سخت‌افزارها',owner:'کمیته سازماندهی',start:'1404/10/05',end:'1405/01/16'},
+  {phase:2,id:57,title:'استقرار و راه‌اندازی سخت‌افزارها',owner:'کمیته فناوری',start:'1405/01/23',end:'1405/02/31'},
+  {phase:3,id:7,title:'آماده‌سازی نقشه‌های آماری',owner:'کمیته نقشه',start:'1404/12/01',end:'1405/03/31'},
+  {phase:3,id:48,title:'اجرای عملیات حوزه‌بندی',owner:'کمیته نقشه',start:'1405/04/01',end:'1405/06/15'},
+  {phase:3,id:81,title:'ساخت فایل جغرافیایی ۱۴۰۴',owner:'کمیته نقشه',start:'1404/12/26',end:'1405/03/15'},
+  {phase:3,id:83,title:'ساخت فایل فهرست جغرافیایی',owner:'کمیته نقشه',start:'1405/02/01',end:'1405/05/31'},
+  {phase:3,id:85,title:'نظارت بر اتصال ژئوکدهای پست',owner:'کمیته نقشه',start:'1405/04/01',end:'1405/06/31'},
+  {phase:3,id:87,title:'اتصال کدپستی به آدرس آماری',owner:'کمیته نقشه',start:'1405/07/01',end:'1405/07/15'},
+  {phase:4,id:60,title:'دریافت فراداده از دستگاه‌ها',owner:'کمیته استاندارد',start:'1405/02/31',end:'1405/03/31'},
+  {phase:4,id:61,title:'دریافت ریزداده از ثبت احوال و پست',owner:'کمیته تأمین داده',start:'1405/02/31',end:'1405/03/05'},
+  {phase:4,id:62,title:'دریافت ریزداده از سایر دستگاه‌ها',owner:'کمیته تأمین داده',start:'1405/03/05',end:'1405/03/31'},
+  {phase:4,id:96,title:'پاکسازی اولیه فایل‌های ثبت اداری',owner:'کمیته فناوری',start:'1405/03/05',end:'1405/04/20'},
+  {phase:4,id:97,title:'کدگذاری متغیرها – استاندارد ملی',owner:'کمیته فناوری',start:'1405/03/05',end:'1405/04/21'},
+  {phase:4,id:98,title:'پاکسازی موضوعی و ساخت ثبت آماری',owner:'کمیته فناوری',start:'1405/04/04',end:'1405/06/01'},
+  {phase:4,id:100,title:'ایجاد انبار داده ثبت‌های آماری',owner:'کمیته فناوری',start:'1405/08/01',end:'1405/10/24'},
+  {phase:5,id:44,title:'تهیه طرح نمونه‌گیری',owner:'کمیته روش‌شناسی',start:'1405/04/14',end:'1405/06/31'},
+  {phase:5,id:66,title:'پیاده‌سازی نرم‌افزار میدانی',owner:'کمیته فناوری',start:'1405/04/08',end:'1405/06/11'},
+  {phase:5,id:68,title:'آموزش و سازماندهی مأموران',owner:'کمیته سازماندهی',start:'1405/04/24',end:'1405/06/16'},
+  {phase:5,id:71,title:'اجرای سرشماری اینترنتی',owner:'کمیته سازماندهی',start:'1405/07/01',end:'1405/07/15'},
+  {phase:5,id:72,title:'اجرای عملیات میدانی (تبلت)',owner:'کمیته سازماندهی',start:'1405/08/01',end:'1405/08/30'},
+  {phase:6,id:102,title:'ادیت و جانهی داده‌های میدانی',owner:'کمیته فناوری',start:'1405/08/10',end:'1405/11/26'},
+  {phase:6,id:103,title:'تهیه فایل نهایی عملیات میدانی',owner:'کمیته فناوری',start:'1405/10/05',end:'1405/10/25'},
+  {phase:6,id:105,title:'یکپارچه‌سازی داده‌های میدانی',owner:'کمیته فناوری',start:'1405/10/26',end:'1405/11/26'},
+  {phase:6,id:106,title:'بررسی و انتشار نتایج اولیه',owner:'کمیته طراحی',start:'1405/11/27',end:'1405/12/24'},
+  {phase:7,id:109,title:'استخراج جداول از پایگاه',owner:'کمیته فناوری',start:'1405/11/29',end:'1405/12/26'},
+  {phase:7,id:110,title:'بررسی جداول استخراج‌شده',owner:'کمیته طراحی',start:'1405/12/14',end:'1406/03/13'},
+  {phase:7,id:111,title:'تحلیل توصیفی و موضوعی جداول',owner:'کمیته طراحی',start:'1406/02/20',end:'1406/03/18'},
+  {phase:7,id:112,title:'کنترل افشای اطلاعات نهایی',owner:'کمیته امنیت',start:'1406/03/19',end:'1406/04/03'},
+  {phase:7,id:113,title:'تهیه گزارش‌های تفصیلی',owner:'کمیته طراحی',start:'1406/04/04',end:'1406/04/31'}
+];
+
+const milestones = [
+  {date:'۱۴۰۵/۰۳/۳۱',title:'تکمیل فاز طراحی',desc:'پایان کلیه فعالیت‌های طراحی معماری و مفهومی',color:'#1a5fa8',bg:'#dbeafe',status:'active'},
+  {date:'۱۴۰۵/۰۵/۳۱',title:'فایل فهرست جغرافیایی',desc:'آماده‌سازی چارچوب نمونه برای طرح نمونه‌گیری',color:'#0a7060',bg:'#d1faf2',status:'future'},
+  {date:'۱۴۰۵/۰۶/۰۱',title:'تکمیل ثبت‌های آماری',desc:'پایان پاکسازی موضوعی و ساخت کلیه ثبت‌های پایه',color:'#8b5a08',bg:'#fef3c7',status:'future'},
+  {date:'۱۴۰۵/۰۷/۰۱',title:'شروع سرشماری اینترنتی',desc:'آغاز مرحله اول گردآوری برخط داده‌های میدانی',color:'#8b1c1c',bg:'#fee2e2',status:'future'},
+  {date:'۱۴۰۵/۰۸/۰۱',title:'شروع عملیات میدانی (تبلت)',desc:'آغاز اجرای پیمایش نمونه‌ای در کل کشور',color:'#8b1c1c',bg:'#fee2e2',status:'future'},
+  {date:'۱۴۰۵/۱۰/۲۶',title:'شروع پردازش نهایی',desc:'آغاز یکپارچه‌سازی داده‌های میدانی با ثبت‌های آماری',color:'#2d5a12',bg:'#dcfce7',status:'future'},
+  {date:'۱۴۰۵/۱۱/۲۷',title:'انتشار نتایج اولیه',desc:'اولین خروجی رسمی از پایگاه یکپارچه',color:'#3d4a5c',bg:'#f1f5f9',status:'future'},
+  {date:'۱۴۰۶/۰۴/۳۱',title:'اتمام کلیه انتشارات',desc:'پایان پروژه – ارائه کلیه گزارش‌های تفصیلی',color:'#4338a0',bg:'#ede9fe',status:'future'}
+];
+
+const recommendations = [
+  {icon:'📋',title:'مدیریت تأمین داده',bg:'#dbeafe',border:'#1a5fa8',ibg:'#1a5fa8',
+   body:'ایجاد SLA با هر دستگاه؛ تعیین نقطه تماس فنی اختصاصی؛ پیگیری هفتگی وضعیت آمادگی داده؛ تهیه سناریوی جایگزین برای هر منبع. دریافت ریزداده از دستگاه‌ها حیاتی‌ترین پیش‌نیاز پردازش‌هاست.'},
+  {icon:'⚙️',title:'استانداردسازی زودهنگام',bg:'#d1faf2',border:'#0a7060',ibg:'#0a7060',
+   body:'تصویب دستورالعمل ساختار استاندارد داده‌های دریافتی قبل از شروع دریافت؛ برگزاری کارگاه آموزشی برای دستگاه‌ها؛ نظارت مستمر بر استانداردسازی.'},
+  {icon:'🔒',title:'حاکمیت داده و امنیت',bg:'#ede9fe',border:'#4338a0',ibg:'#4338a0',
+   body:'اجرای ناشناس‌سازی چندلایه؛ ثبت audit log برای تمام دسترسی‌ها؛ تفکیک محیط‌های عملیاتی (Secure Room)؛ کنترل سطح دسترسی کمیته‌های موضوعی.'},
+  {icon:'📊',title:'طرح نمونه‌گیری بهینه',bg:'#fef3c7',border:'#8b5a08',ibg:'#8b5a08',
+   body:'استفاده از فایل فهرست جغرافیایی به عنوان چارچوب نمونه؛ طراحی نمونه دومرحله‌ای برای برآورد در سطح شهرستان؛ تعیین تعداد نمونه بهینه.'},
+  {icon:'✅',title:'مدیریت کیفیت مستمر',bg:'#dcfce7',border:'#2d5a12',ibg:'#2d5a12',
+   body:'اجرای ارزیابی کیفیت در هر مرحله دریافت داده؛ تعریف شاخص‌های کیفیت قابل اندازه‌گیری؛ گزارش‌دهی هفتگی به کمیته استاندارد.'},
+  {icon:'🔗',title:'یکپارچه‌سازی تدریجی',bg:'#fee2e2',border:'#8b1c1c',ibg:'#8b1c1c',
+   body:'ساخت ثبت‌های آماری به صورت مرحله‌ای؛ آزمون تطابق قبل از ادغام داده‌ها؛ ارزیابی مفهومی هر ثبت قبل از ورود به مرحله بعد.'},
+  {icon:'📍',title:'آمادگی عملیات میدانی',bg:'#f1f5f9',border:'#3d4a5c',ibg:'#3d4a5c',
+   body:'تکمیل حوزه‌بندی قبل از آموزش مأموران؛ آزمایشی محدود قبل از اجرای سراسری؛ اتاق کنترل فعال؛ فایل پشتیبان برای بازیابی خطا.'},
+  {icon:'📣',title:'آمادگی برای انتشار',bg:'#ede9fe',border:'#4338a0',ibg:'#4338a0',
+   body:'تعیین جداول اولویت‌دار قبل از شروع پردازش؛ انجام بررسی کنترل افشا قبل از انتشار؛ تهیه متادیتای کامل برای هر جدول.'}
+];
+
+const risks = [
+  {level:'بالا',title:'تأخیر دستگاه‌ها در ارسال ریزداده',desc:'پیش‌نیاز کلیه پردازش‌های فاز ۴ و ۵',lc:'#fee2e2',tc:'#8b1c1c'},
+  {level:'بالا',title:'کیفیت پایین داده‌های ثبتی',desc:'تأثیر مستقیم بر صحت نتایج سرشماری',lc:'#fee2e2',tc:'#8b1c1c'},
+  {level:'متوسط',title:'تأخیر در آماده‌سازی نقشه‌های آماری',desc:'پیش‌نیاز اجرای حوزه‌بندی و طرح نمونه',lc:'#fef3c7',tc:'#8b5a08'},
+  {level:'متوسط',title:'ضعف در زیرساخت فناوری اطلاعات',desc:'سرعت پردازش و امنیت داده‌ها',lc:'#fef3c7',tc:'#8b5a08'},
+  {level:'پایین',title:'مشارکت پایین در سرشماری اینترنتی',desc:'تأثیر بر نمونه و پوشش پیمایش',lc:'#dcfce7',tc:'#2d5a12'}
+];
+
+const kpiData = [
+  {name:'درصد دریافت ریزداده از دستگاه‌ها',target:'۱۰۰٪ تا ۱۴۰۵/۰۴/۰۱',current:'۶۵٪',pct:65,status:'در حال اجرا',imp:'بحرانی',phase:'فاز ۴',color:'#1a5fa8'},
+  {name:'درصد پوشش ژئوکد پستی بلوک‌ها',target:'≥ ۹۵٪',current:'۸۲٪',pct:82,status:'در حال اجرا',imp:'بالا',phase:'فاز ۳',color:'#0a7060'},
+  {name:'نرخ خطای کدگذاری متغیرها',target:'< ۱٪',current:'۳.۲٪',pct:40,status:'نیاز به بهبود',imp:'بالا',phase:'فاز ۴',color:'#8b5a08'},
+  {name:'نرخ پاسخ‌دهی عملیات میدانی',target:'> ۶۰٪',current:'برنامه‌ریزی',pct:0,status:'آینده',imp:'بالا',phase:'فاز ۵',color:'#8b1c1c'},
+  {name:'دقت تطابق خانوارها با تعریف',target:'≥ ۹۸٪',current:'در بررسی',pct:0,status:'آینده',imp:'بحرانی',phase:'فاز ۶',color:'#4338a0'},
+  {name:'تاریخ انتشار نتایج اولیه',target:'اسفند ۱۴۰۵',current:'در برنامه',pct:0,status:'آینده',imp:'بالا',phase:'فاز ۶-۷',color:'#2d5a12'},
+  {name:'درصد تکمیل حوزه‌بندی',target:'۱۰۰٪ تا ۱۴۰۵/۰۶',current:'۴۸٪',pct:48,status:'در حال اجرا',imp:'بالا',phase:'فاز ۳',color:'#8b5a08'},
+  {name:'تعداد مأموران آموزش‌دیده',target:'هدف ملی',current:'در برنامه‌ریزی',pct:0,status:'آینده',imp:'متوسط',phase:'فاز ۵',color:'#3d4a5c'}
+];
+
+const committeeData = [
+  {name:'کمیته فناوری اطلاعات',count:26,color:'#4338a0'},
+  {name:'کمیته طراحی',count:18,color:'#1a5fa8'},
+  {name:'کمیته استاندارد و ارزیابی کیفیت',count:17,color:'#0a7060'},
+  {name:'کمیته نقشه',count:10,color:'#8b5a08'},
+  {name:'کمیته سازماندهی و پشتیبانی',count:6,color:'#8b1c1c'},
+  {name:'دبیرخانه ستاد سرشماری',count:5,color:'#0d2744'},
+  {name:'کمیته روش‌شناسی',count:4,color:'#2d5a12'},
+  {name:'کمیته مدیریت داده‌های ثبتی',count:4,color:'#3d4a5c'},
+  {name:'کمیته امنیت',count:3,color:'#8b1c1c'},
+  {name:'کمیته تأمین داده',count:4,color:'#c4820e'},
+  {name:'کمیته تبلیغات و فرهنگ‌سازی',count:1,color:'#64748b'}
+];
+
+// ════════ JALALI DATE HELPERS ════════
+function gregorianToJalali(gy,gm,gd){
+  const g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy=(gy<=1600)?0:979; gy-=(gy<=1600)?621:1600;
+  const gy2=(gm>2)?(gy+1):gy;
+  let days=(365*gy)+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)-80+gd+g_d_m[gm-1];
+  jy+=33*Math.floor(days/12053); days%=12053;
+  jy+=4*Math.floor(days/1461); days%=1461;
+  if(days>365){ jy+=Math.floor((days-1)/365); days=(days-1)%365; }
+  let jm,jd;
+  if(days<186){ jm=1+Math.floor(days/31); jd=1+(days%31); }
+  else{ jm=7+Math.floor((days-186)/30); jd=1+((days-186)%30); }
+  return [jy,jm,jd];
+}
+function persianDigits(s){const en='0123456789',fa='۰۱۲۳۴۵۶۷۸۹';return String(s).replace(/[0-9]/g,d=>fa[en.indexOf(d)]);}
+function getRealTodayJalali(){
+  const now=new Date();
+  const [jy,jm,jd]=gregorianToJalali(now.getFullYear(),now.getMonth()+1,now.getDate());
+  return `${jy}/${String(jm).padStart(2,'0')}/${String(jd).padStart(2,'0')}`;
+}
+
+// ════════ UTILITY ════════
+function jDateToNum(d){if(!d||typeof d!=='string')return 0;const p=d.replace('?','').trim().split('/');return parseInt(p[0])*10000+parseInt(p[1]||0)*100+parseInt(p[2]||0);}
+const PROJECT_START=14031223,PROJECT_END=14060431;
+const REAL_TODAY=getRealTodayJalali();
+let TODAY=jDateToNum(REAL_TODAY);
+let TODAY_STR=REAL_TODAY;
+
+function rerenderAll(){
+  document.getElementById('today-badge-text').textContent='در حال اجرا  |  '+persianDigits(TODAY_STR);
+  buildOverview();
+  renderGantt();
+}
+function applyReportDate(){
+  const v=document.getElementById('report-date-input').value.trim();
+  const m=v.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if(!m){alert('فرمت تاریخ صحیح نیست. مثال: ۱۴۰۵/۰۳/۲۱');return;}
+  TODAY_STR=`${m[1]}/${m[2].padStart(2,'0')}/${m[3].padStart(2,'0')}`;
+  TODAY=jDateToNum(TODAY_STR);
+  rerenderAll();
+}
+function resetReportDate(){
+  TODAY_STR=REAL_TODAY;
+  TODAY=jDateToNum(REAL_TODAY);
+  document.getElementById('report-date-input').value=TODAY_STR;
+  rerenderAll();
+}
+
+function getStatus(start,end){
+  const s=jDateToNum(start),e=jDateToNum(end);
+  if(e<TODAY)return'done';if(s<=TODAY)return'active';return'future';
+}
+function pct(start,end){
+  const s=jDateToNum(start),e=jDateToNum(end);
+  const total=e-s;const elapsed=Math.max(0,Math.min(total,TODAY-s));
+  return total>0?Math.round(elapsed/total*100):(e<TODAY?100:0);
+}
+function barLeft(start){const s=jDateToNum(start);return Math.max(0,Math.min(100,(s-PROJECT_START)/(PROJECT_END-PROJECT_START)*100));}
+function barWidth(start,end){const s=jDateToNum(start),e=jDateToNum(end);return Math.max(1,(e-s)/(PROJECT_END-PROJECT_START)*100);}
+
+// ════════ NAV ════════
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ════════ OVERVIEW ════════
+function buildOverview(){
+  // Phase cards
+  const pc=document.getElementById('phase-cards');
+  pc.innerHTML=phases.map(p=>{
+    const st=getStatus(p.start,p.end);
+    const prog=pct(p.start,p.end);
+    const statusLabel={done:'<span class="badge b-teal">✓ انجام‌شده</span>',active:'<span class="badge b-amber">⬤ در حال اجرا</span>',future:'<span class="badge b-slate">◯ آینده</span>'}[st];
+    const barColor={done:'var(--teal-m)',active:'var(--amber-m)',future:'var(--slate-m)'}[st];
+    return `<div class="phase-card" onclick="openPhaseModal(${p.id})" style="border-top:4px solid ${p.color}">
+      <div class="phase-card-num">${p.id}</div>
+      <div class="phase-card-name" style="color:${p.color}">فاز ${p.id}: ${p.name}</div>
+      <div class="phase-card-dates">${p.start} تا ${p.end}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span class="badge" style="background:${p.bg};color:${p.color}">${p.count} فعالیت</span>
+        ${statusLabel}
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${prog}%;background:${barColor}"></div></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:left">${prog}٪ تکمیل</div>
+    </div>`;
+  }).join('');
+
+  // Progress
+  const po=document.getElementById('progress-overview');
+  po.innerHTML=phases.map(p=>{
+    const st=getStatus(p.start,p.end);
+    const prog=pct(p.start,p.end);
+    const barColor={done:'var(--teal-m)',active:'var(--amber-m)',future:'var(--slate-m)'}[st];
+    return `<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <span style="font-size:13px;font-weight:700;color:${p.color}">فاز ${p.id}: ${p.name}</span>
+        <span style="font-size:11px;font-weight:700;color:${barColor};background:${p.bg};padding:2px 10px;border-radius:12px">${prog}٪</span>
+      </div>
+      <div class="progress-track" style="height:10px"><div class="progress-fill" style="width:${prog}%;background:${barColor};background:linear-gradient(90deg,${p.color},${barColor})"></div></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:3px">${p.start} – ${p.end}</div>
+    </div>`;
+  }).join('');
+}
+
+function openPhaseModal(id){
+  const p=phases.find(x=>x.id===id);
+  const tasks=timelineData.filter(t=>t.phase===id);
+  document.getElementById('modal-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="width:12px;height:12px;border-radius:50%;background:${p.color}"></div>
+      <h3 style="color:${p.color}">فاز ${p.id}: ${p.name}</h3>
+    </div>
+    <div style="margin-bottom:12px;font-size:12px;color:var(--text3);background:${p.bg};padding:8px 12px;border-radius:8px">📅 ${p.start} تا ${p.end} &nbsp;|&nbsp; ${p.count} فعالیت</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.8">${p.desc}</p>
+    <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">فعالیت‌های اصلی:</div>
+    ${tasks.map(t=>`<div class="reg-item">
+      <div class="reg-num">${t.id}</div>
+      <div><div style="font-weight:700;font-size:13px">${t.title}</div>
+      <div style="font-size:11px;color:var(--text3)">متولی: ${t.owner} &nbsp;|&nbsp; ${t.start} – ${t.end}</div></div>
+    </div>`).join('')}`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+// ════════ KPI SECTION ════════
+function buildKPIs(){
+  // Ring charts
+  const ringsData=[
+    {name:'پیشرفت کل پروژه',pct:38,color:'#1a5fa8',target:'اسفند ۱۴۰۵',status:'در حال اجرا',sbg:'#fef3c7',stc:'#8b5a08'},
+    {name:'دریافت ریزداده',pct:65,color:'#0a7060',target:'۱۰۰٪ تا خرداد',status:'در حال پیگیری',sbg:'#d1faf2',stc:'#0a7060'},
+    {name:'آماده‌سازی نقشه',pct:48,color:'#8b5a08',target:'تا تیر ۱۴۰۵',status:'در حال اجرا',sbg:'#fef3c7',stc:'#8b5a08'},
+  ];
+
+  document.getElementById('kpi-rings').innerHTML=ringsData.map(r=>`
+    <div class="perf-kpi">
+      <div class="perf-kpi-ring">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#e2e8f0" stroke-width="7"/>
+          <circle cx="32" cy="32" r="28" fill="none" stroke="${r.color}" stroke-width="7"
+            stroke-dasharray="${Math.round(r.pct*1.759)} 175.9" stroke-linecap="round"/>
+        </svg>
+        <div class="perf-kpi-ring" style="position:absolute;top:0;left:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;font-weight:800;color:${r.color}">${r.pct}٪</span>
+        </div>
+      </div>
+      <div class="perf-kpi-info">
+        <div class="perf-kpi-name">${r.name}</div>
+        <div class="perf-kpi-target">هدف: ${r.target}</div>
+        <span class="perf-kpi-status" style="background:${r.sbg};color:${r.stc}">${r.status}</span>
+      </div>
+    </div>
+  `).join('');
+
+  // Bar chart – KPI metrics
+  new Chart(document.getElementById('kpiBarChart'),{
+    type:'bar',
+    data:{
+      labels:['دریافت ریزداده','پوشش ژئوکد','تکمیل حوزه‌بندی','دقت کدگذاری','آماده‌سازی نقشه'],
+      datasets:[{
+        label:'وضعیت فعلی (٪)',
+        data:[65,82,48,86,48],
+        backgroundColor:['#1a5fa8','#0a7060','#8b5a08','#4338a0','#2d5a12'],
+        borderRadius:6,borderSkipped:false,
+      },{
+        label:'هدف (٪)',
+        data:[100,95,100,99,100],
+        backgroundColor:['rgba(26,95,168,.15)','rgba(10,112,96,.15)','rgba(139,90,8,.15)','rgba(67,56,160,.15)','rgba(45,90,18,.15)'],
+        borderColor:['#1a5fa8','#0a7060','#8b5a08','#4338a0','#2d5a12'],
+        borderWidth:2,borderRadius:6,borderSkipped:false,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Vazirmatn',size:12},padding:16}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw}٪`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{family:'Vazirmatn',size:11}}},
+        y:{max:110,ticks:{font:{family:'Vazirmatn',size:11},callback:v=>v+'٪'},grid:{color:'rgba(0,0,0,.06)'}}
+      }
+    }
+  });
+
+  // Phase donut
+  new Chart(document.getElementById('phaseDonut'),{
+    type:'doughnut',
+    data:{
+      labels:phases.map(p=>`فاز ${p.id}`),
+      datasets:[{data:phases.map(p=>p.count),backgroundColor:phases.map(p=>p.color),borderWidth:3,borderColor:'#fff',hoverBorderWidth:4}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{
+        legend:{position:'right',labels:{font:{family:'Vazirmatn',size:12},padding:10,generateLabels:chart=>{
+          return chart.data.labels.map((l,i)=>({text:`${l}: ${chart.data.datasets[0].data[i]}`,fillStyle:chart.data.datasets[0].backgroundColor[i],strokeStyle:'#fff',lineWidth:2,index:i}));
+        }}},
+        tooltip:{callbacks:{label:ctx=>{const total=ctx.dataset.data.reduce((a,b)=>a+b,0);return ` ${ctx.label}: ${ctx.raw} فعالیت (${Math.round(ctx.raw/total*100)}٪)`}}}
+      }
+    }
+  });
+
+  // Agency bar
+  const agencyItems=[
+    {a:'ثبت احوال',n:14},{a:'اداره اتباع',n:23},{a:'یارانه‌ها',n:5},{a:'شرکت پست',n:4},{a:'راه و شهرسازی',n:6},{a:'فراجا',n:5},{a:'GIS (۶ دستگاه)',n:6}
+  ];
+  new Chart(document.getElementById('agencyBar'),{
+    type:'bar',
+    data:{
+      labels:agencyItems.map(a=>a.a),
+      datasets:[{label:'تعداد اقلام',data:agencyItems.map(a=>a.n),
+        backgroundColor:['#1a5fa8','#4338a0','#0a7060','#8b5a08','#8b1c1c','#2d5a12','#3d4a5c'],
+        borderRadius:6,borderSkipped:false}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} قلم اطلاعاتی`}}},
+      scales:{x:{ticks:{font:{family:'Vazirmatn',size:11},stepSize:5},grid:{color:'rgba(0,0,0,.06)'}},y:{ticks:{font:{family:'Vazirmatn',size:11}},grid:{display:false}}}
+    }
+  });
+
+  // Committee bar
+  new Chart(document.getElementById('committeeBar'),{
+    type:'bar',
+    data:{
+      labels:committeeData.map(c=>c.name.replace('کمیته ','').slice(0,12)+'...' ),
+      datasets:[{label:'فعالیت',data:committeeData.map(c=>c.count),backgroundColor:committeeData.map(c=>c.color),borderRadius:6,borderSkipped:false}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const n=committeeData[ctx.dataIndex].name;return `${n}: ${ctx.raw} فعالیت`}}}},
+      scales:{x:{ticks:{font:{family:'Vazirmatn',size:11}},grid:{color:'rgba(0,0,0,.06)'}},y:{ticks:{font:{family:'Vazirmatn',size:10}},grid:{display:false}}}
+    }
+  });
+
+  // KPI table
+  const tbody=document.getElementById('kpi-table-body');
+  tbody.innerHTML=kpiData.map((k,i)=>{
+    const statusBg={بحرانی:'#fee2e2','بالا':'#fef3c7','متوسط':'#d1faf2'}[k.imp]||'#f1f5f9';
+    const statusTc={بحرانی:'#8b1c1c','بالا':'#8b5a08','متوسط':'#0a7060'}[k.imp]||'#3d4a5c';
+    const nowBg=k.pct>0?`<span style="background:${k.color};color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700">${k.current}</span>`:`<span style="color:var(--text3);font-size:12px">${k.current}</span>`;
+    return `<tr>
+      <td style="font-weight:800;color:${k.color};text-align:center">${i+1}</td>
+      <td style="font-weight:700">${k.name}</td>
+      <td><span style="background:#dbeafe;color:#0d2744;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700">${k.target}</span></td>
+      <td>${nowBg}</td>
+      <td><span style="background:${statusBg};color:${statusTc};padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700">${k.imp}</span></td>
+      <td style="font-size:11px;color:var(--text3)">${k.phase}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════ DATA ITEMS ════════
+let currentItemFilter='all',currentItemSearch='';
+function buildDataItems(){renderDataItems();buildMatrix();}
+function filterItems(btn,filter){
+  document.querySelectorAll('#data-items .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');currentItemFilter=filter;renderDataItems();
+}
+function searchItems(q){currentItemSearch=q;renderDataItems();}
+function renderDataItems(){
+  const list=document.getElementById('data-items-list');
+  const agencies={};
+  dataItems.filter(item=>{
+    const typeOk=currentItemFilter==='all'||item.type===currentItemFilter;
+    const searchOk=!currentItemSearch||item.item.includes(currentItemSearch)||item.agency.includes(currentItemSearch);
+    return typeOk&&searchOk;
+  }).forEach(item=>{
+    if(!agencies[item.agency])agencies[item.agency]=[];
+    agencies[item.agency].push(item);
+  });
+
+  const colors={'ثبت جمعیت':'b-blue','ثبت آدرس':'b-teal','ثبت مسکن':'b-violet','geo':'b-forest'};
+  const typeLabels={'ثبت جمعیت':'ثبت جمعیت','ثبت آدرس':'ثبت آدرس','ثبت مسکن':'ثبت مسکن','geo':'اطلاعات مکانی'};
+  const typeIcons={'ثبت جمعیت':'👤','ثبت آدرس':'📍','ثبت مسکن':'🎓','geo':'🗺'};
+
+  list.innerHTML=Object.entries(agencies).map(([agency,items])=>`
+    <div class="card" style="margin-bottom:14px;border-right:4px solid var(--cobalt)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:800;color:var(--text)">🏛 ${agency}</div>
+        <span class="badge b-blue">${items.length} قلم</span>
+      </div>
+      ${items.map(item=>`<div class="reg-item">
+        <span class="badge ${colors[item.type]||'b-slate'}">${typeIcons[item.type]||''} ${typeLabels[item.type]||item.type}</span>
+        <span style="font-size:13px;font-weight:500;margin-right:8px">${item.item}</span>
+      </div>`).join('')}
+    </div>`).join('')||'<div style="text-align:center;padding:30px;color:var(--text3)">نتیجه‌ای یافت نشد</div>';
+}
+
+function buildMatrix(){
+  const matrix=document.getElementById('matrix-chart');
+  const agencies=[...new Set(dataItems.filter(d=>d.type!=='geo').map(d=>d.agency))];
+  const types=['ثبت جمعیت','ثبت آدرس','ثبت مسکن'];
+  const typeLabels={'ثبت جمعیت':'👤 جمعیت','ثبت آدرس':'📍 آدرس','ثبت مسکن':'🎓 مسکن'};
+  const maxVal=23;
+
+  let html=`<div style="overflow-x:auto"><table style="min-width:500px">
+    <thead><tr>
+      <th style="text-align:right">دستگاه اجرایی</th>
+      ${types.map(t=>`<th style="text-align:center">${typeLabels[t]}</th>`).join('')}
+      <th style="text-align:center">جمع</th>
+    </tr></thead><tbody>
+    ${agencies.map(ag=>{
+      const counts=types.map(t=>dataItems.filter(d=>d.agency===ag&&d.type===t).length);
+      const total=counts.reduce((a,b)=>a+b,0);
+      return `<tr>
+        <td style="font-weight:700;font-size:12px">🏛 ${ag}</td>
+        ${counts.map((c,ci)=>{
+          const colors=['rgba(26,95,168,','rgba(10,112,96,','rgba(67,56,160,'];
+          const bg=c===0?'transparent':`${colors[ci]}${0.1+c/maxVal*0.6})`;
+          return `<td style="text-align:center;background:${bg};font-weight:${c>0?'800':'400'};font-size:${c>0?'16':'13'}px;color:${c>0?['#0d2744','#0a4a3c','#1a1560'][ci]:'var(--text3)'}">${c>0?c:'–'}</td>`;
+        }).join('')}
+        <td style="text-align:center;font-weight:800;color:var(--cobalt);font-size:15px">${total}</td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+    <tfoot><tr>
+      <td style="font-weight:800">جمع</td>
+      ${types.map(t=>`<td style="text-align:center;font-weight:800;color:var(--cobalt)">${dataItems.filter(d=>d.type===t).length}</td>`).join('')}
+      <td style="text-align:center;font-weight:800;color:var(--cobalt)">${dataItems.filter(d=>d.type!=='geo').length}</td>
+    </tr></tfoot>
+  </table></div>`;
+  matrix.innerHTML=html;
+}
+
+// ════════ TIMELINE ════════
+let currentPhaseFilter='all',currentTimelineSearch='';
+function buildTimeline(){renderGantt();buildMilestones();}
+function filterTimeline(btn,filter){
+  document.querySelectorAll('#timeline .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');currentPhaseFilter=filter;renderGantt();
+}
+function searchTimeline(q){currentTimelineSearch=q;renderGantt();}
+
+function renderGantt(){
+  const gantt=document.getElementById('gantt-chart');
+  const filtered=timelineData.filter(t=>{
+    const phOk=currentPhaseFilter==='all'||String(t.phase)===currentPhaseFilter;
+    const srOk=!currentTimelineSearch||t.title.includes(currentTimelineSearch)||t.owner.includes(currentTimelineSearch);
+    return phOk&&srOk;
+  });
+  const todayPct=((TODAY-PROJECT_START)/(PROJECT_END-PROJECT_START)*100).toFixed(1);
+
+  let html=`<div style="margin-bottom:12px;font-size:12px;color:var(--text3);display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+    <span><span class="sdot s-done" style="margin-left:5px"></span>انجام‌شده</span>
+    <span><span class="sdot s-active" style="margin-left:5px"></span>در حال اجرا</span>
+    <span><span class="sdot s-future" style="margin-left:5px"></span>آینده</span>
+    <span style="margin-right:auto;color:var(--crimson-m);font-weight:700" id="gantt-today-label">▎خط قرمز = امروز ${persianDigits(TODAY_STR)}</span>
+  </div>
+  <div class="gantt-wrap">`;
+
+  let lastPhase=-1;
+  filtered.forEach(t=>{
+    if(t.phase!==lastPhase){
+      const ph=phases.find(p=>p.id===t.phase);
+      html+=`<div class="gantt-phase-header" style="color:${ph.color};border-bottom:1.5px solid ${ph.color}22;padding-bottom:6px;margin-bottom:4px">
+        <span style="background:${ph.bg};color:${ph.color};padding:3px 12px;border-radius:12px;font-size:12px">فاز ${ph.id}</span>
+        ${ph.name}
+      </div>`;
+      lastPhase=t.phase;
+    }
+    const st=getStatus(t.start,t.end);
+    const ph=phases.find(p=>p.id===t.phase);
+    const left=barLeft(t.start);const width=barWidth(t.start,t.end);
+    const opacity={done:'cc',active:'ff',future:'55'}[st];
+    const barBg=ph.color+opacity;
+    html+=`<div class="gantt-row">
+      <div class="gantt-label" title="${t.owner} | ${t.start}–${t.end}">
+        <span class="sdot s-${st}" style="margin-left:5px"></span>${t.title.slice(0,22)}${t.title.length>22?'…':''}
+      </div>
+      <div class="gantt-track">
+        <div class="gantt-today-line" style="right:${100-todayPct}%"></div>
+        <div class="gantt-bar" style="right:${100-left-width}%;width:${width}%;background:${barBg}"
+          title="${t.title} | ${t.start} – ${t.end} | ${t.owner}">
+          ${width>8?t.end.split('/').slice(1).join('/'):''}
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);min-width:56px;text-align:left">${t.start.slice(5)}</div>
+    </div>`;
+  });
+  html+='</div>';
+  if(!filtered.length)html='<div style="text-align:center;padding:30px;color:var(--text3)">فعالیتی یافت نشد</div>';
+  gantt.innerHTML=html;
+}
+
+function buildMilestones(){
+  const el=document.getElementById('milestones');
+  el.innerHTML=milestones.map(m=>`
+    <div class="milestone-card">
+      <div class="milestone-date" style="background:${m.bg};color:${m.color}">${m.date}</div>
+      <div>
+        <div class="milestone-title">${m.title}</div>
+        <div class="milestone-desc">${m.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ════════ COMMITTEES ════════
+function buildCommittees(){
+  const total=committeeData.reduce((a,b)=>a+b.count,0);
+
+  new Chart(document.getElementById('committeeChart'),{
+    type:'doughnut',
+    data:{
+      labels:committeeData.map(c=>c.name),
+      datasets:[{data:committeeData.map(c=>c.count),backgroundColor:committeeData.map(c=>c.color),borderWidth:3,borderColor:'#fff',hoverBorderWidth:4}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} فعالیت (${Math.round(ctx.raw/total*100)}٪)`}}
+      }
+    }
+  });
+
+  const list=document.getElementById('committee-list');
+  list.innerHTML=committeeData.map(c=>`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:700;color:${c.color};display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:${c.color};display:inline-block"></span>${c.name}
+        </span>
+        <span class="badge" style="background:${c.color}22;color:${c.color}">${c.count} &nbsp;(${Math.round(c.count/total*100)}٪)</span>
+      </div>
+      <div class="progress-track" style="height:6px"><div class="progress-fill" style="width:${c.count/total*100}%;background:${c.color}"></div></div>
+    </div>`).join('');
+}
+
+// ════════ RECOMMENDATIONS ════════
+function buildRecommendations(){
+  document.getElementById('rec-list').innerHTML=recommendations.map(r=>`
+    <div class="rec-card" style="border-right:4px solid ${r.border}">
+      <div class="rec-icon" style="background:${r.ibg}">${r.icon}</div>
+      <div>
+        <div class="rec-title" style="color:${r.border}">${r.title}</div>
+        <div class="rec-body">${r.body}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('risk-list').innerHTML=risks.map(r=>`
+    <div class="risk-item">
+      <span class="risk-level" style="background:${r.lc};color:${r.tc}">${r.level}</span>
+      <div>
+        <div class="risk-title">${r.title}</div>
+        <div class="risk-desc">${r.desc}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('kpi-summary-list').innerHTML=kpiData.map(k=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:12px;font-weight:600">${k.name}</span>
+      <span class="badge" style="background:${k.color}22;color:${k.color};font-size:10px">${k.target}</span>
+    </div>`).join('');
+}
+
+// ════════ INIT ════════
+buildOverview();
+buildKPIs();
+buildDataItems();
+buildTimeline();
+buildCommittees();
+buildRecommendations();
+
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('report-date-input').value=TODAY_STR;
+document.getElementById('today-badge-text').textContent='در حال اجرا  |  '+persianDigits(TODAY_STR);
+</script>
+</body>
+</html>
