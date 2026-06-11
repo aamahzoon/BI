@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>داشبورد گذران وقت ایران — ۱۳۹۸–۱۳۹۹</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Kufi Arabic',Tahoma,sans-serif;background:#F0F4F8;min-height:100vh;padding-bottom:40px;direction:rtl}
+.header{background:linear-gradient(135deg,#0B1F3A 0%,#1A3A5C 100%);padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
+.header-logo{width:46px;height:46px;background:#D4A017;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.filterbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 32px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.btn{padding:4px 14px;border-radius:6px;border:1.5px solid #e2e8f0;background:#fff;color:#374151;font-size:12px;cursor:pointer;font-family:inherit;direction:rtl;transition:all .15s}
+.btn.active-navy{border-color:#0B1F3A;background:#0B1F3A;color:#D4A017}
+.btn.active-gold{border-color:#D4A017;background:#D4A017;color:#0B1F3A}
+.btn.active-teal{border-color:#2A9D8F;background:#2A9D8F;color:#fff}
+.content{padding:24px 32px}
+.kpi-row{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.kpi-card{background:#fff;border-radius:12px;padding:16px 20px;flex:1;min-width:150px}
+.kpi-label{font-size:11px;color:#6B7280;text-align:right;direction:rtl;margin-bottom:4px}
+.kpi-value{font-size:22px;font-weight:700;color:#0B1F3A;text-align:right;direction:rtl}
+.kpi-sub{font-size:11px;color:#6B7280;text-align:right;direction:rtl;margin-top:4px}
+.kpi-icon{font-size:24px;margin-bottom:6px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
+.chart-card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:20px 16px}
+.chart-title-fa{font-size:12px;color:#D4A017;font-weight:600;direction:rtl;text-align:right}
+.chart-title-en{display:none}
+.chart-header{margin-bottom:14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:8px;font-size:11px;color:#6B7280}
+.legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-left:4px}
+.chart-wrap{position:relative;width:100%}
+.insights{background:#0B1F3A;border-radius:12px;padding:20px 28px;border-right:4px solid #D4A017}
+.insight-title{color:#D4A017;font-weight:700;font-size:14px;margin-bottom:14px;direction:rtl;text-align:right}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.insight-item{display:flex;gap:10px;align-items:flex-start}
+.footer{text-align:center;margin-top:24px;color:#9CA3AF;font-size:11px;direction:rtl}
+canvas{display:block}
+.tooltip-box{position:absolute;background:#0B1F3A;border:1px solid #D4A017;border-radius:6px;padding:10px 14px;font-size:12px;color:#fff;pointer-events:none;z-index:100;display:none;max-width:200px}
+.tooltip-label{font-weight:600;margin-bottom:4px;color:#D4A017}
+.heatmap-table{width:100%;border-collapse:collapse;font-size:11px}
+.heatmap-table th{font-size:10px;color:#6B7280;padding:4px 6px;text-align:right;direction:rtl}
+.heatmap-table td{padding:3px 6px;text-align:center;border-radius:3px;font-size:10px;font-weight:600}
+.two-col{display:flex;gap:8px;height:280px}
+.two-col .col{flex:1;text-align:center}
+.mini-stack{display:flex;flex-direction:column;gap:20px}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}.insight-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="header-logo">📊</div>
+    <div>
+      <div style="color:#fff;font-weight:700;font-size:17px;direction:rtl">مرکز آمار ایران</div>
+      <div style="color:#D4A017;font-size:12px;direction:rtl">طرح گذران وقت نقاط شهری</div>
+    </div>
+  </div>
+  <div style="text-align:center">
+    <div style="color:#fff;font-size:15px;font-weight:600;direction:rtl">داشبورد آمارگیری گذران وقت</div>
+    <div style="color:#9CA3AF;font-size:11px;direction:rtl">نقاط شهری — ۱۳۹۸–۱۳۹۹</div>
+  </div>
+  <div style="background:#D4A017;color:#0B1F3A;border-radius:8px;padding:6px 16px;font-weight:700;font-size:13px">۱۳۹۸–۱۳۹۹</div>
+</div>
+
+<!-- Filter bar -->
+<div class="filterbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:12px;color:#6B7280;direction:rtl">جنس:</span>
+    <button class="btn active-navy" data-group="gender" data-val="total" onclick="setFilter('gender','total')">مرد و زن</button>
+    <button class="btn" data-group="gender" data-val="male" onclick="setFilter('gender','male')">مرد</button>
+    <button class="btn" data-group="gender" data-val="female" onclick="setFilter('gender','female')">زن</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:12px;color:#6B7280;direction:rtl">فعالیت:</span>
+    <button class="btn active-gold" data-group="activity" data-val="0" onclick="setFilter('activity','0')">اشتغال مزدبگیری</button>
+    <button class="btn" data-group="activity" data-val="2" onclick="setFilter('activity','2')">خدمات خانگی</button>
+    <button class="btn" data-group="activity" data-val="7" onclick="setFilter('activity','7')">فراغت</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-right:auto">
+    <span style="font-size:12px;color:#6B7280;direction:rtl">معیار:</span>
+    <button class="btn active-teal" data-group="metric" data-val="time" onclick="setFilter('metric','time')">میانگین زمان</button>
+    <button class="btn" data-group="metric" data-val="part" onclick="setFilter('metric','part')">درصد مشارکت</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- KPI Row -->
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <!-- Row 1 -->
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">توزیع ۲۴ ساعته بر حسب جنس</div>
+        <div class="chart-title-en">توزیع ۲۴ ساعته بر حسب جنس</div>
+      </div>
+      <div id="legend-stacked" class="legend"></div>
+      <div class="chart-wrap" style="height:250px"><canvas id="chart-stacked"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">نمودار رادار — مرد در برابر زن</div>
+        <div class="chart-title-en">پروفایل فعالیت — مرد در برابر زن</div>
+      </div>
+      <div style="font-size:11px;color:#6B7280;margin-bottom:6px">
+        <span style="color:#457B9D;margin-left:12px">■ مرد</span>
+        <span style="color:#E63946">■ زن</span>
+        <span id="radar-metric-label" style="color:#9CA3AF"> — ساعت</span>
+      </div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chart-radar"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">زمان بر حسب گروه سنی</div>
+        <div class="chart-title-en">زمان بر حسب گروه سنی (فعالیت انتخابی)</div>
+      </div>
+      <div style="font-size:11px;color:#6B7280;margin-bottom:6px">
+        <span style="color:#0B1F3A;margin-left:12px">■ مرد</span>
+        <span style="color:#D4A017;margin-left:12px">■ زن</span>
+        <span id="age-avg-label" style="color:#9CA3AF">— میانگین ملی</span>
+      </div>
+      <div class="chart-wrap" style="height:265px"><canvas id="chart-age"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">منحنی‌های چرخه زندگی</div>
+        <div class="chart-title-en">منحنی‌های چرخه زندگی — کار و خانگی</div>
+      </div>
+      <div style="font-size:11px;color:#6B7280;margin-bottom:6px">
+        <span style="color:#E63946;margin-left:10px">── کار مزد مرد</span>
+        <span style="color:#F4A261;margin-left:10px">── کار مزد زن</span>
+        <span style="color:#457B9D;margin-left:10px">‐‐ خانگی مرد</span>
+        <span style="color:#8338EC">‐‐ خانگی زن</span>
+      </div>
+      <div class="chart-wrap" style="height:265px"><canvas id="chart-lifecycle"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 3 -->
+  <div class="grid-3">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">بر حسب وضع اقتصادی</div>
+        <div class="chart-title-en">بر حسب وضع اقتصادی</div>
+      </div>
+      <div style="font-size:10px;color:#6B7280;margin-bottom:4px">
+        <span style="color:#0B1F3A;margin-left:10px">■ مرد</span>
+        <span style="color:#D4A017">■ زن</span>
+      </div>
+      <div class="chart-wrap" style="height:265px"><canvas id="chart-econ"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">بر حسب سطح تحصیلات</div>
+        <div class="chart-title-en">بر حسب سطح تحصیلات</div>
+      </div>
+      <div class="chart-wrap" style="height:285px"><canvas id="chart-edu"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">بر حسب وضع زناشویی</div>
+        <div class="chart-title-en">بر حسب وضع زناشویی</div>
+      </div>
+      <div style="font-size:10px;color:#6B7280;margin-bottom:4px">
+        <span style="color:#0B1F3A;margin-left:10px">■ کار (مرد)</span>
+        <span style="color:#D4A017;margin-left:10px">■ کار (زن)</span>
+        <span style="color:#E63946;margin-left:10px">■ خانگی (مرد)</span>
+        <span style="color:#06D6A0">■ خانگی (زن)</span>
+      </div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chart-marital"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 4 -->
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">روز عادی در برابر تعطیل رسمی</div>
+        <div class="chart-title-en">توزیع روز عادی در برابر تعطیل رسمی</div>
+      </div>
+      <div class="two-col">
+        <div class="col">
+          <div style="font-size:11px;color:#374151;margin-bottom:4px;font-weight:600">روز عادی</div>
+          <div class="chart-wrap" style="height:220px"><canvas id="chart-weekday"></canvas></div>
+          <div id="weekday-sub" style="font-size:10px;color:#6B7280"></div>
+        </div>
+        <div class="col">
+          <div style="font-size:11px;color:#374151;margin-bottom:4px;font-weight:600">تعطیل رسمی</div>
+          <div class="chart-wrap" style="height:220px"><canvas id="chart-holiday"></canvas></div>
+          <div id="holiday-sub" style="font-size:10px;color:#6B7280"></div>
+        </div>
+      </div>
+      <div id="legend-pie" class="legend" style="margin-top:8px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">مشارکت در برابر زمان متوسط</div>
+        <div class="chart-title-en">نرخ مشارکت در برابر میانگین زمان</div>
+      </div>
+      <div class="chart-wrap" style="height:310px"><canvas id="chart-bubble"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 5 -->
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-fa">نقشه حرارتی تحصیلات × فعالیت</div>
+        <div class="chart-title-en">نقشه حرارتی تحصیلات × فعالیت</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="heatmap-table">
+          <thead><tr>
+            <th style="text-align:right;direction:rtl">تحصیلات</th>
+            <th style="text-align:center">کار مزد</th>
+            <th style="text-align:center">خانگی</th>
+          </tr></thead>
+          <tbody id="heatmap-body"></tbody>
+        </table>
+        <div id="heatmap-note" style="font-size:10px;color:#6B7280;margin-top:8px;direction:rtl;text-align:right"></div>
+      </div>
+    </div>
+    <div class="mini-stack">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title-fa">زمان فضای مجازی</div>
+          <div class="chart-title-en">زمان فضای مجازی</div>
+        </div>
+        <div class="chart-wrap" style="height:135px"><canvas id="chart-virtual"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title-fa">شکاف جنسیتی به تفکیک فعالیت</div>
+          <div class="chart-title-en">شکاف جنسیتی به تفکیک فعالیت (زن−مرد)</div>
+        </div>
+        <div class="chart-wrap" style="height:135px"><canvas id="chart-gap"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Insights -->
+  <div class="insights">
+    <div class="insight-title">💡 یافته‌های کلیدی</div>
+    <div class="insight-grid" id="insights-grid"></div>
+  </div>
+
+  <div class="footer">منبع: مرکز آمار ایران — طرح آمارگیری گذران وقت نقاط شهری ۱۳۹۸–۱۳۹۹ | جمعیت ۱۵ ساله و بیشتر</div>
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+const ACTIVITY_LABELS_FA = ["اشتغال مزدبگیری","تولید کالا","خدمات خانگی","مراقبت","کار داوطلبانه","یادگیری","معاشرت","فراغت و رسانه","مراقبت شخصی"];
+const ACTIVITY_LABELS_EN = ["اشتغال مزدبگیری","تولید کالا","خدمات خانگی","مراقبت","کار داوطلبانه","یادگیری","معاشرت","فراغت و رسانه","مراقبت شخصی"];
+const ACT_COLORS = ["#E63946","#457B9D","#F4A261","#E9C46A","#2A9D8F","#264653","#8338EC","#06D6A0","#ADB5BD"];
+
+const BASE = {
+  total:[2.77,0.07,2.85,0.42,0.03,0.38,1.60,4.32,11.57],
+  male: [4.98,0.05,0.88,0.20,0.03,0.37,1.45,4.58,11.43],
+  female:[0.63,0.08,4.77,0.63,0.03,0.38,1.73,4.05,11.68]
+};
+const PARTICIPATION = {
+  total:[31.3,4.0,73.0,24.8,1.7,7.3,79.7,97.5,100],
+  male: [54.6,2.2,51.3,17.5,1.3,7.1,76.3,97.3,100],
+  female:[8.8,5.8,94.1,31.8,2.0,7.5,83.0,97.8,100]
+};
+const AGE_GROUPS = ["۱۵-۱۹","۲۰-۲۴","۲۵-۲۹","۳۰-۳۴","۳۵-۳۹","۴۰-۴۴","۴۵-۴۹","۵۰-۵۴","۵۵-۵۹","۶۰-۶۴","۶۵+"];
+const PAID_BY_AGE = {
+  total:[0.75,2.33,3.50,3.72,4.07,4.13,3.73,2.80,2.00,1.38,0.57],
+  male: [1.28,3.98,5.98,6.45,6.73,6.80,6.35,5.30,4.15,2.80,1.12],
+  female:[0.22,0.72,1.25,1.27,1.42,1.47,1.30,0.95,0.65,0.40,0.15]
+};
+const DOM_BY_AGE = {
+  total:[1.25,1.98,2.63,2.90,3.08,3.22,3.37,3.45,3.53,3.37,2.67],
+  male: [0.55,0.55,0.77,0.97,1.02,1.03,0.97,0.98,1.05,0.97,0.90],
+  female:[1.95,3.40,4.45,4.82,5.07,5.42,5.67,5.92,6.05,5.87,4.47]
+};
+const LEISURE_BY_AGE = {
+  total:[5.45,4.88,4.22,3.78,3.53,3.63,3.72,4.17,4.43,4.85,5.50],
+  male: [5.95,5.23,4.42,3.90,3.60,3.67,3.80,4.30,4.60,5.00,5.75],
+  female:[4.95,4.55,4.02,3.67,3.47,3.58,3.65,4.05,4.28,4.72,5.27]
+};
+const EDU_LABELS = ["بی‌سواد","ابتدایی","راهنمایی","متوسطه","دیپلم","فوق‌دیپلم","لیسانس","فوق‌لیسانس","دکترا"];
+const PAID_BY_EDU = {
+  total:[0.90,2.40,3.60,0.77,3.15,3.45,3.10,3.40,5.48],
+  male: [2.42,4.50,5.92,1.30,5.78,5.15,4.95,4.78,6.50],
+  female:[0.25,0.80,1.28,0.45,1.05,1.48,1.68,1.90,3.22]
+};
+const DOM_BY_EDU = {
+  total:[3.43,3.40,2.78,1.30,2.97,2.43,2.50,2.07,1.33],
+  male: [0.97,0.83,0.95,0.37,0.50,0.55,0.55,1.00,0.50],
+  female:[5.83,5.83,4.82,2.22,5.17,4.07,3.83,3.20,2.33]
+};
+const ECON_LABELS_FA = ["شاغل","بیکار","خانه‌دار","محصل","درآمد بدون کار","سایر"];
+const PAID_BY_ECON = {
+  total:[7.42,0.35,0.00,0.02,0.02,0.05],
+  male: [7.80,0.42,0.00,0.03,0.03,0.05],
+  female:[6.45,0.12,0.00,0.01,0.00,0.03]
+};
+const DOM_BY_ECON = {
+  total:[1.07,1.82,5.55,1.23,2.30,1.00],
+  male: [0.68,1.22,0.00,0.45,1.02,0.58],
+  female:[1.97,3.28,5.55,2.00,3.37,1.47]
+};
+const MARITAL_LABELS_FA = ["متأهل","بیوه","مطلقه","هرگز ازدواج نکرده"];
+const PAID_BY_MARITAL = {
+  total:[3.03,0.45,3.08,2.57],
+  male: [5.63,1.30,5.53,3.48],
+  female:[0.98,0.22,1.25,1.15]
+};
+const DOM_BY_MARITAL = {
+  total:[3.27,3.65,3.23,1.33],
+  male: [0.92,2.53,1.40,0.65],
+  female:[5.55,4.45,5.07,2.03]
+};
+const WEEKDAY = [3.12,0.07,2.87,0.43,0.03,0.27,1.55,3.97,11.68];
+const HOLIDAY = [1.32,0.05,2.25,0.33,0.02,0.12,1.90,5.73,12.28];
+const VIRTUAL = [0.05,0.01,0.02,0.01,0.00,0.12,0.22,1.85,0.10];
+const VIRTUAL_PART = [5.2,1.1,2.3,0.9,0.3,18.4,28.6,72.4,8.1];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let state = {gender:"total", activity:"0", metric:"time"};
+const charts = {};
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function toHM(dec){
+  const h=Math.floor(dec), m=Math.round((dec-h)*60);
+  return h+":"+(m<10?"0":"")+m;
+}
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+// ─── Filter handler ───────────────────────────────────────────────────────────
+function setFilter(group, val){
+  state[group]=val;
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(b=>{
+    b.classList.remove("active-navy","active-gold","active-teal");
+  });
+  const btn=document.querySelector(`[data-group="${group}"][data-val="${val}"]`);
+  if(group==="gender") btn.classList.add("active-navy");
+  else if(group==="activity") btn.classList.add("active-gold");
+  else btn.classList.add("active-teal");
+  renderAll();
+}
+
+// ─── Render all ───────────────────────────────────────────────────────────────
+function renderAll(){
+  renderKPIs();
+  renderStacked();
+  renderRadar();
+  renderAge();
+  renderLifecycle();
+  renderEcon();
+  renderEdu();
+  renderMarital();
+  renderPies();
+  renderBubble();
+  renderHeatmap();
+  renderVirtual();
+  renderGap();
+  renderInsights();
+}
+
+// ─── KPI ─────────────────────────────────────────────────────────────────────
+function renderKPIs(){
+  const g=state.gender;
+  const gData=BASE[g], gPart=PARTICIPATION[g];
+  const kpiPaid=gData[0], kpiLeisure=gData[7], kpiDomestic=gData[2];
+  const domesticGap=(BASE.female[2]/BASE.male[2]).toFixed(1);
+  const kpiPartRate=gPart[7];
+  const cards=[
+    {icon:"💼",label:"متوسط کار مزدبگیری",value:toHM(kpiPaid),sub:"میانگین کار مزدبگیری",accent:"#E63946"},
+    {icon:"🎭",label:"متوسط فراغت و رسانه",value:toHM(kpiLeisure),sub:"میانگین فراغت",accent:"#06D6A0"},
+    {icon:"🏠",label:"متوسط خدمات خانگی",value:toHM(kpiDomestic),sub:"میانگین خانگی",accent:"#F4A261"},
+    {icon:"⚖️",label:"شکاف جنسیتی خانگی",value:domesticGap+"×",sub:`زنان ${toHM(BASE.female[2])} — مردان ${toHM(BASE.male[2])}`,accent:"#8338EC"},
+    {icon:"📊",label:"مشارکت در فراغت",value:kpiPartRate.toFixed(1)+"%",sub:"نرخ مشارکت در فراغت",accent:"#264653"}
+  ];
+  document.getElementById("kpi-row").innerHTML=cards.map(c=>`
+    <div class="kpi-card" style="border:1.5px solid ${c.accent}">
+      <div class="kpi-icon">${c.icon}</div>
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-sub">${c.sub}</div>
+    </div>`).join("");
+}
+
+// ─── Chart 1: Stacked bar ─────────────────────────────────────────────────────
+function renderStacked(){
+  destroyChart("stacked");
+  document.getElementById("legend-stacked").innerHTML=ACTIVITY_LABELS_FA.map((l,i)=>
+    `<span style="display:flex;align-items:center;gap:4px"><span class="legend-dot" style="background:${ACT_COLORS[i]}"></span>${l}</span>`
+  ).join("");
+  const labels=["مرد و زن","مرد","زن"];
+  const keys=["total","male","female"];
+  const datasets=ACTIVITY_LABELS_FA.map((a,i)=>({
+    label:a, data:keys.map(k=>BASE[k][i]),
+    backgroundColor:ACT_COLORS[i], stack:"a"
+  }));
+  charts.stacked=new Chart(document.getElementById("chart-stacked"),{
+    type:"bar",
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${toHM(ctx.parsed.y)} ساعت`}}},
+      scales:{
+        x:{ticks:{font:{size:11}}},
+        y:{min:0,max:24,ticks:{font:{size:10},callback:v=>v+"ساعت"},stacked:true}
+      }
+    }
+  });
+}
+
+// ─── Chart 2: Radar ───────────────────────────────────────────────────────────
+function renderRadar(){
+  destroyChart("radar");
+  const isTme=state.metric==="time";
+  document.getElementById("radar-metric-label").textContent=isTme?" — ساعت":" — درصد مشارکت";
+  const src=isTme?BASE:PARTICIPATION;
+  charts.radar=new Chart(document.getElementById("chart-radar"),{
+    type:"radar",
+    data:{
+      labels:ACTIVITY_LABELS_FA,
+      datasets:[
+        {label:"مرد",data:src.male,borderColor:"#457B9D",backgroundColor:"rgba(69,123,157,0.35)",pointRadius:3},
+        {label:"زن",data:src.female,borderColor:"#E63946",backgroundColor:"rgba(230,57,70,0.35)",pointRadius:3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>isTme?`${ctx.dataset.label}: ${toHM(ctx.parsed.r)}`:`${ctx.dataset.label}: ${ctx.parsed.r.toFixed(1)}%`}}},
+      scales:{r:{ticks:{font:{size:8}},pointLabels:{font:{size:9}}}}
+    }
+  });
+}
+
+// ─── Chart 3: Age ─────────────────────────────────────────────────────────────
+function renderAge(){
+  destroyChart("age");
+  const act=parseInt(state.activity);
+  const srcM=act===0?PAID_BY_AGE.male:act===2?DOM_BY_AGE.male:LEISURE_BY_AGE.male;
+  const srcF=act===0?PAID_BY_AGE.female:act===2?DOM_BY_AGE.female:LEISURE_BY_AGE.female;
+  const avg=act===0?BASE.total[0]:act===2?BASE.total[2]:BASE.total[7];
+  document.getElementById("age-avg-label").textContent=`— میانگین ملی (${toHM(avg)})`;
+  charts.age=new Chart(document.getElementById("chart-age"),{
+    type:"bar",
+    data:{
+      labels:AGE_GROUPS,
+      datasets:[
+        {label:"مرد",data:srcM,backgroundColor:"#0B1F3A",borderRadius:3},
+        {label:"زن",data:srcF,backgroundColor:"#D4A017",borderRadius:3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${toHM(ctx.parsed.y)} ساعت`}}},
+      scales:{
+        x:{ticks:{font:{size:9},maxRotation:35}},
+        y:{ticks:{font:{size:10},callback:v=>v+"ساعت"}}
+      },
+      plugins:{annotation:{annotations:{avg:{type:"line",yMin:avg,yMax:avg,borderColor:"#9CA3AF",borderDash:[4,2],borderWidth:1.5}}}}
+    }
+  });
+}
+
+// ─── Chart 4: Lifecycle ───────────────────────────────────────────────────────
+function renderLifecycle(){
+  destroyChart("lifecycle");
+  charts.lifecycle=new Chart(document.getElementById("chart-lifecycle"),{
+    type:"line",
+    data:{
+      labels:AGE_GROUPS,
+      datasets:[
+        {label:"کار مزد (مرد)",data:PAID_BY_AGE.male,borderColor:"#E63946",borderWidth:2,pointRadius:0,tension:0.3},
+        {label:"کار مزد (زن)",data:PAID_BY_AGE.female,borderColor:"#F4A261",borderWidth:2,pointRadius:0,tension:0.3},
+        {label:"خانگی (مرد)",data:DOM_BY_AGE.male,borderColor:"#457B9D",borderWidth:2,pointRadius:0,borderDash:[5,3],tension:0.3},
+        {label:"خانگی (زن)",data:DOM_BY_AGE.female,borderColor:"#8338EC",borderWidth:2,pointRadius:0,borderDash:[5,3],tension:0.3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${toHM(ctx.parsed.y)} ساعت`}}},
+      scales:{
+        x:{ticks:{font:{size:9},maxRotation:35}},
+        y:{ticks:{font:{size:10},callback:v=>v+"ساعت"}}
+      }
+    }
+  });
+}
+
+// ─── Chart 5: Economic status ─────────────────────────────────────────────────
+function renderEcon(){
+  destroyChart("econ");
+  const act=parseInt(state.activity);
+  const srcM=act===0?PAID_BY_ECON.male:DOM_BY_ECON.male;
+  const srcF=act===0?PAID_BY_ECON.female:DOM_BY_ECON.female;
+  const sorted=ECON_LABELS_FA.map((l,i)=>({l,m:srcM[i],f:srcF[i]})).sort((a,b)=>(b.m+b.f)-(a.m+a.f));
+  charts.econ=new Chart(document.getElementById("chart-econ"),{
+    type:"bar",
+    data:{
+      labels:sorted.map(r=>r.l),
+      datasets:[
+        {label:"مرد",data:sorted.map(r=>r.m),backgroundColor:"#0B1F3A"},
+        {label:"زن",data:sorted.map(r=>r.f),backgroundColor:"#D4A017"}
+      ]
+    },
+    options:{
+      indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${toHM(ctx.parsed.x)} ساعت`}}},
+      scales:{
+        x:{ticks:{font:{size:9},callback:v=>v+"ساعت"}},
+        y:{ticks:{font:{size:9}}}
+      }
+    }
+  });
+}
+
+// ─── Chart 6: Education ───────────────────────────────────────────────────────
+function renderEdu(){
+  destroyChart("edu");
+  const act=parseInt(state.activity);
+  const src=act===0?PAID_BY_EDU[state.gender]:DOM_BY_EDU[state.gender];
+  const colors=src.map((_,i)=>{
+    const t=i/(EDU_LABELS.length-1);
+    const r=Math.round(11+t*(212-11)), g2=Math.round(31+t*(159-31)), b2=Math.round(58+t*(88-58));
+    return `rgb(${r},${g2},${b2})`;
+  });
+  charts.edu=new Chart(document.getElementById("chart-edu"),{
+    type:"bar",
+    data:{labels:EDU_LABELS,datasets:[{label:"ساعت",data:src,backgroundColor:colors,borderRadius:3}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`ساعت: ${toHM(ctx.parsed.y)}`}}},
+      scales:{
+        x:{ticks:{font:{size:8},maxRotation:45}},
+        y:{ticks:{font:{size:9},callback:v=>v+"ساعت"}}
+      }
+    }
+  });
+}
+
+// ─── Chart 7: Marital status ──────────────────────────────────────────────────
+function renderMarital(){
+  destroyChart("marital");
+  charts.marital=new Chart(document.getElementById("chart-marital"),{
+    type:"bar",
+    data:{
+      labels:MARITAL_LABELS_FA,
+      datasets:[
+        {label:"کار مرد",data:PAID_BY_MARITAL.male,backgroundColor:"#0B1F3A"},
+        {label:"کار زن",data:PAID_BY_MARITAL.female,backgroundColor:"#D4A017"},
+        {label:"خانگی مرد",data:DOM_BY_MARITAL.male,backgroundColor:"#E63946"},
+        {label:"خانگی زن",data:DOM_BY_MARITAL.female,backgroundColor:"#06D6A0"}
+      ]
+    },
+    options:{
+      indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${toHM(ctx.parsed.x)} ساعت`}}},
+      scales:{
+        x:{ticks:{font:{size:9},callback:v=>v+"ساعت"}},
+        y:{ticks:{font:{size:8}}}
+      }
+    }
+  });
+}
+
+// ─── Charts 8a/8b: Pies ───────────────────────────────────────────────────────
+function renderPies(){
+  destroyChart("weekday");destroyChart("holiday");
+  document.getElementById("weekday-sub").textContent="فراغت: "+toHM(WEEKDAY[7]);
+  document.getElementById("holiday-sub").textContent="فراغت: "+toHM(HOLIDAY[7]);
+  document.getElementById("legend-pie").innerHTML=ACTIVITY_LABELS_FA.slice(0,6).map((l,i)=>
+    `<span style="display:flex;align-items:center;gap:4px"><span class="legend-dot" style="background:${ACT_COLORS[i]}"></span>${l}</span>`
+  ).join("");
+  const pieOpts=(data)=>({
+    type:"doughnut",
+    data:{labels:ACTIVITY_LABELS_FA,datasets:[{data,backgroundColor:ACT_COLORS,borderWidth:1,borderColor:"#fff"}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:"45%",
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${toHM(ctx.parsed)}`}}}
+    }
+  });
+  charts.weekday=new Chart(document.getElementById("chart-weekday"),pieOpts(WEEKDAY));
+  charts.holiday=new Chart(document.getElementById("chart-holiday"),pieOpts(HOLIDAY));
+}
+
+// ─── Chart 9: Bubble ──────────────────────────────────────────────────────────
+function renderBubble(){
+  destroyChart("bubble");
+  const g=state.gender;
+  const data=ACTIVITY_LABELS_FA.map((fa,i)=>({x:BASE[g][i],y:PARTICIPATION[g][i],r:Math.max(4,BASE[g][i]*4),label:fa,color:ACT_COLORS[i]}));
+  charts.bubble=new Chart(document.getElementById("chart-bubble"),{
+    type:"bubble",
+    data:{datasets:[{
+      label:"فعالیت‌ها",
+      data:data.map(d=>({x:d.x,y:d.y,r:d.r})),
+      backgroundColor:data.map(d=>d.color+"CC"),
+      borderColor:data.map(d=>d.color)
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>{
+        const d=data[ctx.dataIndex];
+        return [`${d.label}`,`زمان: ${toHM(d.x)}`,"مشارکت: "+d.y.toFixed(1)+"%"];
+      }}}},
+      scales:{
+        x:{title:{display:true,text:"ساعت",font:{size:10}},ticks:{font:{size:10}}},
+        y:{title:{display:true,text:"مشارکت %",font:{size:10}},min:0,max:110,ticks:{font:{size:10}}}
+      },
+      layout:{padding:20}
+    }
+  });
+}
+
+// ─── Heatmap ──────────────────────────────────────────────────────────────────
+function renderHeatmap(){
+  const g=state.gender;
+  const rows=EDU_LABELS.map((edu,i)=>({edu,paid:PAID_BY_EDU[g][i],dom:DOM_BY_EDU[g][i]}));
+  const hmax=Math.max(...rows.flatMap(r=>[r.paid,r.dom]));
+  function heatColor(v){
+    const t=v/hmax;
+    return `rgb(${255-Math.round(t*220)},${255-Math.round(t*180)},${255-Math.round(t*60)})`;
+  }
+  function htc(v){return (v/hmax)>0.55?"#0B1F3A":"#374151";}
+  document.getElementById("heatmap-body").innerHTML=rows.map(r=>`
+    <tr>
+      <td style="font-size:9px;color:#374151;padding:3px 6px;text-align:right;direction:rtl;white-space:nowrap">${r.edu}</td>
+      <td style="padding:3px 6px;text-align:center;background:${heatColor(r.paid)};color:${htc(r.paid)};border-radius:3px">${toHM(r.paid)}</td>
+      <td style="padding:3px 6px;text-align:center;background:${heatColor(r.dom)};color:${htc(r.dom)};border-radius:3px">${toHM(r.dom)}</td>
+    </tr>`).join("");
+  document.getElementById("heatmap-note").textContent=
+    "رنگ تیره‌تر = زمان بیشتر | جنس: "+(g==="total"?"مرد و زن":g==="male"?"مرد":"زن");
+}
+
+// ─── Chart 11: Virtual ────────────────────────────────────────────────────────
+function renderVirtual(){
+  destroyChart("virtual");
+  const vData=ACTIVITY_LABELS_FA.map((fa,i)=>({label:fa,time:VIRTUAL[i],part:VIRTUAL_PART[i]})).filter(d=>d.time>0);
+  charts.virtual=new Chart(document.getElementById("chart-virtual"),{
+    type:"bar",
+    data:{
+      labels:vData.map(d=>d.label),
+      datasets:[
+        {type:"bar",label:"ساعت",data:vData.map(d=>d.time),backgroundColor:"#264653",yAxisID:"y",borderRadius:3},
+        {type:"line",label:"مشارکت %",data:vData.map(d=>d.part),borderColor:"#D4A017",borderWidth:2,pointRadius:3,yAxisID:"y2",tension:0.3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{size:8},maxRotation:30}},
+        y:{ticks:{font:{size:9},callback:v=>v+"ساعت"},position:"left"},
+        y2:{ticks:{font:{size:9},callback:v=>v+"%"},position:"right",grid:{drawOnChartArea:false}}
+      }
+    }
+  });
+}
+
+// ─── Chart 12: Gender gap ─────────────────────────────────────────────────────
+function renderGap(){
+  destroyChart("gap");
+  const gapData=ACTIVITY_LABELS_FA.map((fa,i)=>({
+    label:fa,
+    gap:parseFloat((BASE.female[i]-BASE.male[i]).toFixed(2)),
+    color:BASE.female[i]>BASE.male[i]?"#F4A261":"#457B9D"
+  }));
+  charts.gap=new Chart(document.getElementById("chart-gap"),{
+    type:"bar",
+    data:{
+      labels:gapData.map(d=>d.label),
+      datasets:[{
+        label:"شکاف (زن−مرد)",
+        data:gapData.map(d=>d.gap),
+        backgroundColor:gapData.map(d=>d.color),
+        borderRadius:3
+      }]
+    },
+    options:{
+      indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`شکاف: ${toHM(Math.abs(ctx.parsed.x))} (${ctx.parsed.x>=0?"زن بیشتر":"مرد بیشتر"})`}}},
+      scales:{
+        x:{ticks:{font:{size:9},callback:v=>v+"ساعت"}},
+        y:{ticks:{font:{size:7}}}
+      }
+    }
+  });
+}
+
+// ─── Insights ─────────────────────────────────────────────────────────────────
+function renderInsights(){
+  const domGap=(BASE.female[2]/BASE.male[2]).toFixed(1);
+  const workGap=(BASE.male[0]/BASE.female[0]).toFixed(1);
+  const leisurePct=Math.round(((HOLIDAY[7]-WEEKDAY[7])/WEEKDAY[7])*100);
+  const items=[
+    `زنان ${domGap}× بیشتر از مردان وقت خود را صرف خدمات خانگی می‌کنند (${toHM(BASE.female[2])} در برابر ${toHM(BASE.male[2])})`,
+    `مردان ${workGap}× بیشتر از زنان در اشتغال مزدبگیری وقت می‌گذرانند (${toHM(BASE.male[0])} در برابر ${toHM(BASE.female[0])})`,
+    `اوج اشتغال برای مردان در گروه سنی ۴۰–۴۴ سال با ${toHM(PAID_BY_AGE.male[5])} در روز است`,
+    `در روزهای تعطیل، زمان فراغت ${leisurePct}٪ بیشتر از روزهای عادی است (${toHM(HOLIDAY[7])} در برابر ${toHM(WEEKDAY[7])})`,
+    `دارندگان مدرک دکتری بیشترین زمان اشتغال مزدبگیری را دارند (${toHM(PAID_BY_EDU.total[8])} در روز)`
+  ];
+  document.getElementById("insights-grid").innerHTML=items.map(ins=>`
+    <div class="insight-item">
+      <span style="color:#D4A017;font-size:16px;margin-top:1px">◆</span>
+      <span style="color:#E2E8F0;font-size:12px;direction:rtl;text-align:right;line-height:1.7">${ins}</span>
+    </div>`).join("");
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
