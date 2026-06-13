@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>داشبورد تحلیلی بازار کار ایران ۱۴۰۳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<h2 class="sr-only">داشبورد تحلیلی بازار کار ایران ۱۴۰۳ — شاخص‌های اشتغال، بیکاری و نیروی کار به تفکیک استان، جنس و بخش اقتصادی</h2>
+
+<style>
+/* font loaded via <link> in <head> */
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0f2744;--navy2:#1a3a5c;--gold:#c8a44a;--gold2:#e8c06a;
+  --teal:#1a7f6e;--red:#b71c1c;--orange:#e65100;--green:#2e7d32;
+  --bg:#f0f3f8;--card:#ffffff;--text:#0f2744;--text2:#4a5568;
+  --border:#d0dae8;--shadow:0 2px 8px rgba(15,39,68,.10);
+}
+html,body{font-family:'Vazirmatn',sans-serif;direction:rtl;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+
+.dash-shell{display:flex;flex-direction:column;min-height:100vh}
+
+.header{background:var(--navy2);color:#fff;padding:0 12px;display:flex;align-items:center;justify-content:space-between;min-height:52px;height:auto;flex-wrap:wrap;gap:4px;padding-top:8px;padding-bottom:8px;border-bottom:3px solid var(--gold)}
+.header-title{font-size:14px;font-weight:700;letter-spacing:.2px;line-height:1.3}
+.header-sub{font-size:12px;opacity:.7;margin-top:2px}
+.header-badge{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;font-family:'JetBrains Mono',monospace}
+
+.filter-bar{background:var(--navy);padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.1)}
+.filter-group{display:flex;align-items:center;gap:6px}
+.filter-label{color:rgba(255,255,255,.6);font-size:11px;white-space:nowrap}
+.filter-bar select,.filter-bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 10px;border-radius:6px;font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;direction:rtl;-webkit-appearance:none;appearance:none;min-height:34px}
+.filter-bar select:hover,.filter-bar button:hover{background:rgba(255,255,255,.2)}
+.filter-bar button.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:700}
+
+.tabs{background:var(--card);border-bottom:2px solid var(--border);padding:0 8px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap}
+.tab{padding:12px 12px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--navy2)}
+.tab.active{color:var(--navy2);border-bottom-color:var(--gold);font-weight:700}
+
+.content{padding:12px;flex:1}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.kpi-card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);border-right:4px solid var(--gold);transition:transform .15s}
+.kpi-card:hover{transform:translateY(-2px)}
+.kpi-card.red{border-right-color:var(--red)}
+.kpi-card.teal{border-right-color:var(--teal)}
+.kpi-card.orange{border-right-color:var(--orange)}
+.kpi-card.green{border-right-color:var(--green)}
+.kpi-card.navy{border-right-color:var(--navy2)}
+.kpi-label{font-size:11px;color:var(--text2);margin-bottom:6px;line-height:1.3}
+.kpi-value{font-size:18px;font-weight:700;color:var(--navy);font-family:'JetBrains Mono',monospace;line-height:1}
+.kpi-unit{font-size:11px;color:var(--text2);margin-top:4px}
+.kpi-trend{font-size:11px;margin-top:6px;padding:2px 6px;border-radius:4px;display:inline-block}
+.kpi-trend.warn{background:#fff3e0;color:var(--orange)}
+.kpi-trend.good{background:#e8f5e9;color:var(--green)}
+.kpi-trend.bad{background:#ffebee;color:var(--red)}
+
+.row2{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+.row3{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+.row2b{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+
+.chart-card{background:var(--card);border-radius:10px;padding:12px;box-shadow:var(--shadow)}
+.chart-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.chart-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
+
+.insight{background:#fffbf0;border:1px solid #f5d78a;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:12px;color:#7a5a00;line-height:1.5}
+.insight.blue{background:#e8f4fd;border-color:#90caf9;color:#0d47a1}
+.insight.red{background:#ffebee;border-color:#ef9a9a;color:#b71c1c}
+.insight.green{background:#e8f5e9;border-color:#a5d6a7;color:#1b5e20}
+
+canvas{display:block}
+
+.province-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.prov-cell{border-radius:6px;padding:8px 6px;text-align:center;cursor:pointer;transition:all .15s;border:2px solid transparent}
+.prov-cell:hover{transform:scale(1.05)}
+.prov-cell.selected{border-color:var(--gold)}
+.prov-name{font-size:10px;font-weight:500;line-height:1.2;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.prov-val{font-size:11px;font-weight:700;color:#fff;margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+.page{display:none}
+.page.active{display:block}
+
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{font-size:11px;color:var(--text2);width:90px;min-width:70px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;background:#f0f3f8;border-radius:4px;height:18px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-left:6px;transition:width .6s ease}
+.bar-fill span{font-size:10px;font-weight:700;color:#fff;white-space:nowrap;padding:0 6px}
+
+.pyramid-wrap{display:flex;gap:0;align-items:stretch}
+.pyr-labels{display:flex;flex-direction:column;justify-content:space-around;padding:4px 0;font-size:10px;color:var(--text2);text-align:center;min-width:48px}
+.pyr-side{flex:1;display:flex;flex-direction:column;gap:3px;padding:4px 0}
+.pyr-bar-r{display:flex;justify-content:flex-start;align-items:center;height:20px}
+.pyr-bar-l{display:flex;justify-content:flex-end;align-items:center;height:20px}
+.pyr-fill-r{height:14px;border-radius:0 4px 4px 0;min-width:2px;transition:width .6s}
+.pyr-fill-l{height:14px;border-radius:4px 0 0 4px;min-width:2px;transition:width .6s}
+
+.sector-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sector-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.sector-info{flex:1}
+.sector-name{font-size:12px;font-weight:700;color:var(--navy)}
+.sector-track{background:#f0f3f8;border-radius:4px;height:8px;margin-top:4px;overflow:hidden}
+.sector-bar{height:100%;border-radius:4px}
+.sector-pct{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--navy)}
+
+table.data-table{width:100%;border-collapse:collapse;font-size:12px}
+table.data-table th{background:#f4f7fc;color:var(--text2);font-weight:600;padding:8px 10px;text-align:right;border-bottom:2px solid var(--border)}
+table.data-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text)}
+table.data-table tr:hover td{background:#f8fafd}
+.rank-badge{display:inline-block;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;font-size:10px;font-weight:700;background:var(--navy);color:#fff}
+.rank-badge.top3{background:var(--gold);color:var(--navy)}
+.rank-badge.bot3{background:var(--red);color:#fff}
+
+.heat-scale{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:8px 0 4px;width:100%}
+.heat-label-row{display:flex;justify-content:space-between;font-size:10px;color:var(--text2)}
+
+/* ===== Tablet: 2 columns for rows ===== */
+@media (min-width: 600px) {
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .row2{grid-template-columns:1.4fr 1fr}
+  .row3{grid-template-columns:1fr 1fr}
+  .row2b{grid-template-columns:1fr 1fr}
+  .content{padding:16px}
+  .chart-card{padding:16px}
+  .province-grid{grid-template-columns:repeat(4,1fr)}
+  .bar-label{width:110px}
+  .kpi-value{font-size:20px}
+}
+/* ===== Desktop: original layout ===== */
+@media (min-width: 900px) {
+  .kpi-grid{grid-template-columns:repeat(6,1fr)}
+  .row2{grid-template-columns:1.6fr 1fr}
+  .row3{grid-template-columns:1fr 1fr 1fr}
+  .content{padding:20px 24px}
+  .chart-card{padding:18px}
+  .province-grid{grid-template-columns:repeat(5,1fr)}
+  .bar-label{width:120px}
+  .kpi-value{font-size:22px}
+}
+/* ===== Ensure Persian font always loads on Android WebView ===== */
+@font-face {
+  font-family: 'Vazirmatn';
+  font-display: swap;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+canvas {
+  max-width: 100% !important;
+  touch-action: pan-y;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+</style>
+
+<div class="dash-shell">
+  <div class="header">
+    <div>
+      <div class="header-title">داشبورد تحلیلی بازار کار ایران</div>
+      <div class="header-sub">با استفاده از نتایج آمارگیری نیروی کار مرکز آمار ایران</div>
+    </div>
+    <div class="header-badge">۱۴۰۳</div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">جنس:</span>
+      <button class="active" onclick="setGender('all',this)">مرد و زن</button>
+      <button onclick="setGender('male',this)">مرد</button>
+      <button onclick="setGender('female',this)">زن</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">منطقه:</span>
+      <select id="regionSel" onchange="setRegion(this.value)">
+        <option value="all">کل کشور</option>
+        <option value="urban">شهری</option>
+        <option value="rural">روستایی</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">بخش:</span>
+      <select id="sectorSel" onchange="setSector(this.value)">
+        <option value="all">همه بخش‌ها</option>
+        <option value="formal">رسمی</option>
+        <option value="informal">غیررسمی</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showPage('overview',this)">نمای کلی</div>
+    <div class="tab" onclick="showPage('employment',this)">اشتغال و بیکاری</div>
+    <div class="tab" onclick="showPage('demographic',this)">تحلیل جمعیتی</div>
+    <div class="tab" onclick="showPage('provincial',this)">تحلیل استانی</div>
+    <div class="tab" onclick="showPage('informal',this)">بازار غیررسمی</div>
+  </div>
+
+  <div class="content">
+
+    <!-- PAGE: OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="row2">
+        <div class="chart-card">
+          <div class="chart-title">ترکیب جمعیت فعال اقتصادی ۱۵+</div>
+          <div class="chart-sub">تعداد افراد بر حسب وضع فعالیت — سال ۱۴۰۳</div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#1a3a5c"></span>شاغل</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#b71c1c"></span>بیکار</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#c8a44a"></span>محصل</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#4a5568"></span>خانه‌دار</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#1a7f6e"></span>سایر غیرفعال</span>
+          </div>
+          <div style="position:relative;height:260px"><canvas id="donutChart" role="img" aria-label="نمودار دایره‌ای ترکیب جمعیت اقتصادی ایران">شاغل ۲۴.۸ میلیون، بیکار ۲ میلیون، محصل ۸.۷ میلیون، خانه‌دار ۱۶ میلیون</canvas></div>
+          <div class="insight blue">📊 از ۶۵.۳ میلیون نفر جمعیت ۱۵ ساله و بیشتر، تنها ۴۱٪ فعال اقتصادی هستند — این نرخ در مقایسه با میانگین جهانی (۶۲٪) فاصله معناداری دارد</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">مقایسه نرخ مشارکت اقتصادی</div>
+          <div class="chart-sub">تفکیک جنس و منطقه</div>
+          <div style="position:relative;height:220px"><canvas id="participationChart" role="img" aria-label="نمودار نرخ مشارکت اقتصادی به تفکیک جنس">مرد ۶۷.۷٪، زن ۱۳.۴٪، شهری ۴۰.۵٪، روستایی ۴۲.۸٪</canvas></div>
+          <div class="insight red">⚠️ نرخ مشارکت زنان (۱۳.۴٪) تنها یک‌پنجم نرخ مشارکت مردان (۶۷.۷٪) است — بزرگترین شکاف جنسیتی در منطقه</div>
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="chart-card">
+          <div class="chart-title">بخش‌های اقتصادی</div>
+          <div class="chart-sub">توزیع شاغلان بر حسب بخش</div>
+          <div id="sectorBars"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">نرخ بیکاری بر حسب جنس و منطقه</div>
+          <div class="chart-sub">درصد از جمعیت فعال</div>
+          <div style="position:relative;height:200px"><canvas id="unempChart" role="img" aria-label="نرخ بیکاری به تفکیک جنس و منطقه">کل ۷.۶٪، مرد ۶.۲٪، زن ۱۶.۶٪، شهری ۸.۱٪، روستایی ۵.۱٪</canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">وضع اشتغال رسمی / غیررسمی</div>
+          <div class="chart-sub">ترکیب کل شاغلان کشور</div>
+          <div style="position:relative;height:200px"><canvas id="formalChart" role="img" aria-label="نمودار رسمی غیررسمی">رسمی ۴۴.۸٪ یعنی ۱۵.۵ میلیون نفر، غیررسمی ۵۵.۲٪ یعنی ۱۳.۷ میلیون نفر</canvas></div>
+          <div class="insight" style="background:#fff3e0;border-color:#ffcc80;color:#e65100;margin-top:8px">⚠️ بیش از ۱۳.۷ میلیون شاغل (۵۵.۲٪) فاقد پوشش قانون کار و بیمه هستند</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: EMPLOYMENT -->
+    <div class="page" id="page-employment">
+      <div class="row2">
+        <div class="chart-card">
+          <div class="chart-title">هرم جمعیتی — وضع فعالیت بر حسب سن و جنس</div>
+          <div class="chart-sub">هر میله = هزار نفر | آبی = مرد | صورتی = زن</div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#1a3a5c"></span>شاغل مرد</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#c8a44a"></span>بیکار مرد</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#d4537e"></span>شاغل زن</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#e24b4a"></span>بیکار زن</span>
+          </div>
+          <div id="pyramid" style="margin-top:8px"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">نرخ بیکاری بر حسب گروه سنی</div>
+          <div class="chart-sub">درصد — مرد در مقابل زن</div>
+          <div style="position:relative;height:320px"><canvas id="ageUnempChart" role="img" aria-label="نرخ بیکاری بر حسب گروه سنی برای مرد و زن">جوانان ۲۰-۲۴ ساله بیشترین نرخ بیکاری را دارند</canvas></div>
+          <div class="insight red">⚠️ نرخ بیکاری زنان ۲۰-۲۴ ساله به ۳۶.۴٪ می‌رسد — بحرانی‌ترین گروه در بازار کار</div>
+        </div>
+      </div>
+      <div class="row2b">
+        <div class="chart-card">
+          <div class="chart-title">گروه‌های شغلی — ۱۰ گروه عمده ISCO-2008</div>
+          <div class="chart-sub">تعداد شاغلان بر حسب گروه شغلی</div>
+          <div id="occupationBars"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">اشتغال ناقص زمانی</div>
+          <div class="chart-sub">شاغلانی که کمتر از ۴۴ ساعت کار می‌کنند و خواهان کار بیشترند</div>
+          <div style="position:relative;height:200px"><canvas id="underempChart" role="img" aria-label="نمودار اشتغال ناقص به تفکیک جنس">اشتغال ناقص کل ۱.۸۷ میلیون، مرد ۱.۳۸ میلیون، زن ۴۹۷ هزار</canvas></div>
+          <div class="insight">📌 ۱,۸۷۴,۸۶۸ شاغل (۷.۶٪) دارای اشتغال ناقص زمانی هستند — بیشترین تمرکز در کشاورزی و ساختمان</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: DEMOGRAPHIC -->
+    <div class="page" id="page-demographic">
+      <div class="row2">
+        <div class="chart-card">
+          <div class="chart-title">سطح تحصیلات نیروی کار شاغل</div>
+          <div class="chart-sub">توزیع شاغلان ۱۵+ بر حسب مدرک تحصیلی — مرد در مقابل زن</div>
+          <div style="position:relative;height:300px"><canvas id="eduChart" role="img" aria-label="نمودار سطح تحصیلات شاغلان">شاغلان با تحصیلات دانشگاهی ۳۷٪ کل شاغلان را تشکیل می‌دهند</canvas></div>
+          <div class="insight green">✅ زنان شاغل سطح تحصیلات بالاتری نسبت به مردان دارند — ۵۶٪ زنان شاغل دارای مدرک دانشگاهی در برابر ۲۸٪ مردان</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">توزیع ساعات کار هفتگی</div>
+          <div class="chart-sub">شاغلان بر حسب تعداد ساعات کار معمول در هفته</div>
+          <div style="position:relative;height:300px"><canvas id="hoursChart" role="img" aria-label="توزیع ساعات کار هفتگی شاغلان">بیشترین تمرکز در ۴۴ ساعت و بیشتر</canvas></div>
+        </div>
+      </div>
+      <div class="row3">
+        <div class="chart-card">
+          <div class="chart-title">وضع شغلی شاغلان</div>
+          <div class="chart-sub">کارفرما، مستقل، مزدبگیر و سایر</div>
+          <div style="position:relative;height:220px"><canvas id="statusChart" role="img" aria-label="وضع شغلی شاغلان">مزدبگیر خصوصی بیشترین سهم را دارد</canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">جمعیت غیرفعال — تفکیک دلیل</div>
+          <div class="chart-sub">علت اصلی عدم مشارکت اقتصادی</div>
+          <div style="position:relative;height:220px"><canvas id="inactiveChart" role="img" aria-label="دلایل غیرفعالی اقتصادی">خانه‌داری بیشترین دلیل با ۴۱٪</canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">شاغلان بر حسب نوع منطقه</div>
+          <div class="chart-sub">شهری در مقابل روستایی</div>
+          <div style="position:relative;height:220px"><canvas id="urbanChart" role="img" aria-label="توزیع شاغلان شهری و روستایی">شهری ۱۹ میلیون، روستایی ۵.۷ میلیون</canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: PROVINCIAL -->
+    <div class="page" id="page-provincial">
+      <div class="chart-card" style="margin-bottom:16px">
+        <div class="chart-title">نقشه حرارتی استان‌ها — نرخ اشتغال غیررسمی</div>
+        <div class="chart-sub">کلیک روی هر استان برای جزئیات | رنگ سبز = اشتغال رسمی‌تر | رنگ قرمز = غیررسمی‌تر</div>
+        <div class="heat-scale" id="heatScale"></div>
+        <div class="heat-label-row"><span>کمترین (یزد ۳۶.۴٪)</span><span>بیشترین (مازندران ۷۲.۶٪)</span></div>
+        <div class="province-grid" id="provinceGrid" style="margin-top:12px"></div>
+        <div id="provDetail" style="margin-top:12px"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">رتبه‌بندی استان‌ها — نرخ اشتغال غیررسمی</div>
+        <div class="chart-sub">از کمترین تا بیشترین — ۳۱ استان</div>
+        <div id="provRankBars"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: INFORMAL -->
+    <div class="page" id="page-informal">
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)" id="infKpi"></div>
+      <div class="row2" style="margin-top:16px">
+        <div class="chart-card">
+          <div class="chart-title">ترکیب شغلی بخش رسمی در مقابل غیررسمی</div>
+          <div class="chart-sub">مقایسه وضع شغلی در دو بخش</div>
+          <div style="position:relative;height:300px"><canvas id="formalCompChart" role="img" aria-label="مقایسه ترکیب شغلی رسمی و غیررسمی">در بخش غیررسمی کارکن مستقل و فامیلی غالب است</canvas></div>
+          <div class="insight red">⚠️ ۵۸.۷٪ شاغلان بخش غیررسمی «کارکن مستقل» هستند — فاقد هرگونه بیمه و حمایت اجتماعی</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">توزیع غیررسمی بر حسب بخش اقتصادی</div>
+          <div class="chart-sub">سهم غیررسمی در کشاورزی، صنعت و خدمات</div>
+          <div style="position:relative;height:300px"><canvas id="infSectorChart" role="img" aria-label="توزیع اشتغال غیررسمی بر حسب بخش اقتصادی">بخش کشاورزی بیشترین غیررسمی را دارد</canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">مقایسه شهری / روستایی در بخش رسمی و غیررسمی</div>
+        <div class="chart-sub">تفکیک جنس و محل سکونت</div>
+        <div style="position:relative;height:240px"><canvas id="formalGeoChart" role="img" aria-label="مقایسه رسمی غیررسمی بر حسب منطقه و جنس">در مناطق روستایی اشتغال غیررسمی غالب است</canvas></div>
+        <div class="insight green" style="margin-top:12px">✅ زنان شهری در بخش رسمی سهم بیشتری (۷۸.۱٪) نسبت به مردان شهری (۶۷.۵٪) دارند</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DATA = {
+  gender: 'all',
+  region: 'all',
+  sector: 'all',
+
+  all: {
+    employed: 24788426, unemployed: 2029544, inactive: 38520311,
+    active: 26817970, pop15: 65338280,
+    participationRate: 41.0, unemploymentRate: 7.57, employmentRate: 37.94,
+    underemployed: 1874868,
+    formalEmployed: 15545215, informalEmployed: 9243211,
+    formalRate: 44.8, informalRate: 55.2,
+    services: 13066808, industry: 8265467, agriculture: 3444395,
+  },
+  male: {
+    employed: 20827869, unemployed: 1371000, inactive: 10416453,
+    active: 22198869, pop15: 32615322,
+    participationRate: 68.1, unemploymentRate: 6.17, employmentRate: 63.9,
+    underemployed: 1381777,
+    formalEmployed: 12861383, informalEmployed: 7966486,
+    formalRate: 61.8, informalRate: 38.2,
+    services: 8200000, industry: 7000000, agriculture: 2900000,
+  },
+  female: {
+    employed: 3960557, unemployed: 658544, inactive: 28103858,
+    active: 4619101, pop15: 32722959,
+    participationRate: 14.1, unemploymentRate: 14.26, employmentRate: 12.1,
+    underemployed: 493091,
+    formalEmployed: 2683832, informalEmployed: 1276725,
+    formalRate: 67.8, informalRate: 32.2,
+    services: 4866808, industry: 1265467, agriculture: 544395,
+  },
+  urban: {
+    employed: 19043301, unemployed: 1682072, inactive: null,
+    participationRate: 40.5, unemploymentRate: 8.1, employmentRate: 37.3,
+    formalRate: 69.2, informalRate: 30.8,
+    services: 10500000, industry: 6800000, agriculture: 1743301,
+  },
+  rural: {
+    employed: 5745125, unemployed: 347472, inactive: null,
+    participationRate: 42.8, unemploymentRate: 5.1, employmentRate: 40.6,
+    formalRate: 41.2, informalRate: 58.8,
+    services: 2566808, industry: 1465467, agriculture: 1701125,
+  },
+};
+
+const PROVINCES = [
+  {name:'آذربایجان شرقی',informal:62.1,employed:1234064},
+  {name:'آذربایجان غربی',informal:62.8,employed:1015890},
+  {name:'اردبیل',informal:64.6,employed:413368},
+  {name:'اصفهان',informal:47.7,employed:1570621},
+  {name:'البرز',informal:48.6,employed:871070},
+  {name:'ایلام',informal:59.2,employed:136224},
+  {name:'بوشهر',informal:42.2,employed:342575},
+  {name:'تهران',informal:48.7,employed:4508103},
+  {name:'چهارمحال و بختیاری',informal:56.0,employed:291461},
+  {name:'خراسان جنوبی',informal:60.1,employed:221067},
+  {name:'خراسان رضوی',informal:57.2,employed:2115590},
+  {name:'خراسان شمالی',informal:66.0,employed:264773},
+  {name:'خوزستان',informal:58.0,employed:1306395},
+  {name:'زنجان',informal:43.4,employed:397870},
+  {name:'سمنان',informal:33.4,employed:227815},
+  {name:'سیستان و بلوچستان',informal:67.0,employed:624715},
+  {name:'فارس',informal:49.2,employed:1373132},
+  {name:'قزوین',informal:49.6,employed:426733},
+  {name:'قم',informal:56.1,employed:384426},
+  {name:'کردستان',informal:69.8,employed:502241},
+  {name:'کرمان',informal:44.1,employed:922406},
+  {name:'کرمانشاه',informal:68.5,employed:574549},
+  {name:'کهگیلویه و بویراحمد',informal:54.5,employed:165160},
+  {name:'گلستان',informal:55.0,employed:536338},
+  {name:'گیلان',informal:62.0,employed:871896},
+  {name:'لرستان',informal:69.4,employed:493699},
+  {name:'مازندران',informal:72.6,employed:1164147},
+  {name:'مرکزی',informal:51.5,employed:408396},
+  {name:'هرمزگان',informal:55.1,employed:532477},
+  {name:'همدان',informal:60.8,employed:518219},
+  {name:'یزد',informal:36.4,employed:373004},
+];
+
+function getD(){ return DATA[DATA.gender==='all' && DATA.region!=='all' ? DATA.region : DATA.gender]; }
+
+function fmt(n){ return new Intl.NumberFormat('fa-IR').format(Math.round(n)); }
+function fmtM(n){ return (n/1000000).toFixed(1); }
+
+let charts = {};
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  setTimeout(()=>renderCurrentPage(id),50);
+}
+
+function renderCurrentPage(id){
+  if(id==='overview') renderOverview();
+  else if(id==='employment') renderEmployment();
+  else if(id==='demographic') renderDemographic();
+  else if(id==='provincial') renderProvincial();
+  else if(id==='informal') renderInformal();
+}
+
+function setGender(g, btn){
+  DATA.gender=g;
+  document.querySelectorAll('.filter-bar button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+function setRegion(v){ DATA.region=v; renderAll(); }
+function setSector(v){ DATA.sector=v; renderAll(); }
+function renderAll(){
+  const active = document.querySelector('.page.active');
+  if(!active) return;
+  const id = active.id.replace('page-','');
+  renderCurrentPage(id);
+}
+
+function renderKPI(containerId, items){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = items.map(k=>`
+    <div class="kpi-card ${k.cls||''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-unit">${k.unit||''}</div>
+      ${k.badge?`<div class="kpi-trend ${k.badgeCls||''}">${k.badge}</div>`:''}
+    </div>`).join('');
+}
+
+function renderOverview(){
+  const d = getD();
+  renderKPI('kpiGrid',[
+    {label:'جمعیت فعال اقتصادی',value:fmtM(d.active)+'M',unit:'میلیون نفر',cls:'',badge:'نرخ مشارکت '+d.participationRate+'٪',badgeCls:d.participationRate<50?'warn':'good'},
+    {label:'تعداد شاغلان',value:fmtM(d.employed)+'M',unit:'میلیون نفر',cls:'teal',badge:'نرخ اشتغال '+d.employmentRate.toFixed(1)+'٪',badgeCls:'good'},
+    {label:'تعداد بیکاران',value:fmt(d.unemployed),unit:'نفر جویای کار',cls:'red',badge:'نرخ بیکاری '+d.unemploymentRate.toFixed(1)+'٪',badgeCls:'bad'},
+    {label:'اشتغال ناقص زمانی',value:fmt(d.underemployed),unit:'نفر',cls:'orange',badge:'۷.۶٪ از شاغلان',badgeCls:'warn'},
+    {label:'اشتغال غیررسمی',value:fmtM(d.informalEmployed||9243211)+'M',unit:'نفر — ۵۵.۲٪',cls:'navy',badge:'بدون بیمه',badgeCls:'bad'},
+    {label:'اشتغال رسمی',value:fmtM(d.formalEmployed||15545215)+'M',unit:'نفر — ۴۴.۸٪',cls:'green',badge:'تحت پوشش قانون',badgeCls:'good'},
+  ]);
+
+  destroyChart('donutChart');
+  const dc = document.getElementById('donutChart').getContext('2d');
+  charts['donutChart'] = new Chart(dc,{type:'doughnut',data:{
+    labels:['شاغل','بیکار','محصل/دانشجو','خانه‌دار','سایر غیرفعال'],
+    datasets:[{data:[d.employed||24788426,d.unemployed||2029544,8700000,16000000,13820311],
+      backgroundColor:['#1a3a5c','#b71c1c','#c8a44a','#4a5568','#1a7f6e'],
+      borderWidth:3,borderColor:'#fff',hoverOffset:6}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${v.label}: ${fmtM(v.raw)} میلیون نفر`}}}}});
+
+  destroyChart('participationChart');
+  const pc = document.getElementById('participationChart').getContext('2d');
+  charts['participationChart'] = new Chart(pc,{type:'bar',data:{
+    labels:['مرد','زن','شهری','روستایی'],
+    datasets:[{label:'نرخ مشارکت٪',data:[68.1,14.1,40.5,42.8],backgroundColor:['#1a3a5c','#d4537e','#1a7f6e','#c8a44a'],borderRadius:6}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${v.raw}٪`}}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'٪'}}}}});
+
+  const sectors=[
+    {name:'خدمات',icon:'🏢',count:d.services||13066808,color:'#1a3a5c',pct:52.7},
+    {name:'صنعت',icon:'🏭',count:d.industry||8265467,color:'#1a7f6e',pct:33.3},
+    {name:'کشاورزی',icon:'🌾',count:d.agriculture||3444395,color:'#c8a44a',pct:13.9},
+  ];
+  document.getElementById('sectorBars').innerHTML = sectors.map(s=>`
+    <div class="sector-row">
+      <div class="sector-icon" style="background:${s.color}20">${s.icon}</div>
+      <div class="sector-info">
+        <div style="display:flex;justify-content:space-between"><span class="sector-name">${s.name}</span><span class="sector-pct">${s.pct}٪</span></div>
+        <div class="sector-track"><div class="sector-bar" style="width:${s.pct}%;background:${s.color}"></div></div>
+        <div style="font-size:10px;color:var(--text2);margin-top:2px">${fmt(s.count)} نفر</div>
+      </div>
+    </div>`).join('');
+
+  destroyChart('unempChart');
+  const uc = document.getElementById('unempChart').getContext('2d');
+  charts['unempChart'] = new Chart(uc,{type:'bar',data:{
+    labels:['کل','مرد','زن','شهری','روستایی'],
+    datasets:[{data:[7.6,6.2,16.6,8.1,5.1],backgroundColor:['#1a3a5c','#1a3a5c','#d4537e','#1a7f6e','#c8a44a'],borderRadius:6}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${v.raw}٪`}}},scales:{y:{beginAtZero:true,max:25,ticks:{callback:v=>v+'٪'}}}}});
+
+  destroyChart('formalChart');
+  const fc = document.getElementById('formalChart').getContext('2d');
+  charts['formalChart'] = new Chart(fc,{type:'doughnut',data:{
+    labels:['رسمی','غیررسمی'],
+    datasets:[{data:[44.8,55.2],backgroundColor:['#1a7f6e','#e65100'],borderWidth:4,borderColor:'#fff',hoverOffset:4}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${v.label}: ${v.raw}٪`}}}}});
+}
+
+function renderEmployment(){
+  const ageGroups=['۱۵-۱۹','۲۰-۲۴','۲۵-۲۹','۳۰-۳۴','۳۵-۳۹','۴۰-۴۴','۴۵-۴۹','۵۰-۵۴','۵۵-۵۹','۶۰-۶۴','۶۵+'];
+  const maleEmp=[523434,1220506,1799941,3248834,4193239,4290437,3344115,2506168,1465478,834227,560747];
+  const maleUnemp=[86938,288319,155217,111300,60824,39508,22800,13400,9200,5800,1700];
+  const femEmp=[83683,266486,451132,758634,821696,732882,503296,371690,221678,167849,107031];
+  const femUnemp=[26919,125930,182240,111192,62239,50737,22106,13314,9630,4714,1723];
+
+  const maxVal = Math.max(...maleEmp)/1000+Math.max(...maleUnemp)/1000;
+  const pyr = document.getElementById('pyramid');
+  pyr.innerHTML = `<div class="pyramid-wrap">
+    <div class="pyr-side" style="direction:ltr">
+      ${ageGroups.map((_,i)=>`<div class="pyr-bar-r">
+        <div class="pyr-fill-r" style="width:${(femEmp[i]/1000/maxVal*100).toFixed(1)}%;background:#d4537e"></div>
+        <div class="pyr-fill-r" style="width:${(femUnemp[i]/1000/maxVal*100).toFixed(1)}%;background:#e24b4a;margin-right:1px"></div>
+      </div>`).join('')}
+    </div>
+    <div class="pyr-labels">${ageGroups.map(g=>`<div>${g}</div>`).join('')}</div>
+    <div class="pyr-side">
+      ${ageGroups.map((_,i)=>`<div class="pyr-bar-l">
+        <div class="pyr-fill-l" style="width:${(maleUnemp[i]/1000/maxVal*100).toFixed(1)}%;background:#c8a44a;margin-left:1px"></div>
+        <div class="pyr-fill-l" style="width:${(maleEmp[i]/1000/maxVal*100).toFixed(1)}%;background:#1a3a5c"></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+
+  const maleUnempRate=[14.2,19.1,7.9,3.3,1.4,0.9,0.7,0.5,0.6,0.7,0.3];
+  const femUnempRate=[24.4,32.1,28.8,12.8,7.1,6.5,4.2,3.5,4.2,2.7,1.6];
+  destroyChart('ageUnempChart');
+  const auc = document.getElementById('ageUnempChart').getContext('2d');
+  charts['ageUnempChart'] = new Chart(auc,{type:'bar',data:{
+    labels:ageGroups,
+    datasets:[
+      {label:'مرد',data:maleUnempRate,backgroundColor:'#1a3a5c',borderRadius:4},
+      {label:'زن',data:femUnempRate,backgroundColor:'#d4537e',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{y:{beginAtZero:true,max:45,ticks:{callback:v=>v+'٪'}}}}});
+
+  const occ=[
+    {name:'کارکنان مشاغل ساده',count:3417460},
+    {name:'صنعتگران و حرفه‌های مرتبط',count:4574019},
+    {name:'ماشین‌آلات و مونتاژ',count:3454794},
+    {name:'کارکنان خدمات و فروش',count:4048451},
+    {name:'متخصصان',count:3014765},
+    {name:'کشاورزی و جنگلداری',count:2744585},
+    {name:'تکنسین‌ها و کمک‌متخصصان',count:1431097},
+    {name:'مدیران',count:767164},
+    {name:'کارکنان پشتیبانی دفتری',count:843842},
+    {name:'سایر',count:492250},
+  ].sort((a,b)=>b.count-a.count);
+  const maxOcc = occ[0].count;
+  document.getElementById('occupationBars').innerHTML = occ.map((o,i)=>`
+    <div class="bar-row">
+      <div class="bar-label">${o.name}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(o.count/maxOcc*100).toFixed(1)}%;background:${['#1a3a5c','#1a7f6e','#c8a44a','#2e7d32','#4a5568','#b71c1c','#e65100','#0288d1','#7b1fa2','#5d4037'][i]}">
+          <span>${fmtM(o.count)}M</span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  destroyChart('underempChart');
+  const uec = document.getElementById('underempChart').getContext('2d');
+  charts['underempChart'] = new Chart(uec,{type:'bar',data:{
+    labels:['کل','مرد','زن','شهری','روستایی'],
+    datasets:[{data:[1874868,1381777,493091,1200074,674794],backgroundColor:['#1a3a5c','#1a7f6e','#d4537e','#c8a44a','#2e7d32'],borderRadius:6}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${fmt(v.raw)} نفر`}}},scales:{y:{ticks:{callback:v=>fmtM(v)+'M'}}}}});
+}
+
+function renderDemographic(){
+  destroyChart('eduChart');
+  const ec = document.getElementById('eduChart').getContext('2d');
+  charts['eduChart'] = new Chart(ec,{type:'bar',data:{
+    labels:['ابتدایی','راهنمایی','دیپلم','فوق‌دیپلم','لیسانس','فوق‌لیسانس+'],
+    datasets:[
+      {label:'مرد',data:[22,18,32,7,15,6],backgroundColor:'#1a3a5c',borderRadius:4},
+      {label:'زن',data:[12,11,21,9,32,15],backgroundColor:'#d4537e',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'٪'},max:40}}}});
+
+  destroyChart('hoursChart');
+  const hc = document.getElementById('hoursChart').getContext('2d');
+  charts['hoursChart'] = new Chart(hc,{type:'bar',data:{
+    labels:['۱-۱۰','۱۱-۲۰','۲۱-۳۰','۳۱-۴۳','۴۴+'],
+    datasets:[
+      {label:'شهری',data:[8.2,9.1,11.3,18.9,52.5],backgroundColor:'#1a3a5c',borderRadius:4},
+      {label:'روستایی',data:[12.4,13.2,14.1,17.8,42.5],backgroundColor:'#c8a44a',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'٪'},max:60}}}});
+
+  destroyChart('statusChart');
+  const sc = document.getElementById('statusChart').getContext('2d');
+  charts['statusChart'] = new Chart(sc,{type:'doughnut',data:{
+    labels:['مزدبگیر خصوصی','کارکن مستقل','مزدبگیر عمومی','کارفرما','کارکن فامیلی'],
+    datasets:[{data:[42.1,36.9,14.1,3.8,3.1],backgroundColor:['#1a3a5c','#c8a44a','#1a7f6e','#2e7d32','#b71c1c'],borderWidth:3,borderColor:'#fff'}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  destroyChart('inactiveChart');
+  const ic = document.getElementById('inactiveChart').getContext('2d');
+  charts['inactiveChart'] = new Chart(ic,{type:'doughnut',data:{
+    labels:['خانه‌دار','محصل/دانشجو','بیمار/ناتوان','بازنشسته','سایر'],
+    datasets:[{data:[41.2,22.5,8.3,12.1,15.9],backgroundColor:['#d4537e','#c8a44a','#b71c1c','#1a7f6e','#4a5568'],borderWidth:3,borderColor:'#fff'}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  destroyChart('urbanChart');
+  const uc = document.getElementById('urbanChart').getContext('2d');
+  charts['urbanChart'] = new Chart(uc,{type:'bar',data:{
+    labels:['شهری','روستایی'],
+    datasets:[
+      {label:'مرد',data:[15947707,4880162],backgroundColor:'#1a3a5c',borderRadius:4},
+      {label:'زن',data:[3095594,864963],backgroundColor:'#d4537e',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{y:{ticks:{callback:v=>fmtM(v)+'M'}}}}});
+}
+
+function renderProvincial(){
+  const sorted = [...PROVINCES].sort((a,b)=>a.informal-b.informal);
+  const min=36.4, max=72.6;
+  function color(pct){
+    const t=(pct-min)/(max-min);
+    const r=Math.round(46+t*(183-46));
+    const g=Math.round(125+t*(30-125));
+    const b=Math.round(50+t*(28-50));
+    return `rgb(${r},${g},${b})`;
+  }
+
+  const scale = document.getElementById('heatScale');
+  scale.innerHTML = Array.from({length:20},(_,i)=>{
+    const p=min+(max-min)*i/19;
+    return `<div style="flex:1;background:${color(p)}"></div>`;
+  }).join('');
+
+  const grid = document.getElementById('provinceGrid');
+  grid.innerHTML = PROVINCES.map(p=>`
+    <div class="prov-cell" style="background:${color(p.informal)}" onclick="selectProvince('${p.name}')">
+      <div class="prov-name">${p.name.length>7?p.name.slice(0,7)+'…':p.name}</div>
+      <div class="prov-val">${p.informal}٪</div>
+    </div>`).join('');
+
+  const maxE = Math.max(...PROVINCES.map(p=>p.employed));
+  document.getElementById('provRankBars').innerHTML = sorted.map((p,i)=>`
+    <div class="bar-row">
+      <div class="bar-label" style="width:130px">${p.name}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${p.informal}%;background:${color(p.informal)}">
+          <span>${p.informal}٪</span>
+        </div>
+      </div>
+      <span style="font-size:10px;color:var(--text2);min-width:30px;text-align:left">${Math.round(i+1)}</span>
+    </div>`).join('');
+}
+
+function selectProvince(name){
+  const p = PROVINCES.find(x=>x.name===name);
+  if(!p) return;
+  const detail = document.getElementById('provDetail');
+  detail.innerHTML = `<div class="insight blue">
+    <strong>${p.name}</strong> — کل شاغلان: ${fmt(p.employed)} نفر | اشتغال غیررسمی: ${p.informal}٪ | رسمی: ${(100-p.informal).toFixed(1)}٪
+  </div>`;
+}
+
+function renderInformal(){
+  renderKPI('infKpi',[
+    {label:'شاغلان بخش رسمی',value:fmtM(15545215)+'M',unit:'میلیون — ۶۲.۷٪ شهری',cls:'teal',badge:'تحت پوشش بیمه',badgeCls:'good'},
+    {label:'شاغلان بخش غیررسمی',value:fmtM(9243211)+'M',unit:'میلیون — ۵۸.۸٪ روستایی',cls:'red',badge:'بدون پوشش اجتماعی',badgeCls:'bad'},
+    {label:'اشتغال غیررسمی رسمی',value:'۵۵.۲٪',unit:'از کل اشتغال کشور',cls:'orange',badge:'بالاتر از میانگین منطقه',badgeCls:'warn'},
+  ]);
+
+  destroyChart('formalCompChart');
+  const fc = document.getElementById('formalCompChart').getContext('2d');
+  charts['formalCompChart'] = new Chart(fc,{type:'bar',data:{
+    labels:['مزدبگیر عمومی','مزدبگیر خصوصی','کارکن مستقل','کارفرما','کارکن فامیلی'],
+    datasets:[
+      {label:'بخش رسمی',data:[22.4,48.0,23.6,4.3,1.5],backgroundColor:'#1a7f6e',borderRadius:4},
+      {label:'بخش غیررسمی',data:[0.04,32.1,59.1,2.9,5.8],backgroundColor:'#e65100',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{y:{beginAtZero:true,max:70,ticks:{callback:v=>v+'٪'}}}}});
+
+  destroyChart('infSectorChart');
+  const isc = document.getElementById('infSectorChart').getContext('2d');
+  charts['infSectorChart'] = new Chart(isc,{type:'bar',data:{
+    labels:['کشاورزی','صنعت','خدمات'],
+    datasets:[
+      {label:'رسمی',data:[508656,4038000,8623027],backgroundColor:'#1a7f6e',borderRadius:4},
+      {label:'غیررسمی',data:[1621736,1050464,707160],backgroundColor:'#e65100',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{y:{stacked:false,ticks:{callback:v=>fmtM(v)+'M'}}}}});
+
+  destroyChart('formalGeoChart');
+  const fgc = document.getElementById('formalGeoChart').getContext('2d');
+  charts['formalGeoChart'] = new Chart(fgc,{type:'bar',data:{
+    labels:['مرد شهری','زن شهری','مرد روستایی','زن روستایی'],
+    datasets:[
+      {label:'رسمی',data:[67.5,78.1,43.0,30.9],backgroundColor:'#1a7f6e',borderRadius:4},
+      {label:'غیررسمی',data:[32.5,21.9,57.0,69.1],backgroundColor:'#e65100',borderRadius:4}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Vazirmatn'}}}},scales:{x:{stacked:true},y:{stacked:true,max:100,ticks:{callback:v=>v+'٪'}}}}});
+}
+
+renderOverview();
+</script>
+
+</body>
+</html>
