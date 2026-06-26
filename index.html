@@ -1,18 +1,310 @@
 <!DOCTYPE html>
-<html>
-<head><title>داشبوردهای من</title></head>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبوردهای من - مرکز آمار</title>
+    
+    <!-- فونت‌های زیبا از Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome برای آیکون‌ها -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 40px 35px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            border-radius: 10px;
+            margin: 12px auto 0;
+        }
+
+        .dashboard-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dashboard-item {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 16px 22px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .dashboard-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateX(6px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-item a {
+            font-family: 'Vazirmatn', 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #e8e8e8;
+            text-decoration: none;
+            flex: 1;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .dashboard-item a:hover {
+            color: #ffd700;
+        }
+
+        .dashboard-item .icon {
+            font-size: 1.4rem;
+            color: #ffd700;
+            width: 36px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .dashboard-item .arrow {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .dashboard-item:hover .arrow {
+            color: #ffd700;
+            transform: translateX(4px);
+        }
+
+        .badge {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            white-space: nowrap;
+        }
+
+        .footer-stats {
+            margin-top: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.85rem;
+            font-weight: 400;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+
+        .footer-stats span {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 18px;
+                border-radius: 24px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .dashboard-item {
+                padding: 14px 16px;
+            }
+
+            .dashboard-item a {
+                font-size: 0.9rem;
+                gap: 10px;
+            }
+
+            .dashboard-item .icon {
+                font-size: 1.1rem;
+                width: 28px;
+            }
+
+            .badge {
+                font-size: 0.55rem;
+                padding: 2px 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .dashboard-item a {
+                font-size: 0.82rem;
+            }
+            .badge {
+                display: none;
+            }
+        }
+    </style>
+</head>
 <body>
-  <h1>📊 لیست داشبوردها</h1>
-  <ul>
-    <li><a href="بررسی_مهاجرت_بین_استانی_-_1395/">داشبورد مهاجرت_بین استانی 1395</a></li>
-    <li><a href="نمونه_داشبورد_نتایج_آمارگیری_نیروی_کار_سال_1403/">داشبورد نیروی کار 1403</a></li>
-    <li><a href="نمونه داشبورد طرح هزینه و درآمد شهری سال 1403/">داشبورد هزینه و درآمد شهری 1403</a></li>
-    <li><a href="نمونه_داشبورد_طرح_هزینه_و_درآمد_روستایی_سال_1403/">داشبورد هزینه و درآمد روستایی 1403</a></li>
-    <li><a href="نمونه_داشبورد_طرح_آمارگیری_گذران_وقت_سال_1398-99/">داشبورد گذران وقت سال 1398-99</a></li>
-    <li><a href="نقشه_راه_سرشماری_عمومی_نفوس_و_مسکن_ثبتی_مبنا___۱۴۰۵/">داشبورد نقشه راه سرشماری ثبتی مبنا</a></li>
-    <li><a href="داشبورد_سرشماری_عمومی_نفوس_و_مسکن_ثبتی_مبنا___۱۴۰۵_-_نسخه_2_0/">داشبورد سرشماری ثبتی مبنا</a></li>
-    <li><a href="بررسی_اولیه_داده_های_طرح_آمایش_امید_-_استان_هرمزگان_-_محزون/">داشبورد نمونه بررسی نتایج آمایش امید هرمزگان</a></li>
-    <li><a href="dashboard-وضع-فعالیت-شغل-دهک-شهری-1399/">داشبورد شغل و فعالیت و وضع معیشت</a></li>    
-  </ul>
+
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">📊</span>
+            <h1>داشبوردهای تحلیلی</h1>
+            <div class="subtitle">مرکز آمار ایران · طرح‌های آماری</div>
+            <div class="divider"></div>
+        </div>
+
+        <div class="dashboard-grid">
+
+            <div class="dashboard-item">
+                <a href="بررسی_مهاجرت_بین_استانی_-_1395/">
+                    <span class="icon"><i class="fas fa-people-arrows"></i></span>
+                    <span>داشبورد مهاجرت بین استانی ۱۳۹۵</span>
+                    <span class="badge">مهاجرت</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="نمونه_داشبورد_نتایج_آمارگیری_نیروی_کار_سال_1403/">
+                    <span class="icon"><i class="fas fa-briefcase"></i></span>
+                    <span>داشبورد نیروی کار ۱۴۰۳</span>
+                    <span class="badge">اشتغال</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="نمونه داشبورد طرح هزینه و درآمد شهری سال 1403/">
+                    <span class="icon"><i class="fas fa-city"></i></span>
+                    <span>داشبورد هزینه و درآمد شهری ۱۴۰۳</span>
+                    <span class="badge">شهری</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="نمونه_داشبورد_طرح_هزینه_و_درآمد_روستایی_سال_1403/">
+                    <span class="icon"><i class="fas fa-tree"></i></span>
+                    <span>داشبورد هزینه و درآمد روستایی ۱۴۰۳</span>
+                    <span class="badge">روستایی</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="نمونه_داشبورد_طرح_آمارگیری_گذران_وقت_سال_1398-99/">
+                    <span class="icon"><i class="fas fa-clock"></i></span>
+                    <span>داشبورد گذران وقت ۱۳۹۸-۹۹</span>
+                    <span class="badge">گذران وقت</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="نقشه_راه_سرشماری_عمومی_نفوس_و_مسکن_ثبتی_مبنا___۱۴۰۵/">
+                    <span class="icon"><i class="fas fa-map-signs"></i></span>
+                    <span>داشبورد نقشه راه سرشماری ثبتی مبنا</span>
+                    <span class="badge">سرشماری</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="داشبورد_سرشماری_عمومی_نفوس_و_مسکن_ثبتی_مبنا___۱۴۰۵_-_نسخه_2_0/">
+                    <span class="icon"><i class="fas fa-people-group"></i></span>
+                    <span>داشبورد سرشماری ثبتی مبنا نسخه ۲.۰</span>
+                    <span class="badge">سرشماری</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="بررسی_اولیه_داده_های_طرح_آمایش_امید_-_استان_هرمزگان_-_محزون/">
+                    <span class="icon"><i class="fas fa-flag"></i></span>
+                    <span>داشبورد بررسی نتایج آمایش امید هرمزگان</span>
+                    <span class="badge">آمایش</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+            <div class="dashboard-item">
+                <a href="dashboard-وضع-فعالیت-شغل-دهک-شهری-1399/">
+                    <span class="icon"><i class="fas fa-chart-line"></i></span>
+                    <span>داشبورد شغل، فعالیت و وضع معیشت</span>
+                    <span class="badge">معیشت</span>
+                </a>
+                <span class="arrow"><i class="fas fa-chevron-left"></i></span>
+            </div>
+
+        </div>
+
+        <div class="footer-stats">
+            <i class="fas fa-database" style="margin-left: 6px;"></i>
+            <span>۹</span> داشبورد · به‌روزرسانی: <span>۱۴۰۳</span>
+        </div>
+    </div>
+
 </body>
 </html>
