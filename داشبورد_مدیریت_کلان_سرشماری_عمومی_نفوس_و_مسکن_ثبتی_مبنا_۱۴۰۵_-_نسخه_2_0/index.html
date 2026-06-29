@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد مدیریت کلان سرشماری ثبتی‌مبنا ۱۴۰۵</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --done:#2E7D32;--active:#E65100;--critical:#B71C1C;--future:#546E7A;--pending:#F57F17;
+  --header:#1B5E20;--bg:#EEF2EE;--card:#FFFFFF;--text:#1A2B1C;--muted:#607D8B;--border:#D0DAD1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 55%,#43A047 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 3px 14px rgba(0,0,0,.28);}
+.hdr-logos{display:flex;gap:12px;flex-shrink:0;}
+.logo-b{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;text-align:center;line-height:1.5;}
+.hdr-title{text-align:center;flex:1;}
+.hdr-title h1{font-size:16px;font-weight:900;}
+.hdr-title p{font-size:11px;opacity:.8;margin-top:2px;}
+.date-ctrl{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;flex-shrink:0;}
+.date-ctrl label{font-size:11px;opacity:.8;white-space:nowrap;}
+.date-ctrl input{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:5px;color:#fff;padding:4px 8px;font-family:'Vazirmatn',sans-serif;font-size:12px;width:118px;direction:ltr;}
+.date-ctrl input::placeholder{color:rgba(255,255,255,.6);}
+.date-ctrl button{background:rgba(255,255,255,.92);color:#1B5E20;border:none;border-radius:5px;padding:4px 12px;font-size:11px;font-family:'Vazirmatn',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;}
+.date-ctrl button:hover{background:#fff;}
+
+/* TABS */
+.tabs-wrap{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.tabs{display:flex;padding:0 20px;gap:4px;}
+.tab{padding:13px 20px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab:hover{color:var(--header);}
+.tab.active{color:var(--header);border-bottom-color:var(--header);}
+
+/* MAIN */
+.main{padding:20px 24px;max-width:1440px;margin:0 auto;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;}
+.kpi-card{background:#fff;border-radius:12px;padding:16px 12px;text-align:center;box-shadow:0 1px 5px rgba(0,0,0,.07);border-top:4px solid transparent;transition:transform .15s,box-shadow .15s;}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.kpi-card.c-blue{border-top-color:#1565C0;} .kpi-card.c-green{border-top-color:var(--done);} .kpi-card.c-orange{border-top-color:var(--active);}
+.kpi-card.c-red{border-top-color:var(--critical);} .kpi-card.c-gray{border-top-color:var(--future);} .kpi-card.c-purple{border-top-color:#6A1B9A;} .kpi-card.c-amber{border-top-color:#F57F17;}
+.kpi-num{font-size:30px;font-weight:900;line-height:1;margin-bottom:4px;}
+.kpi-card.c-blue .kpi-num{color:#1565C0;} .kpi-card.c-green .kpi-num{color:var(--done);} .kpi-card.c-orange .kpi-num{color:var(--active);}
+.kpi-card.c-red .kpi-num{color:var(--critical);} .kpi-card.c-gray .kpi-num{color:var(--future);} .kpi-card.c-purple .kpi-num{color:#6A1B9A;} .kpi-card.c-amber .kpi-num{color:#F57F17;}
+.kpi-label{font-size:11px;color:var(--muted);font-weight:500;}
+
+/* CARDS */
+.chart-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 5px rgba(0,0,0,.07);}
+.card-title{font-size:13px;font-weight:700;color:var(--header);margin-bottom:14px;border-right:3px solid var(--header);padding-right:9px;}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+.chart-box{position:relative;height:250px;}
+
+/* TIMELINE */
+.timeline-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 5px rgba(0,0,0,.07);margin-bottom:20px;overflow-x:auto;}
+
+/* GANTT */
+.gantt-wrap{background:#fff;border-radius:12px;box-shadow:0 1px 5px rgba(0,0,0,.07);overflow:hidden;margin-bottom:20px;}
+.gantt-filters{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;flex-wrap:wrap;}
+.gantt-filters select,.gantt-filters input[type=text]{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:'Vazirmatn',sans-serif;font-size:12px;background:#fff;min-width:130px;}
+.gantt-area{display:flex;height:700px;}
+
+/* LEFT PANEL — wider progress column */
+.gantt-left{width:460px;min-width:460px;flex-shrink:0;border-left:2px solid var(--border);display:flex;flex-direction:column;}
+.gantt-left-hdr{display:flex;background:#ECEFF1;border-bottom:2px solid var(--border);height:52px;align-items:center;flex-shrink:0;}
+.gh-col{padding:0 8px;font-size:11px;font-weight:700;color:var(--muted);}
+.gc-num{width:34px;text-align:center;flex-shrink:0;}
+.gc-phase{width:12px;flex-shrink:0;}
+.gc-title{flex:1;min-width:0;}
+.gc-pct{width:120px;text-align:center;flex-shrink:0;}
+.gantt-rows-wrap{flex:1;overflow-y:auto;overflow-x:hidden;}
+.g-row{display:flex;align-items:center;height:36px;border-bottom:1px solid #F0F2F0;cursor:pointer;transition:background .12s;}
+.g-row:hover{background:#F5F7F5;}
+.g-row.sel{background:#E8F5E9;}
+.gr-cell{padding:0 6px;overflow:hidden;font-size:11px;}
+.gr-cell.gc-num{color:var(--muted);font-weight:600;text-align:center;flex-shrink:0;}
+.gr-cell.gc-phase{flex-shrink:0;padding:0;display:flex;align-items:center;justify-content:center;}
+.phase-dot{width:8px;height:8px;border-radius:50%;display:block;}
+.gr-cell.gc-title{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;flex:1;min-width:0;}
+.gr-cell.gc-pct{width:120px;flex-shrink:0;}
+.pct-wrap{display:flex;align-items:center;gap:6px;padding:0 4px;}
+.pct-slider{flex:1;height:4px;accent-color:var(--header);cursor:pointer;min-width:60px;}
+.pct-lbl{font-size:10px;font-weight:700;min-width:28px;text-align:left;}
+
+/* RIGHT CANVAS */
+.gantt-right{flex:1;overflow-x:auto;overflow-y:hidden;position:relative;}
+.gantt-canvas-scroll{height:100%;}
+#ganttCanvas{display:block;}
+
+/* GANTT TOOLTIP */
+.gantt-tooltip{position:fixed;display:none;background:#fff;border:1px solid #CFD8DC;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.18);padding:12px 16px;font-family:'Vazirmatn',sans-serif;font-size:12px;color:#1A2B1C;z-index:9999;max-width:320px;pointer-events:none;direction:rtl;text-align:right;}
+.gantt-tooltip .gt-title{font-size:13px;font-weight:800;color:#1B5E20;margin-bottom:8px;border-right:3px solid #1B5E20;padding-right:8px;}
+.gantt-tooltip .gt-row{display:flex;gap:8px;margin-bottom:4px;}
+.gantt-tooltip .gt-label{color:#607D8B;font-weight:600;min-width:70px;flex-shrink:0;}
+.gantt-tooltip .gt-val{color:#1A2B1C;}
+.gantt-tooltip .gt-bar{height:6px;border-radius:3px;margin-top:6px;background:#E0E0E0;overflow:hidden;}
+.gantt-tooltip .gt-bar-fill{height:100%;border-radius:3px;}
+
+/* DETAIL BOX */
+.detail-box{display:none;background:#F8FAF8;border-top:2px solid var(--border);padding:16px 20px;}
+.detail-box.on{display:block;}
+.detail-box h4{font-size:13px;font-weight:800;color:var(--header);margin-bottom:10px;}
+.detail-meta{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:10px;font-size:12px;color:var(--muted);}
+.detail-meta span strong{color:var(--text);}
+.d-progress{margin-bottom:10px;}
+.prog-bar-bg{background:#E0E0E0;border-radius:4px;height:9px;overflow:hidden;margin-top:4px;}
+.prog-bar-fg{height:100%;border-radius:4px;transition:width .3s;}
+.d-notes{margin-top:8px;}
+.d-note{background:#fff;border-radius:6px;padding:8px 12px;font-size:12px;color:#455A64;border-right:3px solid var(--header);}
+.note-lbl{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.sbadge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+.sb-done{background:#E8F5E9;color:var(--done);} .sb-active{background:#FFF3E0;color:var(--active);}
+.sb-critical{background:#FFEBEE;color:var(--critical);} .sb-future{background:#ECEFF1;color:var(--future);}
+.sb-pending{background:#FFF8E1;color:var(--pending);}
+
+/* TAB 3 */
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+.heatmap-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 5px rgba(0,0,0,.07);overflow-x:auto;}
+.recs{margin-top:4px;}
+.recs h2{font-size:15px;font-weight:800;color:var(--header);margin-bottom:14px;}
+.acc-item{background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden;}
+.acc-hdr{display:flex;align-items:center;padding:14px 18px;cursor:pointer;gap:10px;user-select:none;}
+.acc-hdr:hover{background:#FAFAFA;}
+.acc-icon{font-size:18px;flex-shrink:0;}
+.acc-ttl{flex:1;font-size:13px;font-weight:700;}
+.acc-arr{color:var(--muted);font-size:16px;transition:transform .2s;}
+.acc-item.open .acc-arr{transform:rotate(90deg);}
+.acc-body{display:none;padding:0 18px 14px;font-size:12px;color:#455A64;line-height:1.7;}
+.acc-item.open .acc-body{display:block;}
+.acc-meta{display:grid;grid-template-columns:80px 1fr;gap:4px 12px;margin-top:8px;font-size:12px;background:#F8FAF8;border-radius:6px;padding:10px 12px;}
+.acc-meta .k{color:var(--muted);font-weight:700;}
+
+footer{background:#1A2A1C;color:rgba(255,255,255,.5);text-align:center;padding:12px;font-size:11px;margin-top:28px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-logos">
+    <div class="logo-b">مرکز آمار<br>ایران</div>
+    <div class="logo-b">سازمان برنامه<br>و بودجه</div>
+  </div>
+  <div class="hdr-title">
+    <h1>داشبورد مدیریت کلان سرشماری عمومی نفوس و مسکن ثبتی‌مبنا ۱۴۰۵</h1>
+    <p>دبیرخانه ستاد سرشماری | دوره پروژه: ۱۴۰۴/۰۲/۰۱ تا ۱۴۰۶/۰۴/۳۱</p>
+  </div>
+  <div class="date-ctrl">
+    <label>تاریخ پیگیری:</label>
+    <input type="text" id="trackingDate" value="1405/04/07" placeholder="YYYY/MM/DD" dir="ltr">
+    <button onclick="applyDate()">اعمال</button>
+    <button onclick="resetDate()">تاریخ روز جاری</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)">📊 نمای کلی مدیریتی</div>
+    <div class="tab" onclick="switchTab(1)">📅 گانت‌چارت تعاملی</div>
+    <div class="tab" onclick="switchTab(2)">🔍 تحلیل و توصیه‌ها</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══ TAB 0 ══ -->
+<div class="tab-content active" id="tab0">
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="charts-row">
+    <div class="chart-card"><div class="card-title">وضعیت کلی فعالیت‌ها</div><div class="chart-box"><canvas id="donutChart"></canvas></div></div>
+    <div class="chart-card"><div class="card-title">میانگین پیشرفت به تفکیک فاز (وزنی)</div><div class="chart-box"><canvas id="phaseChart"></canvas></div></div>
+  </div>
+  <div class="timeline-card">
+    <div class="card-title">نقشه راه کلان پروژه — مایلستون‌های اصلی</div>
+    <svg id="timelineSVG" height="170" style="width:100%;min-width:900px;display:block;"></svg>
+  </div>
+</div>
+
+<!-- ══ TAB 1 ══ -->
+<div class="tab-content" id="tab1">
+  <div class="gantt-wrap">
+    <div class="gantt-filters">
+      <select id="fPhase" onchange="filterGantt()"><option value="">همه فازها</option></select>
+      <select id="fStatus" onchange="filterGantt()">
+        <option value="">همه وضعیت‌ها</option>
+        <option value="done">✅ تکمیل‌شده</option>
+        <option value="active">🟠 در جریان</option>
+        <option value="critical">🔴 دچار تأخیر</option>
+        <option value="pending">🟡 در دست پیگیری</option>
+        <option value="future">⬜ آغاز نشده</option>
+      </select>
+      <input type="text" id="fSearch" placeholder="🔍 جستجوی عنوان..." oninput="filterGantt()" style="flex:1;max-width:200px;">
+      <span id="ganttCount" style="font-size:12px;color:var(--muted);margin-right:auto;"></span>
+    </div>
+    <div class="gantt-area">
+      <!-- LEFT -->
+      <div class="gantt-left">
+        <div class="gantt-left-hdr">
+          <div class="gh-col gc-num">#</div>
+          <div class="gh-col gc-phase" style="width:12px;"></div>
+          <div class="gh-col gc-title" style="flex:1;padding-right:10px;">عنوان فعالیت</div>
+          <div class="gh-col gc-pct">پیشرفت</div>
+        </div>
+        <div class="gantt-rows-wrap" id="ganttRows"></div>
+      </div>
+      <!-- RIGHT -->
+      <div class="gantt-right" id="ganttRight">
+        <div class="gantt-canvas-scroll" id="ganttScroll">
+          <canvas id="ganttCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="detail-box" id="detailBox"></div>
+  </div>
+</div>
+<div class="gantt-tooltip" id="ganttTooltip"></div>
+
+<!-- ══ TAB 2 ══ -->
+<div class="tab-content" id="tab2">
+  <div class="analysis-grid">
+    <div class="chart-card"><div class="card-title">منحنی S — پیشرفت تجمعی (وزنی)</div><div class="chart-box"><canvas id="sCurveChart"></canvas></div></div>
+    <div class="heatmap-card"><div class="card-title">نمودار حرارتی تراکم فعالیت‌های ماهانه</div><svg id="heatmapSVG" style="width:100%;display:block;overflow:visible;"></svg></div>
+  </div>
+  <div class="analysis-grid">
+    <div class="chart-card" style="grid-column:1/-1;"><div class="card-title">نمودار ریسک فعالیت‌های بحرانی</div><div class="chart-box" style="height:320px;"><canvas id="riskChart"></canvas></div></div>
+  </div>
+  <div class="recs"><h2>توصیه‌های مدیریتی</h2><div id="accContainer"></div></div>
+</div>
+
+</div><!-- /main -->
+<footer>برای استفاده داخلی | مرکز آمار ایران ۱۴۰۵ | تاریخ گزارش: ۱۴۰۵/۰۴/۰۷</footer>
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA — ۵۷ فعالیت با وزن، همکار و توضیحات
+// ═══════════════════════════════════════════
+const ACT = [
+  {id:1,title:"تدوین، بازنگری استانداردهای فنی و موضوعی",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1404/03/19",end:"1405/04/19",progress:98,weight:1.0,phase:"طراحی",notes:"گزارش جدید هنوز دریافت نشده"},
+  {id:2,title:"نیازسنجی و طراحی مفهومی سرشماری ثبتی‌مبنا",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1404/04/16",end:"1405/04/31",progress:87,weight:2.0,phase:"طراحی",notes:"گزارش جدید هنوز دریافت نشده"},
+  {id:3,title:"عقد تفاهم‌نامه و فراهم نمودن مقدمات راه‌اندازی محیط عملیاتی امن",owner:"معاون توسعه مديريت و امور مجلس سازمان برنامه‌وبودجه کشور",helper:"مرکز تحول دیجیتال/ امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/16",end:"1405/03/21",progress:100,weight:1.6,phase:"زیرساخت",notes:"تفاهم‌نامه با دستگاه ذی‌ربط منعقد شده"},
+  {id:4,title:"استقرار فاز اول محیط عملیاتی امن",owner:"مرکز تحول دیجیتال",helper:"امور عمومي، قضايي دفاعي و امنيتي",start:"1405/04/06",end:"1405/06/20",progress:0,weight:2.0,phase:"زیرساخت",notes:"در دست پیگیری است"},
+  {id:5,title:"تهیه، تأمین و راه‌اندازی سخت‌افزار و زیرساخت شبکه محیط عملیاتی امن (فاز اول)",owner:"مرکز تحول دیجیتال",helper:"امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/18",end:"1405/04/15",progress:0,weight:1.6,phase:"زیرساخت",notes:"در دست پیگیری است"},
+  {id:6,title:"فاز تکمیلی تهیه، تأمین و راه‌اندازی سخت‌افزار و زیرساخت شبکه محیط عملیاتی امن",owner:"مرکز تحول دیجیتال",helper:"امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/18",end:"1405/07/15",progress:0,weight:1.2,phase:"تأمین داده",notes:"پس از فاز اول در دستور کار قرار خواهد گرفت"},
+  {id:7,title:"کسب مجوز کارگروه تعامل‌پذیری",owner:"مرکز تحول دیجیتال",helper:"امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/18",end:"1405/04/05",progress:45,weight:2.2,phase:"تأمین داده",notes:"برای 5 دستگاه مجوز اخذ شده"},
+  {id:8,title:"اخذ داده‌های پایگاه ملی هویت اشخاص حقیقی",owner:"سازمان ثبت‌احوال کشور",helper:"کمیته تأمین داده و زیرساخت/ امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/24",end:"1405/04/05",progress:0,weight:1.8,phase:"تأمین داده",notes:"مجوز اخذ شده و در دست پیگیری است"},
+  {id:9,title:"اخذ داده‌های پایگاه مرجع مهاجرین و اتباع بیگانه",owner:"مرکز امور اتباع و مهاجرین خارجی وزارت کشور",helper:"کمیته تأمین داده و زیرساخت / امور عمومی، قضایی، دفاعی و امنیتی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:1.2,phase:"تأمین داده",notes:"مجوز اخذ شده و در دست پیگیری است"},
+  {id:10,title:"اخذ داده‌های پایگاه اطلاعات املاک و اسکان",owner:"وزارت راه و شهرسازی",helper:"کمیته تأمین داده و زیرساخت / امور حمل‌ونقل، عمران شهری و روستایی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:1.6,phase:"تأمین داده",notes:"مجوز اخذ شده و در دست پیگیری است"},
+  {id:11,title:"اخذ پهنه‌بندی محلات هدف بازآفرینی شهری و روستایی",owner:"شرکت بازآفرینی شهری",helper:"کمیته تأمین داده و زیرساخت / امور حمل‌ونقل، عمران شهری و روستایی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:0.8,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:12,title:"اخذ نقشه و داده‌های نظام نشانی‌گذاری مکان‌محور (GNAF)، کد پستی و نقشه",owner:"شرکت ملی پست ج.ا.ا",helper:"کمیته تأمین داده و زیرساخت / امور صنعت، معدن، بازرگانی و ارتباطات",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:1.6,phase:"تأمین داده",notes:"مجوز اخذ شده و در دست پیگیری است"},
+  {id:13,title:"اخذ فهرست اشخاص با اقامت بیش از ۶ ماه در خارج از کشور",owner:"فراجا",helper:"کمیته تأمین داده و زیرساخت / امور عمومی، قضایی، دفاعی و امنیتی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:1.0,phase:"تأمین داده",notes:"مجوز اخذ شده و در دست پیگیری است"},
+  {id:14,title:"اخذ داده‌های پایگاه اطلاعات رفاهی ایرانیان و پایگاه مشاغل/کسب‌وکارها",owner:"وزارت تعاون، کار و رفاه اجتماعی",helper:"کمیته تأمین داده و زیرساخت / امور سلامت و رفاه اجتماعی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:1.0,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:15,title:"اخذ داده‌های پایگاه اطلاعات تقسیمات کشوری",owner:"وزارت کشور",helper:"کمیته تأمین داده و زیرساخت / امور عمومی، قضایی، دفاعی و امنیتی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:0.8,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:16,title:"اخذ اطلاعات (نقشه و واحدهای مسکونی) از شهرداری‌ها",owner:"سازمان شهرداری‌ها و دهیاری‌های کشور",helper:"کمیته تأمین داده و زیرساخت / امور حمل‌ونقل،‌عمران شهري و روستايي",start:"پس از اخذ مجوز بند 7",end:"1405/05/31",progress:0,weight:1.6,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:17,title:"اخذ داده‌های مسکن روستایی و نقشه‌های روستایی",owner:"بنیاد مسکن انقلاب اسلامی",helper:"کمیته تأمین داده و زیرساخت / امور حمل‌ونقل، عمران شهری و روستایی",start:"پس از اخذ مجوز بند 7",end:"1405/04/31",progress:0,weight:1.2,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:18,title:"اخذ داده‌های پایگاه ملی اسناد و املاک و حدنگاری کشور",owner:"سازمان ثبت‌اسناد و املاک کشور",helper:"کمیته تأمین داده و زیرساخت / امور عمومی، قضایی، دفاعی و امنیتی",start:"پس از اخذ مجوز بند 7",end:"1405/05/31",progress:0,weight:1.0,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:19,title:"اخذ آخرین تغییرات و سرویس‌های به‌روزرسانی داده‌های دستگاه‌های اجرایی",owner:"دستگاه‌های بندهای 8 الی 18 و سازمان فناوری اطلاعات ایران",helper:"کمیته تأمین داده و زیرساخت",start:"پس از اخذ مجوز بند 7",end:"1405/07/30",progress:0,weight:1.4,phase:"تأمین داده",notes:"هنوز مجوز اخذ نشده"},
+  {id:20,title:"اخذ کلیه داده‌های مرکز آمار ایران به محیط عملیاتی امن",owner:"مرکز آمار ایران",helper:"کمیته تأمین داده و زیرساخت",start:"1405/03/18",end:"1405/04/02",progress:0,weight:0.8,phase:"تأمین داده",notes:"پس از انجام فاز اول تهیه، تأمین و راه‌اندازی سخت‌افزار و زیرساخت شبکه محیط عملیاتی امن  و استقرار داده‌های دریافتی از دستگاه‌های ذی‌ربط، با رعایت قوانین و مقررات اقدام خواهد شد"},
+  {id:21,title:"اخذ مصوبه شورای حقوق و دستمزد",owner:"امور تلفيق و هماهنگي بودجه",helper:"مرکز آمار ایران",start:"1404/05/08",end:"1405/04/01",progress:0,weight:0.8,phase:"عملیات میدانی",notes:""},
+  {id:22,title:"تدوین دستورالعمل ساخت ثبت‌های آماری",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1404/06/26",end:"1405/03/31",progress:100,weight:2.0,phase:"طراحی",notes:"انجام و در پیوست سند جامع معماری سرشماری نیز اشاره شده"},
+  {id:23,title:"تدوین دستورالعمل ساخت ثبت یکپارچه",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1405/04/01",end:"1405/07/01",progress:0,weight:2.0,phase:"طراحی",notes:"در دست اقدام است"},
+  {id:24,title:"تدوین سند جامع معماری سامانه سرشماری ثبتی‌مبنا",owner:"مرکز تحول دیجیتال",helper:"مرکز آمار ایران",start:"1405/03/18",end:"1405/04/31",progress:0,weight:2.8,phase:"طراحی",notes:"در دست پیگیری است"},
+  {id:25,title:"طراحی سامانه سرشماری ثبتی‌مبنا",owner:"مرکز تحول دیجیتال",helper:"مرکز آمار ایران",start:"1405/03/18",end:"1405/05/11",progress:0,weight:2.8,phase:"فناوری اطلاعات",notes:"در دست پیگیری است"},
+  {id:26,title:"توسعه نرم‌افزارهای مکانی سرشماری (حوزه‌بندی، فایل جغرافیایی)",owner:"مرکز تحول دیجیتال",helper:"امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/18",end:"1405/04/01",progress:75,weight:2.0,phase:"فناوری اطلاعات",notes:"در دست اقدام است"},
+  {id:27,title:"تهیه، تأمین و راه‌اندازی سخت‌افزار و زیرساخت شبکه مرکز آمار ایران",owner:"مرکز آمار ایران",helper:"تفاهم‌نامه",start:"1405/03/18",end:"1405/07/15",progress:80,weight:1.6,phase:"زیرساخت",notes:"تمام مقدمات اداری مرتبط با مرکز آمار ایران انجام شده و در دست پیگیری است"},
+  {id:28,title:"توسعه نرم‌افزار کدگذاری هوشمند",owner:"مرکز آمار ایران",helper:"",start:"1404/10/16",end:"1405/02/16",progress:100,weight:2.0,phase:"فناوری اطلاعات",notes:"مجری مربوطه نسخه اولیه نرم افزار حوزه بندی را تهیه و تحویل داده و در انتظار تسویه حساب با مجری است"},
+  {id:29,title:"طراحی عملیات میدانی و اینترنتی",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1404/11/25",end:"1405/06/01",progress:27,weight:2.0,phase:"طراحی",notes:"در دست اقدام است"},
+  {id:30,title:"توسعه نرم‌افزارهای میدانی و اینترنتی",owner:"مرکز آمار ایران",helper:"",start:"1405/06/01",end:"1405/07/01",progress:0,weight:2.4,phase:"فناوری اطلاعات",notes:""},
+  {id:31,title:"اجرای تفاهم‌نامه تهیه نقشه برای شهرهای منتخب",owner:"سازمان نقشه‌برداری کشور",helper:"مرکز آمار ایران",start:"1405/03/01",end:"1405/06/01",progress:70,weight:1.2,phase:"نقشه و داده‌های مکانی",notes:"طبق قرارداد سازمان نقشه برداری با شرکت های مجری در دست اقدام است"},
+  {id:32,title:"تهیه فایل و فهرست جغرافیایی و رفع مغایرت با تقسیمات کشوری",owner:"مرکز آمار ایران",helper:"وزارت کشور",start:"1404/12/26",end:"1405/05/31",progress:45,weight:1.6,phase:"نقشه و داده‌های مکانی",notes:"فایل فهرست 90 درصد پیشرفت داشته و رفع مغایرفت هنوز پیشرفت نداشته"},
+  {id:33,title:"به‌روزرسانی نقشه‌های آماری",owner:"امور برنامه‌وبودجه استان‌ها (سازمان مدیریت و برنامه‌ریزی استان‌ها)",helper:"مرکز آمار ایران",start:"1404/02/01",end:"1405/04/10",progress:75,weight:1.6,phase:"نقشه و داده‌های مکانی",notes:"در استان‌ها در حال اقدام و توسط مرکز آمار ایران در دست پیگیری است"},
+  {id:34,title:"اتصال کد پستی به آدرس آماری (فایل آدرس)",owner:"مرکز آمار ایران/ امور برنامه‌وبودجه استان‌ها (سازمان مدیریت و برنامه‌ریزی استان‌ها)",helper:"مرکز تحول دیجیتال",start:"1405/04/15",end:"1405/07/15",progress:0,weight:1.2,phase:"نقشه و داده‌های مکانی",notes:"به محض دریافت صحیح داده‌های شرکت پست، توسط خود مرکز آمار ایران و عنداللزوم با همکاری واحدهای استانی انجام خواهد شد"},
+  {id:35,title:"تشکیل ستادهای سرشماری در استان‌ها",owner:"امور برنامه‌وبودجه استان‌ها (سازمان مدیریت و برنامه‌ریزی استان‌ها)",helper:"مرکز آمار ایران",start:"1405/01/15",end:"1405/12/24",progress:0,weight:1.6,phase:"عملیات میدانی",notes:"ابلاغ لازم (همین برنامه زمانی) به استان ها انجام شد و استان ها پیگیر برگزاری جلسات ستاد استان پس از برگزاری جلسه توجیهی از سوی مرکز آمار ایران  هستند"},
+  {id:36,title:"ابلاغ و نظارت بر پیاده‌سازی استانداردهای آماری به دستگاه‌های اجرایی",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1405/02/01",end:"1405/12/15",progress:0,weight:1.2,phase:"استاندارد و کیفیت",notes:"استاندارد ارسال ریزداده به مرکز آمار ایران به دستگاه‌های اجرایی ابلاغ شده و به صورت مستمر در دست اقدام است"},
+  {id:37,title:"اجرا و نظارت بر بهبود کیفیت داده‌ها و فراداده‌ها و ارائه بازخورد",owner:"مرکز تحول دیجیتال",helper:"دستگاه‌های اجرایی ذی‌ربط/ مرکز آمار ایران",start:"1405/03/18",end:"1405/12/15",progress:0,weight:2.0,phase:"استاندارد و کیفیت",notes:"پس از دریافت داده‌ها و انجام بررسی‌های لازم اقدام آغاز خواهد شد"},
+  {id:38,title:"راستی‌آزمایی داده‌های اخذشده از دستگاه‌ها و صحت‌سنجی",owner:"تفاهم‌نامه",helper:"مرکز تحول دیجیتال مرکز آمار ایران",start:"1405/04/05",end:"1405/08/01",progress:0,weight:2.4,phase:"استاندارد و کیفیت",notes:"پس از دریافت داده‌ها و انجام بررسی‌های لازم اقدام آغاز خواهد شد"},
+  {id:39,title:"ارائه داده‌های صحت‌سنجی‌شده به دستگاه جهت تکمیل و اصلاح",owner:"تفاهم‌نامه",helper:"دستگاه‌های اجرایی ذی‌ربط مرکز تحول دیجیتال مرکز آمار ایران",start:"1405/04/05",end:"1405/08/01",progress:0,weight:1.6,phase:"استاندارد و کیفیت",notes:"پس از دریافت داده‌ها و انجام بررسی‌های لازم اقدام آغاز خواهد شد"},
+  {id:40,title:"فراهم کردن تمهیدات لازم برای ساخت پایگاه ثبت آماری",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1405/03/18",end:"1405/05/10",progress:0,weight:2.4,phase:"ساخت پایگاه داده",notes:"پس از دریافت داده‌ها و انجام بررسی‌های لازم اقدام آغاز خواهد شد"},
+  {id:41,title:"ساخت پایگاه ثبت آماری (پوشش کل جمعیت کشور)",owner:"مرکز آمار ایران",helper:"سازمان امور عشایری و .... (با پوشش کل جمعیت مقیم کشور اعم از شهری و روستایی و غیر ساکن و عشایر و مؤسسه‌ای و ...)",start:"1405/02/31",end:"1405/10/24",progress:0,weight:4.0,phase:"ساخت پایگاه داده",notes:"پس از دریافت داده‌ها و انجام بررسی‌های لازم اقدام آغاز خواهد شد"},
+  {id:42,title:"انجام خدمات فنی و تخصصی از طریق برون‌سپاری",owner:"مرکز آمار ایران",helper:"",start:"1405/03/20",end:"1405/04/10",progress:0,weight:1.2,phase:"استاندارد و کیفیت",notes:"پس از دریافت داده‌ها و انجام بررسی‌های لازم اقدام آغاز خواهد شد"},
+  {id:43,title:"توسعه نرم‌افزار جمع‌آوری داده‌های عملیات میدانی",owner:"مرکز آمار ایران",helper:"",start:"1405/04/08",end:"1405/06/11",progress:0,weight:2.0,phase:"فناوری اطلاعات",notes:""},
+  {id:44,title:"فراهم‌سازی مقدمات اجرای عملیات میدانی",owner:"مرکز آمار ایران",helper:"",start:"1405/07/01",end:"1405/07/25",progress:0,weight:2.0,phase:"عملیات میدانی",notes:""},
+  {id:45,title:"اجرای عملیات میدانی",owner:"مرکز آمار ایران",helper:"",start:"1405/08/01",end:"1405/08/30",progress:0,weight:4.0,phase:"عملیات میدانی",notes:""},
+  {id:46,title:"انجام تبلیغات و فرهنگ‌سازی",owner:"ستاد سرشماری عمومی نفوس و مسکن",helper:"مرکز آمار ایران",start:"1405/04/01",end:"1405/08/30",progress:0,weight:1.2,phase:"عملیات میدانی",notes:"کارگروه مصوب ستاد سرشماری با عضویت دستگاه‌های اجرایی ذی‌ربط تشکیل گردیده و برنامه مربوطه در دست تهیه است"},
+  {id:47,title:"توسعه نرم‌افزار خود اظهاری ثبتی‌مبنا",owner:"تفاهم‌نامه",helper:"مرکز تحول دیجیتال",start:"1405/03/18",end:"1405/06/30",progress:0,weight:1.6,phase:"فناوری اطلاعات",notes:"در دست پیگیری است"},
+  {id:48,title:"اجرای عملیات اینترنتی",owner:"تفاهم‌نامه",helper:"مرکز تحول دیجیتال",start:"1405/07/01",end:"1405/07/20",progress:0,weight:2.0,phase:"عملیات میدانی",notes:""},
+  {id:49,title:"تحویل و ارائه داده‌های میدانی به محیط عملیاتی امن",owner:"مرکز تحول دیجیتال",helper:"امور عمومي، قضايي دفاعي و امنيتي",start:"1405/03/18",end:"1405/08/30",progress:0,weight:1.2,phase:"تأمین داده",notes:""},
+  {id:50,title:"ارزیابی فرآیند و به‌روزرسانی مستمر پایگاه سرشماری",owner:"مرکز تحول دیجیتال",helper:"مرکز آمار ایران / امور عمومي، قضايي دفاعي و امنيتي",start:"1405/07/01",end:"1405/12/15",progress:0,weight:1.2,phase:"استاندارد و کیفیت",notes:""},
+  {id:51,title:"پردازش داده‌های عملیات میدانی و استخراج نتایج",owner:"مرکز آمار ایران",helper:"مرکز تحول دیجیتال",start:"1405/08/10",end:"1405/10/25",progress:0,weight:2.8,phase:"پردازش",notes:""},
+  {id:52,title:"یکپارچه‌سازی داده‌های میدانی/اینترنتی با ثبت‌های آماری و ایجاد پایگاه یکپارچه",owner:"تفاهم‌نامه",helper:"مرکز آمار ایران مرکز تحول دیجیتال",start:"1405/10/26",end:"1405/11/26",progress:0,weight:3.2,phase:"پردازش",notes:""},
+  {id:53,title:"تحویل داده‌های ناشناس‌شده جهت تهیه ثبت‌های آماری",owner:"تفاهم‌نامه",helper:"مرکز تحول دیجیتال",start:"1405/04/31",end:"1405/06/31",progress:0,weight:1.2,phase:"تأمین داده",notes:""},
+  {id:54,title:"استخراج جداول بر اساس پایگاه ثبت یکپارچه سرشماری",owner:"مرکز آمار ایران",helper:"",start:"1405/11/29",end:"1405/12/26",progress:0,weight:2.4,phase:"پردازش",notes:""},
+  {id:55,title:"تهیه گزارش‌های تفصیلی نتایج سرشماری",owner:"مرکز آمار ایران",helper:"",start:"1406/01/05",end:"1406/04/31",progress:0,weight:2.4,phase:"گزارش‌دهی و فعالیت‌های بعدی",notes:""},
+  {id:56,title:"اخذ مصوبه الزام به ثبت اطلاعات مکان اقامت",owner:"معاون هماهنگي برنامه‌وبودجه سازمان برنامه‌وبودجه",helper:"دبیرخانه شعام",start:"1405/03/18",end:"1405/06/15",progress:0,weight:1.5,phase:"گزارش‌دهی و فعالیت‌های بعدی",notes:"در دست پیگیری است"},
+  {id:57,title:"تدوین لایحه سرشماری ثبتی مبنا",owner:"مرکز آمار ایران",helper:"معاون هماهنگي برنامه‌وبودجه سازمان برنامه‌وبودجه",start:"1405/06/01",end:"1405/09/30",progress:0,weight:1.5,phase:"گزارش‌دهی و فعالیت‌های بعدی",notes:""},
+];
+const PHASES={
+  "طراحی":{c:"#00695C"},
+  "زیرساخت":{c:"#1565C0"},
+  "تأمین داده":{c:"#6A1B9A"},
+  "عملیات میدانی":{c:"#880E4F"},
+  "فناوری اطلاعات":{c:"#00838F"},
+  "نقشه و داده\u200cهای مکانی":{c:"#E65100"},
+  "استاندارد و کیفیت":{c:"#2E7D32"},
+  "ساخت پایگاه داده":{c:"#33691E"},
+  "پردازش":{c:"#1A237E"},
+  "گزارش\u200cدهی و فعالیت\u200cهای بعدی":{c:"#37474F"}
+};
+const PHASE_ORDER=["طراحی","زیرساخت","تأمین داده","عملیات میدانی","فناوری اطلاعات","نقشه و داده\u200cهای مکانی","استاندارد و کیفیت","ساخت پایگاه داده","پردازش","گزارش\u200cدهی و فعالیت\u200cهای بعدی"];
+const FAN=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+
+// ══════ DATE UTILS ══════
+function jToJD(y,m,d){
+  var eb=y-(y>=0?474:473),ey=474+eb%2820;
+  return d+(m<=6?(m-1)*31:(m-1)*30+6)+Math.floor((ey*682-110)/2816)+(ey-1)*365+Math.floor(eb/2820)*1029983+1948319.5;
+}
+function parseJ(s){
+  s=(s||'').trim().replace(/[۰-۹]/g,c=>c.charCodeAt(0)-1776);
+  var p=s.split('/');return p.length<3?null:{y:+p[0],m:+p[1],d:+p[2]};
+}
+function jNum(s){var p=parseJ(s);return p?jToJD(p.y,p.m,p.d):0;}
+function g2j(gy,gm,gd){
+  var gdm=[31,29,31,30,31,30,31,31,30,31,30,31],jdm=[31,31,31,31,31,31,30,30,30,30,30,29],i;
+  gy-=1600;gm-=1;gd-=1;
+  var gdn=365*gy+Math.floor((gy+3)/4)-Math.floor((gy+99)/100)+Math.floor((gy+399)/400);
+  for(i=0;i<gm;i++)gdn+=gdm[i];
+  if(gm>1&&((gy%4===0&&gy%100!==0)||gy%400===0))gdn++;gdn+=gd;
+  var jdn=gdn-79,jnp=Math.floor(jdn/12053);jdn%=12053;
+  var jy=979+33*jnp+4*Math.floor(jdn/1461);jdn%=1461;
+  if(jdn>=366){jy+=Math.floor((jdn-1)/365);jdn=(jdn-1)%365;}
+  for(i=0;i<11&&jdn>=jdm[i];i++)jdn-=jdm[i];
+  var jm=i+1,jd=jdn+1;
+  return {y:jy,m:jm,d:jd,str:jy+'/'+String(jm).padStart(2,'0')+'/'+String(jd).padStart(2,'0')};
+}
+function todayJ(){var d=new Date();return g2j(d.getFullYear(),d.getMonth()+1,d.getDate());}
+function fn(n){return String(Math.round(n)).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
+
+// ══════ STATE ══════
+var DEFAULT_DATE="1405/04/07";
+var TDN=jNum(DEFAULT_DATE),selId=null,filtIds=ACT.map(a=>a.id),t1Init=false,t2Init=false;
+var donutInst=null,phaseInst=null,sCurveInst=null,riskInst=null;
+
+function status(a,tdn){
+  var p=a.progress||0;
+  if(p>=100)return"done";
+  if(jNum(a.end)<tdn)return"critical";
+  if(p>0)return"active";
+  if(jNum(a.start)>tdn)return"future";
+  return"pending";
+}
+function sLabel(s){return{done:"✅ تکمیل‌شده",active:"🟠 در جریان",critical:"🔴 دچار تأخیر",future:"⬜ آغاز نشده",pending:"🟡 در دست پیگیری"}[s]||s;}
+function sColor(s){return{done:"#2E7D32",active:"#E65100",critical:"#B71C1C",future:"#546E7A",pending:"#F57F17"}[s]||"#888";}
+
+// ══════ TABS ══════
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  if(i===1&&!t1Init){t1Init=true;initGantt();}
+  if(i===2&&!t2Init){t2Init=true;initTab3();}
+}
+
+// ══════ APPLY DATE ══════
+function applyDate(){
+  var v=document.getElementById('trackingDate').value.trim();
+  var p=parseJ(v);if(!p){alert('فرمت تاریخ اشتباه (YYYY/MM/DD)');return;}
+  TDN=jToJD(p.y,p.m,p.d);
+  renderKPI();renderDonut();renderPhase();drawTimeline();
+  if(t1Init){filterGantt();}
+}
+function resetDate(){
+  document.getElementById('trackingDate').value=DEFAULT_DATE;
+  applyDate();
+}
+
+// ══════ KPI — weighted average ══════
+function renderKPI(){
+  var cnt={done:0,active:0,critical:0,future:0,pending:0};
+  var totalW=0,sumWP=0;
+  ACT.forEach(a=>{
+    cnt[status(a,TDN)]++;
+    var w=a.weight||1;
+    totalW+=w;
+    sumWP+=w*(a.progress||0);
+  });
+  var avg=totalW>0?Math.round(sumWP/totalW):0;
+  var kpis=[
+    {n:fn(ACT.length),l:"کل فعالیت‌ها",c:"c-blue"},
+    {n:fn(cnt.done),l:"تکمیل‌شده",c:"c-green"},
+    {n:fn(cnt.active),l:"در جریان",c:"c-orange"},
+    {n:fn(cnt.critical),l:"دچار تأخیر",c:"c-red"},
+    {n:fn(cnt.pending),l:"در دست پیگیری",c:"c-amber"},
+    {n:fn(cnt.future),l:"آغاز نشده",c:"c-gray"},
+    {n:fn(avg)+'٪',l:"میانگین پیشرفت",c:"c-purple"}
+  ];
+  // 6 columns, so show 6 items; add 7th only if present
+  document.getElementById('kpiGrid').innerHTML=kpis.slice(0,6).map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-num">${k.n}</div><div class="kpi-label">${k.l}</div></div>`).join('')
+  + `<div class="kpi-card c-purple" style="display:none"><div class="kpi-num">${kpis[6].n}</div><div class="kpi-label">${kpis[6].l}</div></div>`;
+  // Actually show all 6 + avg in grid of 6 — adjust kpis to 6 elements
+  // Remove avg from first 6, replace last element with avg:
+  document.getElementById('kpiGrid').innerHTML=[
+    {n:fn(ACT.length),l:"کل فعالیت‌ها",c:"c-blue"},
+    {n:fn(cnt.done),l:"تکمیل‌شده",c:"c-green"},
+    {n:fn(cnt.active),l:"در جریان",c:"c-orange"},
+    {n:fn(cnt.critical),l:"دچار تأخیر",c:"c-red"},
+    {n:fn(cnt.pending),l:"در دست پیگیری",c:"c-amber"},
+    {n:fn(cnt.future),l:"آغاز نشده",c:"c-gray"},
+    {n:fn(avg)+'٪',l:"میانگین پیشرفت",c:"c-purple"}
+  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-num">${k.n}</div><div class="kpi-label">${k.l}</div></div>`).join('');
+  document.querySelector('.kpi-grid').style.gridTemplateColumns='repeat(7,1fr)';
+}
+
+// ══════ DONUT ══════
+function renderDonut(){
+  var cnt={done:0,active:0,critical:0,pending:0,future:0};
+  ACT.forEach(a=>cnt[status(a,TDN)]++);
+  var ctx=document.getElementById('donutChart').getContext('2d');
+  if(donutInst)donutInst.destroy();
+  donutInst=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:['تکمیل‌شده','در جریان','دچار تأخیر','در دست پیگیری','آغاز نشده'],
+      datasets:[{data:[cnt.done,cnt.active,cnt.critical,cnt.pending,cnt.future],
+        backgroundColor:['#2E7D32','#E65100','#B71C1C','#F57F17','#546E7A'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'left',rtl:true,labels:{font:{family:'Vazirmatn',size:11},padding:10,boxWidth:12}},
+        tooltip:{callbacks:{label:c=>c.label+': '+fn(c.raw)}}}}
+  });
+}
+
+// ══════ PHASE CHART — weighted ══════
+function renderPhase(){
+  var pm={};
+  ACT.forEach(a=>{
+    if(!pm[a.phase])pm[a.phase]={sw:0,tw:0,psw:0};
+    var w=a.weight||1;
+    pm[a.phase].sw+=w*(a.progress||0);
+    pm[a.phase].tw+=w;
+    var s2=jNum(a.start),e=jNum(a.end),dur=e-s2;
+    var planned=dur>0?(TDN>=e?100:(TDN<=s2?0:100*(TDN-s2)/dur)):0;
+    pm[a.phase].psw+=w*Math.min(100,Math.max(0,planned));
+  });
+  var phases=PHASE_ORDER.filter(p=>pm[p]);
+  var ctx=document.getElementById('phaseChart').getContext('2d');
+  if(phaseInst)phaseInst.destroy();
+  phaseInst=new Chart(ctx,{
+    type:'bar',
+    data:{labels:phases,datasets:[
+      {label:'پیشرفت برنامه‌ای',data:phases.map(p=>pm[p]?Math.round(pm[p].psw/pm[p].tw):0),
+        backgroundColor:'rgba(21,101,192,0.25)',borderColor:'rgba(21,101,192,0.7)',borderWidth:1,borderRadius:4,borderSkipped:false},
+      {label:'پیشرفت واقعی (وزنی)',data:phases.map(p=>pm[p]?Math.round(pm[p].sw/pm[p].tw):0),
+        backgroundColor:phases.map(p=>(PHASES[p]?PHASES[p].c:'#888')+'CC'),borderColor:phases.map(p=>PHASES[p]?PHASES[p].c:'#888'),borderWidth:1,borderRadius:4,borderSkipped:false}
+    ]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      scales:{x:{min:0,max:100,ticks:{font:{family:'Vazirmatn',size:10},callback:v=>fn(v)+'٪'},grid:{color:'#F0F0F0'}},
+        y:{ticks:{font:{family:'Vazirmatn',size:10}}}},
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{family:'Vazirmatn',size:11},boxWidth:14,padding:10}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+fn(c.raw)+'٪'}}
+      }}
+  });
+}
+
+// ══════ TIMELINE ══════
+function drawTimeline(){
+  var svg=document.getElementById('timelineSVG');
+  var W=svg.parentElement.clientWidth||1100;
+  svg.setAttribute('width',W);
+  svg.innerHTML='';
+  var padX=40,lineY=95,padY=25;
+  var sN=jNum("1404/02/01"),eN=jNum("1406/05/30"),span=eN-sN;
+  function xp(ds){return padX+(jNum(ds)-sN)/span*(W-2*padX);}
+  var bg=el('rect');sa(bg,{x:0,y:0,width:W,height:170,fill:'#FAFBFA'});svg.appendChild(bg);
+  [{s:"1404/01/01",e:"1404/12/29",col:"rgba(21,101,192,.03)"},
+   {s:"1405/01/01",e:"1405/12/29",col:"rgba(46,125,50,.04)"},
+   {s:"1406/01/01",e:"1406/12/29",col:"rgba(104,33,122,.03)"}].forEach(b=>{
+    var x1=Math.max(xp(b.s),padX),x2=Math.min(xp(b.e),W-padX);
+    if(x2>x1){var r=el('rect');sa(r,{x:x1,y:padY,width:x2-x1,height:170-padY*2+10,fill:b.col});svg.appendChild(r);}
+  });
+  var qtrs=[];
+  for(var y=1404;y<=1406;y++)for(var m=1;m<=12;m+=3)qtrs.push({y,m});
+  qtrs.forEach(q=>{
+    var ds=q.y+'/'+String(q.m).padStart(2,'0')+'/01';
+    var x=xp(ds);if(x<padX||x>W-padX)return;
+    var gl=el('line');sa(gl,{x1:x,y1:padY,x2:x,y2:165,stroke:'#E0E0E0','stroke-width':'1'});svg.appendChild(gl);
+    var tl=el('text');sa(tl,{x:x+2,y:162,'text-anchor':'start','font-size':'9',fill:'#90A4AE','font-family':'Vazirmatn'});
+    tl.textContent=FAN[q.m-1].substr(0,3)+' '+fn(q.y);svg.appendChild(tl);
+  });
+  var ax=el('line');sa(ax,{x1:padX,y1:lineY,x2:W-padX,y2:lineY,stroke:'#B0BEC5','stroke-width':'2.5'});svg.appendChild(ax);
+  var ms=[
+    {d:"1405/03/21",l:"عقد تفاهم‌نامه محیط عملیاتی",done:true,ab:true},
+    {d:"1405/04/05",l:"کسب مجوز تعامل‌پذیری",done:false,ab:false},
+    {d:"1405/06/20",l:"استقرار محیط عملیاتی",done:false,ab:true},
+    {d:"1405/07/01",l:"شروع عملیات اینترنتی",done:false,ab:false},
+    {d:"1405/08/01",l:"عملیات میدانی",done:false,ab:true},
+    {d:"1406/04/30",l:"انتشار نتایج",done:false,ab:false}
+  ];
+  ms.forEach(m=>{
+    var x=xp(m.d);if(x<padX||x>W-padX)return;
+    var col=m.done?'#2E7D32':'#78909C';
+    var stemTop=m.ab?lineY-50:lineY+1,stemBot=m.ab?lineY-1:lineY+50;
+    var stl=el('line');sa(stl,{x1:x,y1:stemTop,x2:x,y2:stemBot,stroke:col,'stroke-width':'1.5','stroke-dasharray':m.done?'none':'4,2'});svg.appendChild(stl);
+    var ci=el('circle');sa(ci,{cx:x,cy:lineY,r:'8',fill:m.done?'#2E7D32':'#fff',stroke:col,'stroke-width':'2'});svg.appendChild(ci);
+    if(m.done){var ck=el('text');sa(ck,{x:x,y:lineY+4,'text-anchor':'middle','font-size':'9',fill:'#fff','font-family':'Vazirmatn'});ck.textContent='✓';svg.appendChild(ck);}
+    var lblY=m.ab?lineY-56:lineY+62;
+    var lblW=m.l.length*7+16,lblX=Math.min(Math.max(x-lblW/2,padX),W-padX-lblW);
+    var rb=el('rect');sa(rb,{x:lblX,y:lblY-15,width:lblW,height:20,rx:'4',fill:m.done?'#E8F5E9':'#ECEFF1'});svg.appendChild(rb);
+    var lt=el('text');sa(lt,{x:lblX+lblW/2,y:lblY,'text-anchor':'middle','font-size':'10',fill:m.done?'#1B5E20':'#546E7A','font-family':'Vazirmatn','font-weight':m.done?'700':'400'});
+    lt.textContent=m.l;svg.appendChild(lt);
+  });
+  var tv=document.getElementById('trackingDate').value;
+  var tx=xp(tv);
+  if(tx>=padX&&tx<=W-padX){
+    var tl2=el('line');sa(tl2,{x1:tx,y1:padY,x2:tx,y2:165,stroke:'#B71C1C','stroke-width':'2','stroke-dasharray':'5,3'});svg.appendChild(tl2);
+    var tt=el('text');sa(tt,{x:tx,y:padY-4,'text-anchor':'middle','font-size':'10',fill:'#B71C1C','font-family':'Vazirmatn','font-weight':'700'});tt.textContent='امروز';svg.appendChild(tt);
+  }
+}
+function el(tag){return document.createElementNS("http://www.w3.org/2000/svg",tag);}
+function sa(e,attrs){Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));}
+
+// ══════ GANTT ══════
+var ROW_H=44;
+function initGantt(){
+  var fp=document.getElementById('fPhase');
+  PHASE_ORDER.forEach(p=>{if(PHASES[p]){var o=document.createElement('option');o.value=p;o.textContent=p;fp.appendChild(o);}});
+  filterGantt();
+  document.getElementById('ganttRows').addEventListener('scroll',function(){
+    var gr=document.getElementById('ganttRight');
+    if(!gr._lock){gr._lock=true;gr.scrollTop=this.scrollTop;gr._lock=false;}
+  });
+  document.getElementById('ganttRight').addEventListener('scroll',function(){
+    var rows=document.getElementById('ganttRows');
+    if(!rows._lock){rows._lock=true;rows.scrollTop=this.scrollTop;rows._lock=false;}
+  });
+  window.addEventListener('resize',function(){if(t1Init)redrawGanttCanvas();});
+  var canvas=document.getElementById('ganttCanvas');
+  var tooltip=document.getElementById('ganttTooltip');
+  canvas.addEventListener('mousemove',function(e){
+    var rect=canvas.getBoundingClientRect();
+    var mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    var HDR_H=58;
+    if(my<HDR_H){tooltip.style.display='none';return;}
+    var acts=ACT.filter(a=>filtIds.includes(a.id));
+    var rowIdx=Math.floor((my-HDR_H)/ROW_H);
+    if(rowIdx<0||rowIdx>=acts.length){tooltip.style.display='none';return;}
+    var a=acts[rowIdx];
+    var GANTT_W=document.getElementById('ganttRight').clientWidth||1400;
+    var padX=8,sD=jNum("1404/01/01"),eD=jNum("1406/06/01"),span=eD-sD;
+    function xOf(ds){return padX+Math.round((jNum(ds)-sD)/span*(GANTT_W-2*padX));}
+    var x1=xOf(a.start),x2=xOf(a.end);if(x2<=x1)x2=x1+4;
+    var scrollLeft=document.getElementById('ganttRight').scrollLeft;
+    var adjustedMx=mx+scrollLeft;
+    if(adjustedMx<x1-6||adjustedMx>x2+6){tooltip.style.display='none';return;}
+    var s=status(a,TDN),col=sColor(s);
+    tooltip.innerHTML=`<div class="gt-title">${a.title}</div>
+      <div class="gt-row"><span class="gt-label">فاز:</span><span class="gt-val">${a.phase}</span></div>
+      <div class="gt-row"><span class="gt-label">مسئول:</span><span class="gt-val">${a.owner}</span></div>
+      <div class="gt-row"><span class="gt-label">همکار:</span><span class="gt-val">${a.helper||'—'}</span></div>
+      <div class="gt-row"><span class="gt-label">شروع:</span><span class="gt-val">${a.start}</span></div>
+      <div class="gt-row"><span class="gt-label">پایان:</span><span class="gt-val">${a.end}</span></div>
+      <div class="gt-row"><span class="gt-label">وزن:</span><span class="gt-val">${a.weight}٪</span></div>
+      <div class="gt-bar"><div class="gt-bar-fill" style="width:${a.progress||0}%;background:${col}"></div></div>
+      <div style="margin-top:4px;font-size:11px;color:${col};font-weight:700">${sLabel(s)} — ${fn(a.progress||0)}٪</div>`;
+    tooltip.style.display='block';
+    tooltip.style.right='auto';tooltip.style.left=(e.clientX+12)+'px';tooltip.style.top=(e.clientY-10)+'px';
+    var tipW=tooltip.offsetWidth,vw=window.innerWidth;
+    if(e.clientX+12+tipW>vw)tooltip.style.left=(e.clientX-tipW-12)+'px';
+  });
+  canvas.addEventListener('mouseleave',()=>tooltip.style.display='none');
+  canvas.addEventListener('click',function(e){
+    var rect=canvas.getBoundingClientRect();
+    var my=e.clientY-rect.top,HDR_H=58;
+    if(my<HDR_H)return;
+    var acts=ACT.filter(a=>filtIds.includes(a.id));
+    var rowIdx=Math.floor((my-HDR_H)/ROW_H);
+    if(rowIdx>=0&&rowIdx<acts.length)showDetail(acts[rowIdx].id);
+  });
+}
+
+function filterGantt(){
+  var ph=document.getElementById('fPhase').value;
+  var st=document.getElementById('fStatus').value;
+  var q=document.getElementById('fSearch').value.trim();
+  filtIds=ACT.filter(a=>{
+    if(ph&&a.phase!==ph)return false;
+    if(st&&status(a,TDN)!==st)return false;
+    if(q&&a.title.indexOf(q)<0)return false;
+    return true;
+  }).map(a=>a.id);
+  document.getElementById('ganttCount').textContent=fn(filtIds.length)+' فعالیت نمایش داده می‌شود';
+  renderGanttRows();redrawGanttCanvas();
+  document.getElementById('detailBox').classList.remove('on');
+  selId=null;
+}
+
+function renderGanttRows(){
+  var acts=ACT.filter(a=>filtIds.includes(a.id));
+  document.getElementById('ganttRows').innerHTML=acts.map(a=>{
+    var s=status(a,TDN),col=sColor(s),pc=PHASES[a.phase]?PHASES[a.phase].c:'#888';
+    return`<div class="g-row${selId===a.id?' sel':''}" onclick="clickRow(${a.id})">
+      <div class="gr-cell gc-num">${fn(a.id)}</div>
+      <div class="gr-cell gc-phase"><span class="phase-dot" style="background:${pc}"></span></div>
+      <div class="gr-cell gc-title" title="${a.title}">${a.title}</div>
+      <div class="gr-cell gc-pct">
+        <div class="pct-wrap">
+          <input type="range" class="pct-slider" min="0" max="100" value="${a.progress||0}"
+            oninput="updateProgress(${a.id},+this.value)" onclick="event.stopPropagation()">
+          <span class="pct-lbl" id="lbl${a.id}" style="color:${col}">${fn(a.progress||0)}٪</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateProgress(id,v){
+  var a=ACT.find(x=>x.id===id);if(!a)return;
+  a.progress=v;
+  var lbl=document.getElementById('lbl'+id);
+  if(lbl){var s=status(a,TDN);lbl.textContent=fn(v)+'٪';lbl.style.color=sColor(s);}
+  redrawGanttCanvas();
+  if(selId===id)showDetail(id);
+  renderKPI();renderDonut();renderPhase();
+}
+
+function clickRow(id){
+  selId=id;
+  renderGanttRows();
+  redrawGanttCanvas();
+  showDetail(id);
+}
+
+function showDetail(id){
+  var a=ACT.find(x=>x.id===id);if(!a)return;
+  var s=status(a,TDN),p=a.progress||0,col=sColor(s);
+  var db=document.getElementById('detailBox');
+  db.classList.add('on');
+  var noteHtml='';
+  if(a.notes){
+    noteHtml=`<div class="d-notes"><div class="d-note"><div class="note-lbl">آخرین وضعیت — مورخ ۱۴۰۵/۰۴/۰۷</div>${a.notes}</div></div>`;
+  }
+  db.innerHTML=`<h4>فعالیت ${fn(a.id)}: ${a.title}</h4>
+    <div class="detail-meta">
+      <span><strong>فاز:</strong> <span style="color:${PHASES[a.phase]?PHASES[a.phase].c:'#888'}">${a.phase}</span></span>
+      <span><strong>مسئول:</strong> ${a.owner}</span>
+      <span><strong>همکار:</strong> ${a.helper||'—'}</span>
+      <span><strong>شروع:</strong> ${a.start}</span>
+      <span><strong>پایان برنامه‌ای:</strong> ${a.end}</span>
+      <span><strong>وزن:</strong> ${a.weight}٪</span>
+      <span class="sbadge sb-${s}">${sLabel(s)}</span>
+    </div>
+    <div class="d-progress">
+      <div style="font-size:12px;color:var(--muted)">پیشرفت: <strong style="color:${col}">${fn(p)}٪</strong></div>
+      <div class="prog-bar-bg"><div class="prog-bar-fg" style="width:${p}%;background:${col}"></div></div>
+    </div>
+    ${noteHtml}`;
+}
+
+function redrawGanttCanvas(){
+  var acts=ACT.filter(a=>filtIds.includes(a.id));
+  var nRows=acts.length;
+  var HDR_H=58,canvasH=HDR_H+nRows*ROW_H;
+  var canvas=document.getElementById('ganttCanvas');
+  var GANTT_W=document.getElementById('ganttRight').clientWidth||1400;
+  var DPR=window.devicePixelRatio||1;
+  canvas.style.width=GANTT_W+'px';canvas.style.height=canvasH+'px';
+  canvas.width=Math.round(GANTT_W*DPR);canvas.height=Math.round(canvasH*DPR);
+  document.getElementById('ganttScroll').style.width=GANTT_W+'px';
+  document.getElementById('ganttScroll').style.height=canvasH+'px';
+  var ctx=canvas.getContext('2d');
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,GANTT_W,canvasH);
+  var sD=jNum("1404/01/01"),eD=jNum("1406/06/01"),span=eD-sD;
+  var padX=8;
+  function xOf(ds){return padX+Math.round((jNum(ds)-sD)/span*(GANTT_W-2*padX));}
+  ctx.fillStyle='#ECEFF1';ctx.fillRect(0,0,GANTT_W,HDR_H);
+  ctx.strokeStyle='#CFD8DC';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,HDR_H);ctx.lineTo(GANTT_W,HDR_H);ctx.stroke();
+  [{y:1404,col:'rgba(21,101,192,.08)'},{y:1405,col:'rgba(46,125,50,.08)'},{y:1406,col:'rgba(104,33,122,.06)'}].forEach(({y,col})=>{
+    var x1=xOf(y+'/01/01'),x2=xOf((y+1)+'/01/01');
+    ctx.fillStyle=col;ctx.fillRect(Math.max(x1,0),0,Math.min(x2,GANTT_W)-Math.max(x1,0),HDR_H);
+    ctx.fillStyle='#546E7A';ctx.font='bold 15px Vazirmatn';ctx.textAlign='center';
+    var midX=(Math.max(x1,0)+Math.min(x2,GANTT_W))/2;
+    ctx.fillText(fn(y),midX,20);
+  });
+  var ticks=[];
+  for(var y=1404;y<=1406;y++)for(var m=1;m<=12;m++)ticks.push({y,m});
+  ticks.forEach(tm=>{
+    var ds=tm.y+'/'+String(tm.m).padStart(2,'0')+'/01';
+    var x=xOf(ds);
+    var isQ=tm.m%3===1;
+    ctx.strokeStyle=isQ?'#CFD8DC':'#ECEFF1';ctx.lineWidth=isQ?1:0.5;
+    ctx.beginPath();ctx.moveTo(x,HDR_H-1);ctx.lineTo(x,canvasH);ctx.stroke();
+    ctx.fillStyle='#78909C';ctx.font=(isQ?'bold ':'')+'12px Vazirmatn';
+    ctx.textAlign='center';
+    ctx.fillText(FAN[tm.m-1].substr(0,3),x+((GANTT_W-2*padX)/span)*15,isQ?42:54);
+  });
+  acts.forEach((a,i)=>{
+    var rowY=HDR_H+i*ROW_H;
+    if(i%2===0){ctx.fillStyle='rgba(0,0,0,.018)';ctx.fillRect(0,rowY,GANTT_W,ROW_H);}
+    ctx.strokeStyle='#EEEEEE';ctx.lineWidth=0.5;
+    ctx.beginPath();ctx.moveTo(0,rowY+ROW_H);ctx.lineTo(GANTT_W,rowY+ROW_H);ctx.stroke();
+    var startStr=a.start||"1404/01/01",endStr=a.end||"1406/06/01";
+    var x1=xOf(startStr),x2=xOf(endStr);
+    if(x2<=x1)x2=x1+4;
+    var bH=20,bY=rowY+(ROW_H-bH)/2;
+    var pc=PHASES[a.phase]?PHASES[a.phase].c:'#888';
+    ctx.fillStyle=pc+'22';ctx.fillRect(0,rowY,GANTT_W,ROW_H);
+    ctx.fillStyle=pc;ctx.fillRect(0,rowY,3,ROW_H);
+    ctx.fillStyle='rgba(176,190,197,.3)';
+    ctx.beginPath();ctx.roundRect(x1,bY,x2-x1,bH,4);ctx.fill();
+    var s=status(a,TDN),col=sColor(s);
+    var prog=Math.min(1,(a.progress||0)/100);
+    var pW=Math.max((x2-x1)*prog,prog>0?4:0);
+    if(pW>0){
+      ctx.fillStyle=col;
+      ctx.beginPath();ctx.roundRect(x1,bY,pW,bH,4);ctx.fill();
+      if(pW>34&&a.progress>0){
+        ctx.fillStyle='#fff';ctx.font='bold 12px Vazirmatn';ctx.textAlign='center';
+        ctx.fillText(fn(a.progress)+'٪',x1+pW/2,bY+bH-5);
+      }
+    }
+    if(selId===a.id){
+      ctx.strokeStyle='#1B5E20';ctx.lineWidth=2;
+      ctx.beginPath();ctx.roundRect(x1-1,bY-1,x2-x1+2,bH+2,5);ctx.stroke();
+    }
+  });
+  var tv=document.getElementById('trackingDate').value;
+  var tx=xOf(tv);
+  if(tx>padX&&tx<GANTT_W-padX){
+    ctx.strokeStyle='#B71C1C';ctx.lineWidth=2;ctx.setLineDash([5,3]);
+    ctx.beginPath();ctx.moveTo(tx,0);ctx.lineTo(tx,canvasH);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#B71C1C';ctx.font='bold 13px Vazirmatn';ctx.textAlign='center';
+    ctx.fillText('امروز',tx,HDR_H-8);
+  }
+}
+
+// ══════ TAB 3 ══════
+function initTab3(){drawSCurve();drawHeatmap();drawRisk();drawAcc();}
+
+function drawSCurve(){
+  var months=[];
+  for(var y=1404;y<=1406;y++){var m1=y===1404?2:1,m2=y===1406?5:12;for(var m=m1;m<=m2;m++)months.push({y,m});}
+  var totalW=ACT.reduce((s,a)=>s+(a.weight||1),0);
+  var planned=[],actual=[];
+  months.forEach(({y,m})=>{
+    var dN=jNum(y+'/'+String(m).padStart(2,'0')+'/15');
+    var ps=0,as2=0;
+    ACT.forEach(a=>{
+      var w=a.weight||1;
+      var s2=jNum(a.start||"1404/01/01"),e=jNum(a.end||"1406/06/01"),dur=e-s2;
+      if(dN>=e)ps+=w*100;
+      else if(dN>=s2&&dur>0)ps+=w*100*(dN-s2)/dur;
+      as2+=w*(a.progress||0);
+    });
+    planned.push(Math.round(ps/totalW));
+    actual.push(dN<=TDN?Math.round(as2/totalW):null);
+  });
+  var ctx=document.getElementById('sCurveChart').getContext('2d');
+  if(sCurveInst)sCurveInst.destroy();
+  sCurveInst=new Chart(ctx,{
+    type:'line',
+    data:{labels:months.map(({y,m})=>FAN[m-1].substr(0,3)+' '+fn(y)),datasets:[
+      {label:'برنامه‌ای',data:planned,borderColor:'#1565C0',backgroundColor:'rgba(21,101,192,.07)',fill:true,tension:.4,pointRadius:0,borderWidth:2},
+      {label:'واقعی (وزنی)',data:actual,borderColor:'#2E7D32',backgroundColor:'rgba(46,125,50,.12)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#2E7D32',borderWidth:2}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{ticks:{maxRotation:45,font:{family:'Vazirmatn',size:9},maxTicksLimit:14}},
+        y:{min:0,max:100,ticks:{font:{family:'Vazirmatn',size:10},callback:v=>fn(v)+'٪'}}},
+      plugins:{legend:{labels:{font:{family:'Vazirmatn',size:11}}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+fn(c.raw||0)+'٪'}}}}
+  });
+}
+
+function drawHeatmap(){
+  var svg=document.getElementById('heatmapSVG');
+  var phases=PHASE_ORDER.filter(p=>PHASES[p]);
+  var mlist=[];
+  for(var y=1404;y<=1406;y++){var m1=y===1404?2:1,m2=y===1406?5:12;for(var m=m1;m<=m2;m++)mlist.push({y,m});}
+  var cW=22,cH=20,padL=110,padT=28;
+  var W2=padL+mlist.length*cW+4,H2=padT+phases.length*cH+24;
+  svg.setAttribute('width',W2);svg.setAttribute('height',H2);svg.setAttribute('viewBox','0 0 '+W2+' '+H2);
+  svg.innerHTML='';
+  mlist.forEach(({y,m},ci)=>{
+    if(m%3===1||ci===0){
+      var t=document.createElementNS("http://www.w3.org/2000/svg",'text');
+      t.setAttribute('x',padL+ci*cW+cW/2);t.setAttribute('y',18);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','8');t.setAttribute('fill','#78909C');t.setAttribute('font-family','Vazirmatn');
+      t.textContent=FAN[m-1].substr(0,3);svg.appendChild(t);
+    }
+  });
+  phases.forEach((ph,pi)=>{
+    var pc=PHASES[ph].c;
+    var yl=document.createElementNS("http://www.w3.org/2000/svg",'text');
+    yl.setAttribute('x',padL-4);yl.setAttribute('y',padT+pi*cH+cH/2+4);yl.setAttribute('text-anchor','end');yl.setAttribute('font-size','8');yl.setAttribute('fill','#455A64');yl.setAttribute('font-family','Vazirmatn');
+    yl.textContent=ph.length>10?ph.substr(0,9)+'…':ph;svg.appendChild(yl);
+    mlist.forEach(({y,m},ci)=>{
+      var ms2=jNum(y+'/'+String(m).padStart(2,'0')+'/01');
+      var me=jNum(y+'/'+String(m).padStart(2,'0')+'/30');
+      var cnt=ACT.filter(a=>a.phase===ph&&jNum(a.start||"1404/01/01")<=me&&jNum(a.end||"1406/06/01")>=ms2).length;
+      var r=document.createElementNS("http://www.w3.org/2000/svg",'rect');
+      r.setAttribute('x',padL+ci*cW+1);r.setAttribute('y',padT+pi*cH+1);r.setAttribute('width',cW-2);r.setAttribute('height',cH-2);r.setAttribute('rx','2');
+      r.setAttribute('fill',cnt>0?pc:'#F5F5F5');r.setAttribute('opacity',cnt>0?Math.min(.15+cnt*.18,.92):.4);svg.appendChild(r);
+      if(cnt>0){
+        var nt=document.createElementNS("http://www.w3.org/2000/svg",'text');
+        var alpha=Math.min(.15+cnt*.18,.92);
+        nt.setAttribute('x',padL+ci*cW+cW/2);nt.setAttribute('y',padT+pi*cH+cH/2+4);nt.setAttribute('text-anchor','middle');nt.setAttribute('font-size','8');
+        nt.setAttribute('fill',alpha>.55?'#fff':pc);nt.setAttribute('font-family','Vazirmatn');
+        nt.textContent=fn(cnt);svg.appendChild(nt);
+      }
+    });
+  });
+}
+
+function drawRisk(){
+  var items=ACT.filter(a=>{var s=status(a,TDN);return s==='critical'||s==='active';})
+    .map(a=>{
+      var delay=Math.max(0,TDN-jNum(a.end||"1404/01/01"));
+      return {x:Math.round(delay),y:(a.id%8)+1,r:Math.max(5,10-(a.progress||0)/12),label:a.title.substr(0,18),s:status(a,TDN)};
+    });
+  var ctx=document.getElementById('riskChart').getContext('2d');
+  if(riskInst)riskInst.destroy();
+  riskInst=new Chart(ctx,{
+    type:'bubble',
+    data:{datasets:[{label:'فعالیت‌ها',data:items,backgroundColor:items.map(d=>sColor(d.s)+'AA'),borderColor:items.map(d=>sColor(d.s)),borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{title:{display:true,text:'تأخیر (روز)',font:{family:'Vazirmatn',size:11}},ticks:{font:{family:'Vazirmatn',size:10},callback:v=>fn(v)}},
+        y:{display:false}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.label} — تأخیر: ${fn(c.raw.x)} روز`}}}}
+  });
+}
+
+function drawAcc(){
+  var recs=[
+    {icon:'🔴',t:'اقدام فوری: تکمیل مجوز کارگروه تعامل‌پذیری برای دستگاه‌های باقیمانده',
+     b:'فعالیت شماره ۷ (کسب مجوز کارگروه تعامل‌پذیری) تنها ۴۵٪ پیشرفت دارد و مهلت آن ۵ تیر بوده است. ۱۳ فعالیت تأمین داده (ردیف‌های ۸ تا ۲۰) همگی وابسته به این مجوز هستند و پیشرفت صفر دارند. این گلوگاه اصلی پروژه است.',
+     act:'برگزاری فوری جلسه کارگروه برای اخذ مجوزهای باقیمانده',time:'حداکثر ۲ هفته آینده',own:'سازمان برنامه و بودجه / مرکز تحول دیجیتال'},
+    {icon:'🔴',t:'اقدام فوری: استقرار محیط عملیاتی امن (فاز اول)',
+     b:'فعالیت‌های ۴ و ۵ (استقرار و راه‌اندازی سخت‌افزار محیط عملیاتی فاز اول) هنوز پیشرفتی نداشته‌اند. این محیط پیش‌نیاز مستقیم دریافت داده از ۱۲ دستگاه است. فعالیت ۳ (عقد تفاهم‌نامه) ۱۰۰٪ انجام شده — اقدام اجرایی باید بلافاصله شروع شود.',
+     act:'آغاز فوری استقرار سخت‌افزاری محیط عملیاتی',time:'۳ هفته آینده',own:'مرکز تحول دیجیتال / امور عمومی و امنیتی'},
+    {icon:'🟠',t:'اقدام میان‌مدت: تسریع توسعه نرم‌افزارهای مکانی',
+     b:'فعالیت ۲۶ (توسعه نرم‌افزارهای مکانی) ۷۵٪ پیشرفت دارد اما مهلت آن ۱ فروردین بوده است. فعالیت ۲۵ (طراحی سامانه) هنوز شروع نشده. این دو فعالیت پیش‌نیاز اجرای عملیات میدانی آبان هستند.',
+     act:'تکمیل فوری نرم‌افزار مکانی و شروع طراحی سامانه',time:'۱ ماه آینده',own:'مرکز تحول دیجیتال / مرکز آمار ایران'},
+    {icon:'🟠',t:'اقدام میان‌مدت: تسریع بروزرسانی نقشه‌های آماری و رفع مغایرت تقسیمات',
+     b:'فعالیت ۳۳ (بروزرسانی نقشه) ۷۵٪ پیشرفت دارد اما مهلتش ۱۰ تیر بود. فعالیت ۳۲ (رفع مغایرت تقسیمات کشوری) ۴۵٪ پیشرفت دارد. این مغایرت مستقیماً بر کیفیت نتایج سرشماری اثر می‌گذارد.',
+     act:'هماهنگی فوری با وزارت کشور برای تطبیق فهرست‌های تقسیماتی',time:'تا پایان مرداد',own:'مرکز آمار ایران / وزارت کشور'},
+    {icon:'🟢',t:'اقدام آتی: شروع زودهنگام فرهنگ‌سازی عمومی',
+     b:'فعالیت ۴۶ (تبلیغات و فرهنگ‌سازی) از ۱ تیر برنامه‌ریزی شده. با توجه به اینکه عملیات میدانی در آبان است، شروع فرهنگ‌سازی باید به صورت جدی از تیر آغاز شود تا نرخ پاسخ‌دهی قابل قبول باشد.',
+     act:'آغاز برنامه آموزش عمومی و رسانه‌ای از تیر ۱۴۰۵',time:'تیر ۱۴۰۵',own:'ستاد سرشماری عمومی نفوس و مسکن'},
+    {icon:'🟢',t:'اقدام آتی: پیگیری اخذ مصوبه شورای حقوق و دستمزد',
+     b:'فعالیت ۲۱ (اخذ مصوبه شورای حقوق و دستمزد) مهلتش ۱ فروردین ۱۴۰۵ بوده و هنوز پیشرفتی نداشته. این مصوبه برای استخدام آمارگیران عملیات میدانی ضروری است.',
+     act:'پیگیری جدی اخذ مصوبه از شورای حقوق و دستمزد',time:'فوری',own:'امور تلفیق و هماهنگی / مرکز آمار ایران'}
+  ];
+  document.getElementById('accContainer').innerHTML=recs.map((r,i)=>`
+    <div class="acc-item" id="acc${i}">
+      <div class="acc-hdr" onclick="togAcc(${i})">
+        <span class="acc-icon">${r.icon}</span>
+        <span class="acc-ttl">${r.t}</span>
+        <span class="acc-arr">›</span>
+      </div>
+      <div class="acc-body">
+        <p>${r.b}</p>
+        <div class="acc-meta">
+          <span class="k">اقدام:</span><span>${r.act}</span>
+          <span class="k">زمان‌بندی:</span><span>${r.time}</span>
+          <span class="k">مسئول:</span><span>${r.own}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function togAcc(i){document.getElementById('acc'+i).classList.toggle('open');}
+
+// ══════ INIT ══════
+(function(){
+  renderKPI();renderDonut();renderPhase();
+  setTimeout(drawTimeline,100);
+})();
+</script>
+</body>
+</html>
