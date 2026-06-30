@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد جمعیتی هرمزگان ۱۴۰۴ — طرح آمایش امید</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;}
+html{direction:rtl;}
+body{
+  margin:0;font-family:'Vazirmatn',sans-serif;background:#f4f6f9;color:#1c2733;
+  -webkit-font-smoothing:antialiased;
+}
+header.top{
+  background:linear-gradient(135deg,#0d3b6e,#0a2c54);color:#fff;padding:18px 28px;
+  display:flex;align-items:center;gap:16px;box-shadow:0 2px 10px rgba(0,0,0,.15);
+  position:sticky;top:0;z-index:50;
+}
+header.top .logo{width:46px;height:46px;flex:0 0 auto;}
+header.top h1{font-size:19px;margin:0;font-weight:700;}
+header.top p{margin:2px 0 0;font-size:12.5px;color:#bcd3ee;}
+nav.tabs{
+  display:flex;flex-wrap:wrap;gap:6px;background:#0a2c54;padding:8px 20px;
+  position:sticky;top:78px;z-index:49;box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+nav.tabs button{
+  background:transparent;border:none;color:#cfe0f3;padding:9px 16px;border-radius:8px;
+  font-family:inherit;font-size:13.5px;cursor:pointer;font-weight:500;transition:.15s;
+  white-space:nowrap;
+}
+nav.tabs button:hover{background:rgba(255,255,255,.08);}
+nav.tabs button.active{background:#f9a825;color:#0a2c54;font-weight:700;}
+main{max-width:1320px;margin:0 auto;padding:22px 20px 60px;}
+.tabpanel{display:none;animation:fadein .25s;}
+.tabpanel.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.kpi-grid{grid-template-columns:1fr;}}
+.kpi{
+  background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 6px rgba(20,40,70,.08);
+  border-right:5px solid #ccc;position:relative;overflow:hidden;
+}
+.kpi .ic{position:absolute;left:10px;top:10px;opacity:.13;width:46px;height:46px;}
+.kpi .lbl{font-size:12px;color:#5a6b7d;margin-bottom:4px;font-weight:500;}
+.kpi .val{font-size:24px;font-weight:800;color:#0d3b6e;}
+.kpi .sub{font-size:11.5px;margin-top:4px;color:#7a8a9b;}
+.kpi.good{border-right-color:#2e7d32;}
+.kpi.warn{border-right-color:#e65100;}
+.kpi.bad{border-right-color:#c62828;}
+.kpi.good .val{color:#2e7d32;}
+.kpi.warn .val{color:#e65100;}
+.kpi.bad .val{color:#c62828;}
+
+.card{
+  background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 1px 6px rgba(20,40,70,.08);
+  margin-bottom:20px;
+}
+.card h3{margin:0 0 4px;font-size:16px;color:#0d3b6e;font-weight:700;}
+.card .desc{font-size:12.5px;color:#6c7d8f;margin-bottom:14px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:900px){.grid2{grid-template-columns:1fr;}}
+.chart-wrap{position:relative;}
+.chart-wrap canvas{max-width:100%;}
+.dl-btn{
+  position:absolute;left:0;top:-2px;background:#eef3f9;border:1px solid #d8e3ee;color:#0d3b6e;
+  font-size:11px;border-radius:7px;padding:4px 10px;cursor:pointer;font-family:inherit;
+}
+.dl-btn:hover{background:#dbe8f7;}
+select.filter{
+  font-family:inherit;border:1px solid #d3dce6;border-radius:8px;padding:7px 12px;font-size:13px;
+  background:#fff;color:#0d3b6e;margin-bottom:14px;
+}
+table.dtable{width:100%;border-collapse:collapse;font-size:12.8px;}
+table.dtable th,table.dtable td{padding:7px 9px;text-align:center;border-bottom:1px solid #eef1f5;}
+table.dtable th{background:#0d3b6e;color:#fff;font-weight:600;position:sticky;top:0;cursor:pointer;}
+table.dtable th:hover{background:#11498c;}
+table.dtable tbody tr:hover{background:#f6f9fc;}
+.status-1{background:#b71c1c;color:#fff;}
+.status-2{background:#e53935;color:#fff;}
+.status-3{background:#fb8c00;color:#fff;}
+.status-4{background:#fdd835;color:#3a3a00;}
+.status-5{background:#2e7d32;color:#fff;}
+.legend-status{display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;margin-top:8px;color:#5a6b7d;}
+.legend-status span{display:inline-flex;align-items:center;gap:5px;}
+.legend-status i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+
+.infobox{
+  background:linear-gradient(180deg,#fff,#f7fafd);border:1px solid #e4ecf4;border-radius:14px;
+  padding:18px 20px;margin-bottom:20px;
+}
+.infobox h4{margin:0 0 14px;color:#0d3b6e;font-size:15px;}
+.pyramid{display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;}
+.pyramid .layer{
+  color:#fff;text-align:center;padding:10px 14px;border-radius:6px;font-size:12.5px;font-weight:600;
+}
+.timeline-h{display:flex;align-items:center;justify-content:space-between;position:relative;padding:30px 10px 10px;flex-wrap:wrap;gap:8px;}
+.timeline-h::before{content:'';position:absolute;top:46px;left:5%;right:5%;height:3px;background:#cfe0f3;}
+.tl-node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:2;min-width:110px;}
+.tl-dot{width:22px;height:22px;border-radius:50%;background:#0d3b6e;border:4px solid #f9a825;}
+.tl-label{font-size:12px;font-weight:700;color:#0d3b6e;}
+.tl-val{font-size:13px;color:#e65100;font-weight:700;}
+
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.cmp-table th,.cmp-table td{padding:8px 10px;text-align:center;border-bottom:1px solid #eef1f5;}
+.cmp-table th{background:#eef3f9;color:#0d3b6e;}
+.arrow-up{color:#2e7d32;font-weight:800;}
+.arrow-down{color:#c62828;font-weight:800;}
+
+.alert-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.alert-card{border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.7;}
+.alert-card.bad{background:#fdecea;border-right:5px solid #c62828;color:#7f1d1d;}
+.alert-card.good{background:#eaf6ec;border-right:5px solid #2e7d32;color:#1b4d20;}
+.alert-card.policy{background:#eaf1fb;border-right:5px solid #0d3b6e;color:#0d3b6e;}
+
+.dep-people{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0;}
+.dep-people svg{width:26px;height:26px;}
+
+.loading-overlay{
+  position:fixed;inset:0;background:rgba(244,246,249,.85);display:flex;align-items:center;
+  justify-content:center;z-index:200;font-size:14px;color:#0d3b6e;font-weight:600;
+}
+.spinner{width:34px;height:34px;border:4px solid #d6e3f0;border-top-color:#0d3b6e;border-radius:50%;
+  animation:spin 0.8s linear infinite;margin-left:10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+footer.foot{
+  text-align:center;color:#8a98a8;font-size:12px;padding:24px 0 30px;
+}
+.health-checklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+.health-checklist .item{display:flex;align-items:center;gap:8px;background:#fff;border-radius:10px;padding:10px 12px;font-size:13px;box-shadow:0 1px 4px rgba(20,40,70,.06);}
+.health-checklist .ok{color:#2e7d32;font-size:18px;}
+.health-checklist .bad{color:#c62828;font-size:18px;}
+.mortality-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px;}
+.mortality-card{background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 1px 4px rgba(20,40,70,.06);}
+.mortality-card .n{font-size:20px;font-weight:800;}
+.mortality-card .l{font-size:11.5px;color:#6c7d8f;}
+
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <span>در حال بارگذاری...</span><div class="spinner"></div>
+</div>
+
+<header class="top">
+  <svg class="logo" viewBox="0 0 64 64" fill="none">
+    <circle cx="32" cy="32" r="30" fill="#ffffff" opacity="0.12"/>
+    <path d="M32 10c-9 0-16 9-16 18 0 13 16 26 16 26s16-13 16-26c0-9-7-18-16-18z" fill="#f9a825"/>
+    <circle cx="32" cy="27" r="6" fill="#0d3b6e"/>
+  </svg>
+  <div>
+    <h1>داشبورد جمعیتی هرمزگان ۱۴۰۴ — طرح آمایش امید</h1>
+    <p>مرکز جوانی جمعیت — وزارت بهداشت، درمان و آموزش پزشکی | دانشگاه علوم پزشکی هرمزگان</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="active" data-tab="tab1">۱. نمای کلی استان</button>
+  <button data-tab="tab2">۲. باروری و فرزندآوری</button>
+  <button data-tab="tab3">۳. ازدواج و تجرد</button>
+  <button data-tab="tab4">۴. طلاق و پایداری خانواده</button>
+  <button data-tab="tab5">۵. سالمندی و وابستگی</button>
+  <button data-tab="tab6">۶. بهداشت و سزارین</button>
+  <button data-tab="tab7">۷. مقایسه و بینش‌ها</button>
+</nav>
+
+<main>
+  <div class="tabpanel active" id="tab1"></div>
+  <div class="tabpanel" id="tab2"></div>
+  <div class="tabpanel" id="tab3"></div>
+  <div class="tabpanel" id="tab4"></div>
+  <div class="tabpanel" id="tab5"></div>
+  <div class="tabpanel" id="tab6"></div>
+  <div class="tabpanel" id="tab7"></div>
+</main>
+
+<footer class="foot">
+  منبع داده: سازمان ثبت احوال کشور (سالانه ۱۴۰۴) و طرح آمایش امید دانشگاه علوم پزشکی هرمزگان (۱۴۰۲) | دانشگاه علوم پزشکی هرمزگان | ۱۴۰۴<br>
+  این داشبورد به‌صورت کامل بر اساس داده‌های واقعی فایل‌های اکسل ارائه‌شده تولید شده است.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const DATA = {"kolKeshvar": {"marriages_by_age_F": [120581, 112443, 75235, 46308, 34617, 22243, 11097, 9437, 431961], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [11994, 21746, 25934, 31450, 33998, 27718, 15097, 14199, 182136], "single_women_total_by_age": [2561015, 1636343, 942790, 745178, 888631, 899317, 682775, 3298817, 11654866], "single_women_never_by_age": [2541967, 1560223, 797888, 504963, 526891, 471051, 299932, 528134, 7231049], "single_women_divorced_by_age": [17857, 71605, 135001, 217689, 314272, 1082295, 1838719], "single_women_widow_by_age": [1191, 4515, 9901, 22526, 47468, 2499497, 2585098], "single_men_total_by_age": [3047196, 2482324, 1765041, 1429653, 1242156, 871601, 520230, 1218151, 12576352], "single_men_never_by_age": [3046564, 2466448, 1694848, 1253506, 941568, 530448, 244885, 341155, 10519422], "single_men_divorced_by_age": [593, 15492, 68750, 172682, 293799, 1117109, 1668425], "single_men_widower_by_age": [39, 384, 1443, 3465, 6789, 376385, 388505], "married_women_fertile_by_age": [365836, 1056482, 1722536, 2571479, 3461905, 3406159, 2708420, 7017983, 22310800], "tfr": 1.34, "singularityF": null, "singularityM": null, "birthRate": 10.5, "marriageAge1st_F": 24.1, "marriageAge1st_M": 28.4, "marriageAgeAll_F": 26.2, "marriageAgeAll_M": 31.2, "marriageToChild1": 4.6, "marriageRate": 5.1, "motherAge1st": 27.6, "fatherAge1st": 32.5, "deathCount": 459997, "deathRate": 5.3, "divorceRate": 2.1, "divorceAge_M": 40.1, "divorceAge_F": 35.2, "marriageDuration": 12, "medianAge": 35.3, "sexRatio": 107.4, "child1to2": 5.9, "child2to3": 6.3, "family0": 2516110, "family1": 5292512, "family2": 8512119, "family3plus": 10355173, "dependencyRatio": 43.3171695252718, "agingRate60": 12.858691417050414, "agingRate65": 8.711823921063658}, "hormozgan": {"marriages_by_age_F": [3381, 2815, 1493, 845, 570, 325, 143, 79, 9651], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [256, 498, 520, 577, 487, 383, 181, 148, 3050], "single_women_total_by_age": [68441, 37878, 20805, 17420, 19046, 18294, 13312, 56503, 251699], "single_women_never_by_age": [67999, 35923, 17221, 11603, 11507, 9732, 5715, 6957, 166657], "single_women_divorced_by_age": [393, 1766, 3185, 4942, 6044, 18700, 35030], "single_women_widow_by_age": [49, 189, 399, 875, 1495, 47005, 50012], "single_men_total_by_age": [81061, 59834, 38813, 28512, 21853, 14429, 8750, 18704, 271956], "single_men_never_by_age": [81048, 59475, 36927, 24317, 15551, 7976, 3762, 4317, 233373], "single_men_divorced_by_age": [12, 350, 1830, 4080, 6056, 19802, 32130], "single_men_widower_by_age": [1, 9, 56, 115, 246, 6026, 6453], "married_women_fertile_by_age": [9662, 30121, 45935, 65935, 81236, 73227, 52269, 109295, 467680], "tfr": 1.72, "singularityF": null, "singularityM": null, "birthRate": 13.98212406156262, "marriageAge1st_F": 23.08, "marriageAge1st_M": 27.17, "marriageAgeAll_F": 24.44, "marriageAgeAll_M": 29.06, "marriageToChild1": 3.9567987780106924, "marriageRate": 4.841360824198123, "motherAge1st": 26.27, "fatherAge1st": 30.87, "deathCount": 9121, "deathRate": 4.592543486791353, "divorceRate": 1.5004592067505418, "divorceAge_M": 37.84, "divorceAge_F": 32.84, "marriageDuration": 10.58, "medianAge": 30.509071885204435, "sexRatio": 105.204021289178, "child1to2": 6.886150065960998, "child2to3": 5.933758894838096, "family0": 54198, "family1": 89534, "family2": 138502, "family3plus": 268594, "dependencyRatio": 49.51504351028881, "agingRate60": 8.573170397907818, "agingRate65": 5.796848289401981}, "districts": {"ابوموسی": {"registry": {"marriages_by_age_F": [0, 0, 0, 0, 0, 0, 0, 0, 0], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [0, 0, 0, 0, 0, 0, 0, 0, 0], "single_women_total_by_age": [109, 42, 28, 16, 9, 10, 7, 24, 245], "single_women_never_by_age": [108, 42, 24, 9, 6, 8, 5, 2, 204], "single_women_divorced_by_age": [1, 0, 3, 6, 3, 4, 17], "single_women_widow_by_age": [0, 0, 1, 1, 0, 22, 24], "single_men_total_by_age": [103, 49, 37, 33, 15, 9, 7, 15, 268], "single_men_never_by_age": [103, 49, 36, 23, 7, 2, 2, 2, 224], "single_men_divorced_by_age": [0, 0, 1, 10, 8, 21, 40], "single_men_widower_by_age": [0, 0, 0, 0, 0, 4, 4], "married_women_fertile_by_age": [9, 36, 70, 101, 165, 138, 84, 91, 694], "tfr": 1.24, "singularityF": null, "singularityM": null, "birthRate": 1.3630036235330814, "marriageAge1st_F": 0, "marriageAge1st_M": 0, "marriageAgeAll_F": 0, "marriageAgeAll_M": 0, "marriageToChild1": 5.693150684931507, "marriageRate": 4.817544972319984, "motherAge1st": 0, "fatherAge1st": 0, "deathCount": 0, "deathRate": 3.4411035516571316, "divorceRate": 1.2028901111010148, "divorceAge_M": 0, "divorceAge_F": 0, "marriageDuration": 0, "medianAge": 29.46590909090909, "sexRatio": 42.857142857142854, "child1to2": 5.984246575342466, "child2to3": 8.30082191780822, "family0": 85, "family1": 92, "family2": 231, "family3plus": 299}, "amayesh": {"birthTarget": {"1403": 29, "1404": 31, "1405": 32, "1406": 34}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 0.5683051325466186, "status": 1, "nationalRank": 3, "provincialRank": 1}, "2": {"title": "میزان باروری کل\n1402", "value": 1.19, "status": 1, "nationalRank": 118, "provincialRank": 1}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 109.39455441261268, "status": 5, "nationalRank": 461, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 6.5, "status": 1, "nationalRank": 1, "provincialRank": 1}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 4.3, "status": 2, "nationalRank": 208, "provincialRank": 1}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.7, "status": 1, "nationalRank": 120, "provincialRank": 1}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -12.185030116491191, "status": 1, "nationalRank": 3, "provincialRank": 1}, "10": {"title": "میزان ازدواج\n1401", "value": null, "status": null, "nationalRank": null, "provincialRank": null}, "11": {"title": "میزان ازدواج\n1402", "value": null, "status": null, "nationalRank": null, "provincialRank": null}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": null, "status": null, "nationalRank": null, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 33.99019607843137, "status": 2, "nationalRank": 203, "provincialRank": 1}, "14": {"title": "میزان سزارین", "value": 0, "status": null, "nationalRank": 1, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 0, "status": null, "nationalRank": 1, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 1.2048192771084338}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 7.228915662650602}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 12.220309810671257}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.481927710843372}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 29.259896729776248}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.416523235800344}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.187607573149743}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 0}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 13.333333333333334}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 33.33333333333333}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 20}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 20}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 6.666666666666667}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 6.666666666666667}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 0}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": null}}}}, "بستک": {"registry": {"marriages_by_age_F": [161, 148, 65, 32, 21, 16, 5, 5, 453], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [17, 42, 27, 28, 18, 12, 11, 7, 162], "single_women_total_by_age": [2954, 1783, 887, 713, 745, 656, 459, 2776, 10973], "single_women_never_by_age": [2925, 1666, 696, 478, 507, 411, 270, 412, 7365], "single_women_divorced_by_age": [27, 113, 179, 214, 195, 556, 1284], "single_women_widow_by_age": [2, 4, 12, 21, 43, 2242, 2324], "single_men_total_by_age": [3605, 3001, 2031, 1330, 816, 408, 219, 750, 12160], "single_men_never_by_age": [3603, 2984, 1926, 1132, 600, 247, 100, 194, 10786], "single_men_divorced_by_age": [2, 17, 102, 195, 208, 527, 1051], "single_men_widower_by_age": [0, 0, 3, 3, 8, 309, 323], "married_women_fertile_by_age": [397, 1552, 2438, 3157, 3453, 3075, 2090, 5895, 22057], "tfr": 1.61, "singularityF": null, "singularityM": null, "birthRate": 13.744317346737898, "marriageAge1st_F": 22.78, "marriageAge1st_M": 27.35, "marriageAgeAll_F": 22.78, "marriageAgeAll_M": 27.35, "marriageToChild1": 4.660813356164383, "marriageRate": 4.905563186554306, "motherAge1st": 25.85, "fatherAge1st": 31.19, "deathCount": 320, "deathRate": 3.4961697543371444, "divorceRate": 1.7590104076508757, "divorceAge_M": 36.38, "divorceAge_F": 30.87, "marriageDuration": 9.29, "medianAge": 29.78832867852418, "sexRatio": 106.56814449917897, "child1to2": 5.063013698630137, "child2to3": 5.4566843723790885, "family0": 2846, "family1": 3273, "family2": 4759, "family3plus": 14111}, "amayesh": {"birthTarget": {"1403": 1788, "1404": 1881, "1405": 1977, "1406": 2079}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.9292374386583098, "status": 4, "nationalRank": 369, "provincialRank": 8}, "2": {"title": "میزان باروری کل\n1402", "value": 1.73, "status": 3, "nationalRank": 319, "provincialRank": 5}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": -10.32726375022401, "status": 1, "nationalRank": 45, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 3.837730870712401, "status": 3, "nationalRank": 268, "provincialRank": 6}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.4, "status": 4, "nationalRank": 435, "provincialRank": 13}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 3.7, "status": 4, "nationalRank": 440, "provincialRank": 13}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -5.915566011473099, "status": 2, "nationalRank": 179, "provincialRank": 5}, "10": {"title": "میزان ازدواج\n1401", "value": 7.212164104696075, "status": 3, "nationalRank": 278, "provincialRank": 7}, "11": {"title": "میزان ازدواج\n1402", "value": 6.271125094119349, "status": 2, "nationalRank": 281, "provincialRank": 9}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -13.047942294657231, "status": 1, "nationalRank": 156, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 29.14985693848355, "status": 3, "nationalRank": 386, "provincialRank": 7}, "14": {"title": "میزان سزارین", "value": 39.5, "status": null, "nationalRank": 113, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 40.43, "status": null, "nationalRank": 93, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 3.1039461020211743}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 10.581087584215592}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 16.2776708373436}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.735081809432145}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.67492781520693}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 16.89124157844081}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.736044273339749}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 4.53920220082531}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 17.05639614855571}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 28.74828060522696}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 27.441540577716644}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 18.22558459422283}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 3.782668500687758}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.20632737276478677}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 14}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 9}}}}, "بشاگرد": {"registry": {"marriages_by_age_F": [25, 14, 13, 2, 5, 3, 0, 0, 62], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [0, 0, 0, 0, 0, 0, 0, 0, 0], "single_women_total_by_age": [1546, 947, 550, 317, 252, 212, 186, 886, 4896], "single_women_never_by_age": [1545, 929, 516, 271, 179, 130, 76, 92, 3738], "single_women_divorced_by_age": [1, 17, 27, 36, 38, 61, 180], "single_women_widow_by_age": [0, 1, 7, 10, 35, 925, 978], "single_men_total_by_age": [1640, 1315, 951, 408, 213, 110, 91, 175, 4903], "single_men_never_by_age": [1640, 1314, 930, 389, 172, 88, 60, 68, 4661], "single_men_divorced_by_age": [0, 1, 21, 17, 38, 84, 161], "single_men_widower_by_age": [0, 0, 0, 2, 3, 76, 81], "married_women_fertile_by_age": [147, 523, 1066, 1186, 1148, 996, 856, 1621, 7543], "tfr": 2.06, "singularityF": null, "singularityM": null, "birthRate": 9.509867041590482, "marriageAge1st_F": 22.88, "marriageAge1st_M": 26.57, "marriageAgeAll_F": 22.88, "marriageAgeAll_M": 26.57, "marriageToChild1": 2.899320637041987, "marriageRate": 1.6287617585044472, "motherAge1st": 24.71, "fatherAge1st": 30.02, "deathCount": 123, "deathRate": 3.231253166065274, "divorceRate": 0.8723314364299075, "divorceAge_M": 36.846666666666664, "divorceAge_F": 31.213333333333335, "marriageDuration": 0, "medianAge": 25.598793363499247, "sexRatio": 111.69590643274854, "child1to2": 4.0414980520296595, "child2to3": 4.3443674456083805, "family0": 799, "family1": 1171, "family2": 1406, "family3plus": 5645}, "amayesh": {"birthTarget": {"1403": 591, "1404": 622, "1405": 654, "1406": 687}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.8847566775882976, "status": 3, "nationalRank": 360, "provincialRank": 6}, "2": {"title": "میزان باروری کل\n1402", "value": 1.7, "status": 2, "nationalRank": 312, "provincialRank": 4}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": -9.802680621071422, "status": 1, "nationalRank": 48, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 1.9022988505747127, "status": 5, "nationalRank": 464, "provincialRank": 13}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.6, "status": 4, "nationalRank": 418, "provincialRank": 11}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 3.7, "status": 4, "nationalRank": 438, "provincialRank": 12}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -5.349527278098975, "status": 2, "nationalRank": 239, "provincialRank": 6}, "10": {"title": "میزان ازدواج\n1401", "value": 4.224125702195922, "status": 1, "nationalRank": 63, "provincialRank": 3}, "11": {"title": "میزان ازدواج\n1402", "value": 3.4650537379711643, "status": 1, "nationalRank": 47, "provincialRank": 3}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -17.969918930919885, "status": 1, "nationalRank": 80, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 25.59908735332464, "status": 4, "nationalRank": 429, "provincialRank": 13}, "14": {"title": "میزان سزارین", "value": 0, "status": null, "nationalRank": 1, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 0, "status": null, "nationalRank": 1, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 2.947437366955952}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 10.054036351727525}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 19.66595709841166}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.926805305387262}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.224987719010972}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 15.768789913214345}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 12.411986245292288}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 7.236842105263158}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 17.543859649122805}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 26.096491228070175}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 23.464912280701753}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 16.666666666666664}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 8.991228070175438}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 5}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 5}}}}, "بندرعباس": {"registry": {"marriages_by_age_F": [949, 1136, 670, 373, 251, 156, 49, 34, 3618], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [75, 183, 230, 281, 261, 200, 90, 71, 1391], "single_women_total_by_age": [26136, 15632, 8424, 7106, 7856, 7604, 5521, 20810, 99089], "single_women_never_by_age": [26025, 15031, 7140, 4608, 4428, 3612, 2108, 2727, 65679], "single_women_divorced_by_age": [94, 541, 1158, 2184, 2873, 9369, 16219], "single_women_widow_by_age": [17, 60, 126, 314, 555, 16119, 17191], "single_men_total_by_age": [29861, 22290, 14456, 11865, 10082, 6820, 4140, 8118, 107632], "single_men_never_by_age": [29856, 22193, 13825, 10111, 7142, 3686, 1675, 1834, 90322], "single_men_divorced_by_age": [4, 93, 614, 1698, 2824, 9652, 14885], "single_men_widower_by_age": [1, 4, 17, 56, 116, 2231, 2425], "married_women_fertile_by_age": [2316, 8787, 13813, 23745, 32417, 30619, 21573, 42439, 175709], "tfr": 1.49, "singularityF": null, "singularityM": null, "birthRate": 15.075730923567823, "marriageAge1st_F": 23.95, "marriageAge1st_M": 27.78, "marriageAgeAll_F": 23.94, "marriageAgeAll_M": 27.77, "marriageToChild1": 4.3242580237653465, "marriageRate": 4.74823064675128, "motherAge1st": 27.37, "fatherAge1st": 31.93, "deathCount": 3847, "deathRate": 5.058555330393844, "divorceRate": 1.7804221256442072, "divorceAge_M": 38.62, "divorceAge_F": 34.18, "marriageDuration": 11.18, "medianAge": 32.697884313785785, "sexRatio": 107.66165549719253, "child1to2": 5.5450832007935285, "child2to3": 6.253244448057667, "family0": 19464, "family1": 37836, "family2": 63947, "family3plus": 86038}, "amayesh": {"birthTarget": {"1403": 13430, "1404": 14122, "1405": 14844, "1406": 15609}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.841848876625127, "status": 3, "nationalRank": 345, "provincialRank": 5}, "2": {"title": "میزان باروری کل\n1402", "value": 1.95, "status": 4, "nationalRank": 370, "provincialRank": 8}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 5.871878238622991, "status": 5, "nationalRank": 383, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 3.90892274211099, "status": 3, "nationalRank": 256, "provincialRank": 4}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 4.3, "status": 2, "nationalRank": 228, "provincialRank": 2}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.6, "status": 2, "nationalRank": 166, "provincialRank": 2}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -1.3260359077569817, "status": 3, "nationalRank": 402, "provincialRank": 12}, "10": {"title": "میزان ازدواج\n1401", "value": 5.74062471705229, "status": 1, "nationalRank": 167, "provincialRank": 5}, "11": {"title": "میزان ازدواج\n1402", "value": 5.134392355313194, "status": 1, "nationalRank": 163, "provincialRank": 7}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -10.560390055429117, "status": 1, "nationalRank": 207, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 32.67807286346612, "status": 3, "nationalRank": 271, "provincialRank": 2}, "14": {"title": "میزان سزارین", "value": 62.03, "status": null, "nationalRank": 291, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 65.37, "status": null, "nationalRank": 268, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 2.0705303961425736}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 6.5017708962116645}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.513370811848642}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.46894204405786}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 24.312550454178513}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 21.31475407451582}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 13.818081323044924}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 5.147445036392286}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 17.73092218803932}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 24.484129961731824}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 27.755683949876193}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 19.11908156374278}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 5.38755909056802}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.37517820964958354}, "15": {"title": "تعداد مرگ مادران", "value": 5}, "16": {"title": "تعداد مرگ نوزادان ", "value": 159}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 81}}}}, "بندرلنگه": {"registry": {"marriages_by_age_F": [255, 204, 104, 66, 37, 18, 18, 9, 711], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [19, 47, 41, 49, 57, 60, 25, 21, 319], "single_women_total_by_age": [6617, 3592, 1928, 1657, 2035, 2034, 1367, 5133, 24363], "single_women_never_by_age": [6577, 3401, 1576, 1107, 1189, 1066, 576, 785, 16277], "single_women_divorced_by_age": [38, 179, 326, 482, 756, 2316, 4097], "single_women_widow_by_age": [2, 12, 26, 68, 90, 3791, 3989], "single_men_total_by_age": [7825, 5884, 3823, 3182, 2706, 1912, 1090, 2046, 28468], "single_men_never_by_age": [7825, 5830, 3617, 2747, 1963, 1068, 458, 531, 24039], "single_men_divorced_by_age": [0, 54, 198, 429, 734, 2473, 3888], "single_men_widower_by_age": [0, 0, 8, 6, 9, 518, 541], "married_women_fertile_by_age": [808, 2639, 3767, 5611, 7420, 7198, 4896, 9560, 41899], "tfr": 1.76, "singularityF": null, "singularityM": null, "birthRate": 11.424503324814138, "marriageAge1st_F": 22.7, "marriageAge1st_M": 26.68, "marriageAgeAll_F": 22.71, "marriageAgeAll_M": 26.69, "marriageToChild1": 4.226397104607721, "marriageRate": 4.083898403705712, "motherAge1st": 26.55, "fatherAge1st": 31.44, "deathCount": 595, "deathRate": 3.4418123940579304, "divorceRate": 1.7642903868700315, "divorceAge_M": 39.74, "divorceAge_F": 34.84, "marriageDuration": 11.53, "medianAge": 30.7981220657277, "sexRatio": 101.32517838939856, "child1to2": 4.95897478537427, "child2to3": 5.621057218333832, "family0": 5176, "family1": 8999, "family2": 12104, "family3plus": 22565}, "amayesh": {"birthTarget": {"1403": 3399, "1404": 3574, "1405": 3757, "1406": 3951}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.908899357177125, "status": 4, "nationalRank": 364, "provincialRank": 7}, "2": {"title": "میزان باروری کل\n1402", "value": 1.88, "status": 3, "nationalRank": 355, "provincialRank": 7}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": -1.5139277546754106, "status": 2, "nationalRank": 196, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 3.7488954344624448, "status": 3, "nationalRank": 287, "provincialRank": 7}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.8, "status": 4, "nationalRank": 362, "provincialRank": 7}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4, "status": 3, "nationalRank": 387, "provincialRank": 8}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -5.327915114043864, "status": 2, "nationalRank": 243, "provincialRank": 7}, "10": {"title": "میزان ازدواج\n1401", "value": 5.037401814257952, "status": 1, "nationalRank": 119, "provincialRank": 4}, "11": {"title": "میزان ازدواج\n1402", "value": 4.683290453655071, "status": 1, "nationalRank": 114, "provincialRank": 4}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -7.02964293220758, "status": 1, "nationalRank": 265, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 31.68090827606812, "status": 3, "nationalRank": 321, "provincialRank": 4}, "14": {"title": "میزان سزارین", "value": 35.01, "status": null, "nationalRank": 73, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 31.97, "status": null, "nationalRank": 41, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 2.9945080231951646}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 8.434326389101955}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 12.416776608474214}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 19.430552572638295}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 23.34550363575001}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.587242659466757}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 12.791090111373608}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 7.0577856197618}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 17.115130127922367}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 23.114247904719896}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 27.657697397441556}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 19.54124393471548}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 5.425672695191883}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.08822232024702249}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 16}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 20}}}}, "پارسیان": {"registry": {"marriages_by_age_F": [50, 64, 31, 16, 10, 4, 3, 2, 180], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [9, 15, 14, 11, 9, 6, 4, 4, 72], "single_women_total_by_age": [1749, 976, 435, 312, 386, 389, 321, 1435, 6003], "single_women_never_by_age": [1742, 935, 341, 205, 245, 256, 188, 254, 4166], "single_women_divorced_by_age": [7, 38, 86, 97, 107, 278, 613], "single_women_widow_by_age": [0, 3, 8, 10, 34, 1169, 1224], "single_men_total_by_age": [2076, 1602, 991, 606, 490, 238, 147, 400, 6550], "single_men_never_by_age": [2075, 1597, 945, 525, 347, 138, 67, 89, 5783], "single_men_divorced_by_age": [1, 5, 45, 80, 138, 334, 603], "single_men_widower_by_age": [0, 0, 1, 1, 5, 157, 164], "married_women_fertile_by_age": [144, 670, 1159, 1625, 2340, 1969, 1335, 3362, 12604], "tfr": 1.44, "singularityF": null, "singularityM": null, "birthRate": 11.568566004297457, "marriageAge1st_F": 23.13, "marriageAge1st_M": 27.72, "marriageAgeAll_F": 23.04, "marriageAgeAll_M": 27.72, "marriageToChild1": 5.524838839645447, "marriageRate": 3.434118266615663, "motherAge1st": 27.34, "fatherAge1st": 31.75, "deathCount": 191, "deathRate": 3.645153467357408, "divorceRate": 1.3429512774474661, "divorceAge_M": 37.88, "divorceAge_F": 31.32, "marriageDuration": 8.97, "medianAge": 31.675858611180747, "sexRatio": 102.34899328859059, "child1to2": 5.412446604801885, "child2to3": 6.5731618674867205, "family0": 1585, "family1": 1774, "family2": 3460, "family3plus": 7380}, "amayesh": {"birthTarget": {"1403": 827, "1404": 869, "1405": 914, "1406": 961}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.647768775546503, "status": 2, "nationalRank": 296, "provincialRank": 3}, "2": {"title": "میزان باروری کل\n1402", "value": 1.63, "status": 2, "nationalRank": 290, "provincialRank": 3}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": -1.0783536992688667, "status": 2, "nationalRank": 216, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 4.56951871657754, "status": 1, "nationalRank": 127, "provincialRank": 2}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.5, "status": 4, "nationalRank": 419, "provincialRank": 12}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4, "status": 3, "nationalRank": 397, "provincialRank": 10}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -7.59965517688799, "status": 1, "nationalRank": 53, "provincialRank": 4}, "10": {"title": "میزان ازدواج\n1401", "value": 3.3494421889412576, "status": 1, "nationalRank": 36, "provincialRank": 2}, "11": {"title": "میزان ازدواج\n1402", "value": 3.0215111408070503, "status": 1, "nationalRank": 33, "provincialRank": 2}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -9.790616754542782, "status": 1, "nationalRank": 222, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 31.48690773067332, "status": 3, "nationalRank": 326, "provincialRank": 5}, "14": {"title": "میزان سزارین", "value": 35.48, "status": null, "nationalRank": 80, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 28.01, "status": null, "nationalRank": 28, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 2.1388684016436623}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 7.343799388894742}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 13.770940891370772}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.598461700558424}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 24.5917184701296}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.701928142450743}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 12.85428300495206}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 2.247191011235955}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 16.853932584269664}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 27.247191011235955}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 28.51123595505618}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 20.224719101123593}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 4.634831460674158}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.2808988764044944}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 0}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 7}}}}, "جاسک": {"registry": {"marriages_by_age_F": [155, 135, 87, 20, 14, 8, 1, 0, 420], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [13, 6, 9, 15, 12, 4, 2, 0, 61], "single_women_total_by_age": [2834, 1836, 1040, 776, 600, 476, 412, 1874, 9848], "single_women_never_by_age": [2823, 1791, 970, 643, 451, 288, 193, 227, 7386], "single_women_divorced_by_age": [11, 38, 50, 98, 82, 210, 489], "single_women_widow_by_age": [0, 7, 20, 35, 67, 1844, 1973], "single_men_total_by_age": [3053, 2903, 1920, 1071, 650, 442, 266, 590, 10895], "single_men_never_by_age": [3053, 2900, 1877, 990, 554, 314, 190, 288, 10166], "single_men_divorced_by_age": [0, 3, 40, 75, 84, 321, 523], "single_men_widower_by_age": [0, 0, 3, 6, 12, 185, 206], "married_women_fertile_by_age": [317, 1292, 2168, 2628, 2540, 2168, 1489, 2907, 15509], "tfr": 2.01, "singularityF": null, "singularityM": null, "birthRate": 19.045903028719646, "marriageAge1st_F": 22.46, "marriageAge1st_M": 28.23, "marriageAgeAll_F": 22.42, "marriageAgeAll_M": 28.26, "marriageToChild1": 2.6201723952931077, "marriageRate": 5.859159481354212, "motherAge1st": 24.73, "fatherAge1st": 30.05, "deathCount": 291, "deathRate": 4.21626860941122, "divorceRate": 0.8723314364299075, "divorceAge_M": 35.8, "divorceAge_F": 29.67, "marriageDuration": 9.21, "medianAge": 26.164435655613023, "sexRatio": 104.36817472698907, "child1to2": 4.413980052145843, "child2to3": 5.275825286323826, "family0": 1556, "family1": 2739, "family2": 3621, "family3plus": 10442}, "amayesh": {"birthTarget": {"1403": 1771, "1404": 1862, "1405": 1957, "1406": 2058}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 2.271888561370906, "status": 5, "nationalRank": 411, "provincialRank": 13}, "2": {"title": "میزان باروری کل\n1402", "value": 2.53, "status": 5, "nationalRank": 426, "provincialRank": 13}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 11.361095918954051, "status": 5, "nationalRank": 425, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 2.051898734177215, "status": 5, "nationalRank": 460, "provincialRank": 12}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.8, "status": 4, "nationalRank": 373, "provincialRank": 8}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4, "status": 3, "nationalRank": 388, "provincialRank": 9}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -2.0061843704604065, "status": 3, "nationalRank": 393, "provincialRank": 11}, "10": {"title": "میزان ازدواج\n1401", "value": 8.191036779160234, "status": 4, "nationalRank": 353, "provincialRank": 10}, "11": {"title": "میزان ازدواج\n1402", "value": 7.217720855628044, "status": 3, "nationalRank": 366, "provincialRank": 10}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -11.882695069914906, "status": 1, "nationalRank": 175, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 26.34760522496371, "status": 4, "nationalRank": 423, "provincialRank": 12}, "14": {"title": "میزان سزارین", "value": 27.52, "status": null, "nationalRank": 39, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 30.93, "status": null, "nationalRank": 36, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 3.1638962498996226}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 10.744398940014454}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.389143178350597}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 21.81000562113547}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.059423432104715}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 15.739179314221472}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 10.093953264273669}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 8.256880733944955}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 21.756225425950195}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 27.06422018348624}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 25.491480996068148}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 13.499344692005241}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 3.4076015727391877}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.5242463958060288}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 16}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 20}}}}, "حاجی‌آباد": {"registry": {"marriages_by_age_F": [174, 94, 36, 18, 32, 18, 9, 6, 387], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [19, 21, 23, 16, 15, 17, 4, 11, 126], "single_women_total_by_age": [2255, 1017, 518, 432, 576, 514, 438, 2663, 8413], "single_women_never_by_age": [2214, 896, 368, 237, 322, 235, 164, 219, 4655], "single_women_divorced_by_age": [34, 111, 146, 173, 208, 628, 1300], "single_women_widow_by_age": [7, 10, 4, 22, 46, 2369, 2458], "single_men_total_by_age": [2702, 1934, 1115, 917, 652, 428, 275, 621, 8644], "single_men_never_by_age": [2702, 1918, 1025, 729, 421, 185, 86, 50, 7116], "single_men_divorced_by_age": [0, 16, 88, 182, 226, 761, 1273], "single_men_widower_by_age": [0, 0, 2, 6, 5, 242, 255], "married_women_fertile_by_age": [454, 1026, 1474, 2006, 2458, 2245, 1965, 5021, 16649], "tfr": 1.22, "singularityF": null, "singularityM": null, "birthRate": 6.364606737886832, "marriageAge1st_F": 21.92, "marriageAge1st_M": 26.31, "marriageAgeAll_F": 21.94, "marriageAgeAll_M": 26.33, "marriageToChild1": 4.511336542021474, "marriageRate": 5.258312433661868, "motherAge1st": 26.03, "fatherAge1st": 31.67, "deathCount": 363, "deathRate": 4.957837437452618, "divorceRate": 1.7209022510166112, "divorceAge_M": 37.79, "divorceAge_F": 32.01, "marriageDuration": 10.94, "medianAge": 33.12451960030746, "sexRatio": 105.2863436123348, "child1to2": 5.381338847247351, "child2to3": 6.564592523798468, "family0": 2047, "family1": 2860, "family2": 4608, "family3plus": 10759}, "amayesh": {"birthTarget": {"1403": 810, "1404": 852, "1405": 895, "1406": 942}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.310692977743845, "status": 1, "nationalRank": 163, "provincialRank": 2}, "2": {"title": "میزان باروری کل\n1402", "value": 1.37, "status": 2, "nationalRank": 193, "provincialRank": 2}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 4.524859998734638, "status": 5, "nationalRank": 362, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 4.0195530726256985, "status": 2, "nationalRank": 228, "provincialRank": 3}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.7, "status": 4, "nationalRank": 378, "provincialRank": 9}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.1, "status": 3, "nationalRank": 373, "provincialRank": 7}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -7.81360910153788, "status": 1, "nationalRank": 41, "provincialRank": 3}, "10": {"title": "میزان ازدواج\n1401", "value": 7.276350807097535, "status": 3, "nationalRank": 284, "provincialRank": 8}, "11": {"title": "میزان ازدواج\n1402", "value": 5.895952970915626, "status": 1, "nationalRank": 237, "provincialRank": 8}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -18.971018203732484, "status": 1, "nationalRank": 73, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 31.82331838565023, "status": 3, "nationalRank": 316, "provincialRank": 3}, "14": {"title": "میزان سزارین", "value": 35.64, "status": null, "nationalRank": 81, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 40.88, "status": null, "nationalRank": 97, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 5.107123092734604}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 9.605502411257808}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 13.779745434421695}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.420428492370938}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.325717448019606}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.10419796031307}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 14.657285160882283}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 6.907894736842106}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 20.888157894736842}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 21.875}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 26.973684210526315}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 17.105263157894736}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 6.0855263157894735}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.1644736842105263}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 8}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 6}}}}, "خمیر": {"registry": {"marriages_by_age_F": [52, 18, 9, 5, 4, 5, 1, 0, 94], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [0, 0, 0, 0, 0, 0, 0, 0, 0], "single_women_total_by_age": [2267, 1049, 567, 431, 615, 698, 458, 2000, 8085], "single_women_never_by_age": [2245, 941, 396, 226, 380, 404, 217, 271, 5080], "single_women_divorced_by_age": [19, 96, 147, 163, 176, 561, 1162], "single_women_widow_by_age": [3, 12, 24, 42, 59, 1703, 1843], "single_men_total_by_age": [2928, 1822, 1155, 735, 558, 393, 256, 585, 8432], "single_men_never_by_age": [2927, 1795, 1049, 595, 361, 193, 106, 124, 7150], "single_men_divorced_by_age": [1, 24, 101, 136, 193, 601, 1056], "single_men_widower_by_age": [0, 3, 5, 4, 4, 210, 226], "married_women_fertile_by_age": [537, 1287, 1760, 2064, 2489, 2351, 1659, 3409, 15556], "tfr": 1.68, "singularityF": null, "singularityM": null, "birthRate": 11.266802648585161, "marriageAge1st_F": 20.58, "marriageAge1st_M": 23.28, "marriageAgeAll_F": 20.65, "marriageAgeAll_M": 23.28, "marriageToChild1": 4.087232876712329, "marriageRate": 1.463425483684944, "motherAge1st": 24.94, "fatherAge1st": 29.43, "deathCount": 389, "deathRate": 6.121209818854228, "divorceRate": 1.7642903868700315, "divorceAge_M": 38.24666666666667, "divorceAge_F": 33.296666666666674, "marriageDuration": 0, "medianAge": 28.777958740499457, "sexRatio": 95.62841530054644, "child1to2": 5.47045800470458, "child2to3": 5.993831610990948, "family0": 2102, "family1": 2697, "family2": 3961, "family3plus": 9921}, "amayesh": {"birthTarget": {"1403": 1228, "1404": 1291, "1405": 1357, "1406": 1427}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.707816342208595, "status": 2, "nationalRank": 312, "provincialRank": 4}, "2": {"title": "میزان باروری کل\n1402", "value": 1.8, "status": 3, "nationalRank": 337, "provincialRank": 6}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 5.397750069084747, "status": 5, "nationalRank": 375, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 3.8507109004739335, "status": 3, "nationalRank": 266, "provincialRank": 5}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.8, "status": 4, "nationalRank": 361, "provincialRank": 6}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.1, "status": 3, "nationalRank": 370, "provincialRank": 6}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -8.888532960122319, "status": 1, "nationalRank": 18, "provincialRank": 2}, "10": {"title": "میزان ازدواج\n1401", "value": 2.5352047820819457, "status": 1, "nationalRank": 11, "provincialRank": 1}, "11": {"title": "میزان ازدواج\n1402", "value": 1.9969681643691801, "status": 1, "nationalRank": 9, "provincialRank": 1}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -21.230498676748237, "status": 1, "nationalRank": 55, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 28.63588235294118, "status": 3, "nationalRank": 395, "provincialRank": 8}, "14": {"title": "میزان سزارین", "value": 38.13, "status": null, "nationalRank": 103, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 48.96, "status": null, "nationalRank": 157, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 5.288575726387459}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.052173224606127}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 14.86026442878632}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.961285725595754}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.1171720370517}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.12208059536062}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.598448262212017}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 8.114285714285714}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 22.285714285714285}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 24.685714285714287}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 22.285714285714285}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 17.599999999999998}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 4.8}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.2285714285714286}, "15": {"title": "تعداد مرگ مادران", "value": 1}, "16": {"title": "تعداد مرگ نوزادان ", "value": 9}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 5}}}}, "رودان": {"registry": {"marriages_by_age_F": [356, 235, 92, 59, 78, 26, 19, 9, 874], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [30, 31, 38, 38, 19, 19, 7, 6, 188], "single_women_total_by_age": [4206, 2042, 1275, 1192, 1293, 1250, 956, 4156, 16370], "single_women_never_by_age": [4133, 1843, 939, 773, 849, 748, 505, 459, 10249], "single_women_divorced_by_age": [67, 180, 303, 361, 340, 961, 2212], "single_women_widow_by_age": [6, 19, 33, 58, 104, 3689, 3909], "single_men_total_by_age": [5464, 3769, 2324, 1615, 1098, 673, 435, 1111, 16489], "single_men_never_by_age": [5464, 3725, 2136, 1291, 702, 338, 199, 162, 14017], "single_men_divorced_by_age": [0, 43, 184, 317, 376, 1019, 1939], "single_men_widower_by_age": [0, 1, 4, 7, 20, 501, 533], "married_women_fertile_by_age": [1223, 2835, 3916, 4910, 5693, 4703, 3548, 8003, 34831], "tfr": 2.02, "singularityF": null, "singularityM": null, "birthRate": 12.904195502144844, "marriageAge1st_F": 22.9, "marriageAge1st_M": 26.94, "marriageAgeAll_F": 22.9, "marriageAgeAll_M": 26.94, "marriageToChild1": 3.8518232683773874, "marriageRate": 6.152900637683904, "motherAge1st": 24.54, "fatherAge1st": 28.68, "deathCount": 724, "deathRate": 5.096910825724423, "divorceRate": 1.316467298909485, "divorceAge_M": 35.26, "divorceAge_F": 30.14, "marriageDuration": 8.29, "medianAge": 28.917538136812816, "sexRatio": 103.66666666666666, "child1to2": 4.76008422806368, "child2to3": 6.02873157794001, "family0": 4499, "family1": 5826, "family2": 8521, "family3plus": 22261}, "amayesh": {"birthTarget": {"1403": 2715, "1404": 2855, "1405": 3001, "1406": 3155}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 1.9361837719165935, "status": 4, "nationalRank": 371, "provincialRank": 9}, "2": {"title": "میزان باروری کل\n1402", "value": 2.1, "status": 4, "nationalRank": 391, "provincialRank": 10}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 8.460778902265451, "status": 5, "nationalRank": 401, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 3.421364985163205, "status": 3, "nationalRank": 335, "provincialRank": 8}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.9, "status": 4, "nationalRank": 345, "provincialRank": 4}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.3, "status": 3, "nationalRank": 287, "provincialRank": 4}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -4.267853768415965, "status": 2, "nationalRank": 322, "provincialRank": 9}, "10": {"title": "میزان ازدواج\n1401", "value": 7.7920506721045255, "status": 3, "nationalRank": 329, "provincialRank": 9}, "11": {"title": "میزان ازدواج\n1402", "value": 7.7019372843803255, "status": 3, "nationalRank": 395, "provincialRank": 13}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -1.1564784613991939, "status": 3, "nationalRank": 339, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 28.35552710200598, "status": 3, "nationalRank": 399, "provincialRank": 9}, "14": {"title": "میزان سزارین", "value": 33.55, "status": null, "nationalRank": 63, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 32.03, "status": null, "nationalRank": 42, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 5.1760651853978965}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.303349007502064}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 16.127642772533115}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 19.785347643490432}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.129940055278368}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 15.998420618112638}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.479234717685488}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 8.795562599049129}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 18.462757527733757}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 24.920760697305862}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 25.752773375594295}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 17.313787638668778}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 4.556259904912837}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.19809825673534073}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 23}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 19}}}}, "سیریک": {"registry": {"marriages_by_age_F": [106, 82, 54, 34, 7, 2, 3, 1, 289], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [1, 5, 9, 4, 3, 4, 2, 2, 30], "single_women_total_by_age": [2029, 1440, 835, 606, 472, 396, 283, 1505, 7566], "single_women_never_by_age": [2028, 1417, 770, 501, 354, 265, 138, 168, 5641], "single_women_divorced_by_age": [1, 20, 45, 77, 67, 148, 358], "single_women_widow_by_age": [0, 3, 20, 28, 51, 1465, 1567], "single_men_total_by_age": [2273, 2001, 1540, 739, 405, 232, 148, 377, 7715], "single_men_never_by_age": [2273, 1995, 1514, 687, 341, 163, 102, 129, 7204], "single_men_divorced_by_age": [0, 6, 24, 52, 57, 189, 328], "single_men_widower_by_age": [0, 0, 2, 0, 7, 174, 183], "married_women_fertile_by_age": [121, 691, 1666, 2080, 2054, 1615, 1236, 2809, 12272], "tfr": 1.84, "singularityF": null, "singularityM": null, "birthRate": 14.63844884148112, "marriageAge1st_F": 23.01, "marriageAge1st_M": 27.34, "marriageAgeAll_F": 23.01, "marriageAgeAll_M": 27.34, "marriageToChild1": 2.8153129085431705, "marriageRate": 5.618209449120907, "motherAge1st": 26.5, "fatherAge1st": 29.93, "deathCount": 192, "deathRate": 3.732512852011122, "divorceRate": 0.5832051331267377, "divorceAge_M": 38.3, "divorceAge_F": 33.2, "marriageDuration": 11.29, "medianAge": 27.703670094777173, "sexRatio": 104.06504065040652, "child1to2": 4.395641344956413, "child2to3": 5.242524672263956, "family0": 1217, "family1": 2103, "family2": 2790, "family3plus": 8245}, "amayesh": {"birthTarget": {"1403": 1185, "1404": 1246, "1405": 1310, "1406": 1378}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 2.1085328125525193, "status": 5, "nationalRank": 395, "provincialRank": 10}, "2": {"title": "میزان باروری کل\n1402", "value": 2.09, "status": 4, "nationalRank": 389, "provincialRank": 9}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": -0.878943521399806, "status": 3, "nationalRank": 221, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 2.3924302788844622, "status": 5, "nationalRank": 437, "provincialRank": 11}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.6, "status": 4, "nationalRank": 415, "provincialRank": 10}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 3.8, "status": 4, "nationalRank": 429, "provincialRank": 11}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": 2.247616388023923, "status": 5, "nationalRank": 429, "provincialRank": 13}, "10": {"title": "میزان ازدواج\n1401", "value": 9.03944741307208, "status": 5, "nationalRank": 393, "provincialRank": 12}, "11": {"title": "میزان ازدواج\n1402", "value": 7.472532563632458, "status": 3, "nationalRank": 380, "provincialRank": 11}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -17.33418845021083, "status": 1, "nationalRank": 90, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 27.60357142857143, "status": 4, "nationalRank": 411, "provincialRank": 11}, "14": {"title": "میزان سزارین", "value": 0, "status": null, "nationalRank": 1, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 0, "status": null, "nationalRank": 1, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 1.5871358462984233}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 9.293098047405241}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 18.50266262921583}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 22.42873551216456}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 19.88096481152762}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 16.863318366920748}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.44408478646758}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 2.8312570781426953}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 16.987542468856173}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 29.898074745186864}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 29.10532276330691}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 16.421291053227634}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 4.64326160815402}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.11325028312570783}, "15": {"title": "تعداد مرگ مادران", "value": 0}, "16": {"title": "تعداد مرگ نوزادان ", "value": 12}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 12}}}}, "قشم": {"registry": {"marriages_by_age_F": [421, 218, 71, 45, 27, 14, 7, 2, 805], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [18, 46, 40, 39, 29, 16, 9, 13, 210], "single_women_total_by_age": [6203, 2698, 1430, 1358, 1578, 1576, 1132, 4215, 20190], "single_women_never_by_age": [6168, 2516, 1128, 902, 958, 888, 534, 595, 13689], "single_women_divorced_by_age": [32, 170, 258, 374, 506, 1523, 2863], "single_women_widow_by_age": [3, 12, 44, 82, 114, 3383, 3638], "single_men_total_by_age": [7591, 4902, 2924, 2188, 1681, 1153, 673, 1434, 22546], "single_men_never_by_age": [7589, 4868, 2785, 1829, 1205, 664, 268, 310, 19518], "single_men_divorced_by_age": [2, 33, 139, 351, 457, 1569, 2551], "single_men_widower_by_age": [0, 1, 0, 8, 19, 449, 477], "married_women_fertile_by_age": [1233, 3311, 4442, 6070, 7195, 6238, 4306, 7955, 40750], "tfr": 1.97, "singularityF": null, "singularityM": null, "birthRate": 14.267114551566264, "marriageAge1st_F": 20.99, "marriageAge1st_M": 25.25, "marriageAgeAll_F": 20.99, "marriageAgeAll_M": 25.25, "marriageToChild1": 3.6318507560183675, "marriageRate": 4.817544972319984, "motherAge1st": 24.43, "fatherAge1st": 29.11, "deathCount": 575, "deathRate": 3.4411035516571316, "divorceRate": 1.2028901111010148, "divorceAge_M": 37.18, "divorceAge_F": 31.89, "marriageDuration": 10.79, "medianAge": 28.081572273879967, "sexRatio": 105.3402239448751, "child1to2": 5.147121316645314, "child2to3": 5.969133770541615, "family0": 4509, "family1": 7503, "family2": 10832, "family3plus": 24321}, "amayesh": {"birthTarget": {"1403": 3638, "1404": 3825, "1405": 4021, "1406": 4228}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 2.1639865838900256, "status": 5, "nationalRank": 403, "provincialRank": 11}, "2": {"title": "میزان باروری کل\n1402", "value": 2.18, "status": 5, "nationalRank": 398, "provincialRank": 11}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 0.739996090049158, "status": 5, "nationalRank": 265, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 3.2847309136420524, "status": 3, "nationalRank": 357, "provincialRank": 9}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 4, "status": 3, "nationalRank": 322, "provincialRank": 3}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.3, "status": 3, "nationalRank": 281, "provincialRank": 3}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -4.081076800317449, "status": 2, "nationalRank": 333, "provincialRank": 10}, "10": {"title": "میزان ازدواج\n1401", "value": 5.898392949319169, "status": 1, "nationalRank": 178, "provincialRank": 6}, "11": {"title": "میزان ازدواج\n1402", "value": 5.042484865310906, "status": 1, "nationalRank": 157, "provincialRank": 5}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -14.510869170000928, "status": 1, "nationalRank": 129, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 29.33232359230221, "status": 3, "nationalRank": 382, "provincialRank": 6}, "14": {"title": "میزان سزارین", "value": 35.78, "status": null, "nationalRank": 82, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": 38.27, "status": null, "nationalRank": 76, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 4.254449405697755}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 10.493050751525061}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 14.571410603106724}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.759700647758002}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 21.06156845481416}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 17.49575498396327}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.364065153135023}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 8.594575554772806}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 20.464952448045086}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 25.396266290947516}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 24.656569214512153}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 15.956322648820006}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 4.719971821063755}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.21134202183867556}, "15": {"title": "تعداد مرگ مادران", "value": 1}, "16": {"title": "تعداد مرگ نوزادان ", "value": 15}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": 23}}}}, "میناب": {"registry": {"marriages_by_age_F": [677, 467, 261, 175, 84, 55, 28, 11, 1758], "marriageRate_by_age_F": [null, null, null, null, null, null, null], "divorces_by_age_F": [55, 102, 89, 96, 64, 45, 27, 13, 491], "single_women_total_by_age": [9536, 4824, 2888, 2504, 2629, 2479, 1772, 9026, 35658], "single_women_never_by_age": [9466, 4515, 2357, 1643, 1639, 1421, 741, 746, 22528], "single_women_divorced_by_age": [61, 263, 457, 677, 693, 2085, 4236], "single_women_widow_by_age": [9, 46, 74, 184, 297, 8284, 8894], "single_men_total_by_age": [11940, 8362, 5546, 3823, 2487, 1611, 1003, 2482, 37254], "single_men_never_by_age": [11938, 8307, 5262, 3269, 1736, 890, 449, 536, 32387], "single_men_divorced_by_age": [2, 55, 273, 538, 713, 2251, 3832], "single_men_widower_by_age": [0, 0, 11, 16, 38, 970, 1035], "married_women_fertile_by_age": [1956, 5472, 8196, 10752, 11864, 9912, 7232, 16223, 71607], "tfr": 2.04, "singularityF": null, "singularityM": null, "birthRate": 15.580954561729026, "marriageAge1st_F": 23.26, "marriageAge1st_M": 27.15, "marriageAgeAll_F": 23.25, "marriageAgeAll_M": 27.15, "marriageToChild1": 3.334086621277992, "marriageRate": 5.915709450896469, "motherAge1st": 25.16, "fatherAge1st": 29.46, "deathCount": 1511, "deathRate": 5.0869711109645035, "divorceRate": 1.633894694581314, "divorceAge_M": 36.44, "divorceAge_F": 30.77, "marriageDuration": 9.82, "medianAge": 28.654914862401636, "sexRatio": 103.1181379007466, "child1to2": 4.7402919893857645, "child2to3": 5.754353093587314, "family0": 8313, "family1": 12661, "family2": 18262, "family3plus": 46607}, "amayesh": {"birthTarget": {"1403": 6645, "1404": 6987, "1405": 7344, "1406": 7723}, "left": {"1": {"title": "میزان باروری کل\n1401", "value": 2.201192511910127, "status": 5, "nationalRank": 406, "provincialRank": 12}, "2": {"title": "میزان باروری کل\n1402", "value": 2.42, "status": 5, "nationalRank": 417, "provincialRank": 12}, "3": {"title": "تغییر میزان باروری کل(TFR) نسبت به سال قبل", "value": 9.94040670708981, "status": 5, "nationalRank": 416, "provincialRank": null}, "4": {"title": "میانگین فاصله بین ازدواج و فرزند اول\n1402", "value": 2.795380611581002, "status": 4, "nationalRank": 408, "provincialRank": 10}, "5": {"title": "میانگین فاصله بین فرزند اول و فرزند دوم\n1402", "value": 3.9, "status": 4, "nationalRank": 353, "provincialRank": 5}, "6": {"title": "میانگین فاصله بین فرزند دوم و فرزند سوم\n1402", "value": 4.2, "status": 3, "nationalRank": 334, "provincialRank": 5}, "9": {"title": "متوسط رشد سالانه میزان خام ولادت", "value": -4.413144582976729, "status": 2, "nationalRank": 312, "provincialRank": 8}, "10": {"title": "میزان ازدواج\n1401", "value": 8.94777884974742, "status": 4, "nationalRank": 390, "provincialRank": 11}, "11": {"title": "میزان ازدواج\n1402", "value": 7.485842101833363, "status": 3, "nationalRank": 382, "provincialRank": 12}, "12": {"title": "تغییر میران ازدواج نسبت به سال قبل", "value": -16.338543592361194, "status": 1, "nationalRank": 100, "provincialRank": null}, "13": {"title": "میانه سنی\n1402", "value": 28.1595831630568, "status": 3, "nationalRank": 402, "provincialRank": 10}, "14": {"title": "میزان سزارین", "value": null, "status": null, "nationalRank": null, "provincialRank": null}, "15": {"title": "میزان سزارین نخست زا ", "value": null, "status": null, "nationalRank": null, "provincialRank": null}}, "right": {"1": {"title": "درصد زنان متاهل در سن 15تا 19 سال\n نسبت به کل زنان متاهل در سن باروری", "value": 4.122977571002013}, "2": {"title": "درصد زنان متاهل در سن 20 تا 24 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 10.650302062356781}, "3": {"title": "درصد زنان متاهل در سن 25 تا 29 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 16.313103256718282}, "4": {"title": "درصد زنان متاهل در سن 30 تا 34 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.745087146725922}, "5": {"title": "درصد زنان متاهل در سن 35 تا 39 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 20.446496771057564}, "6": {"title": "درصد زنان متاهل در سن 40 تا 44 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 16.210679813901812}, "7": {"title": "درصد زنان متاهل در سن45تا 49 سال\nنسبت به کل زنان متاهل در سن باروری", "value": 11.511353378237622}, "8": {"title": "درصد موالید در مادران سن 15 تا 19 سال", "value": 7.304163726182075}, "9": {"title": "درصد موالید در مادران سن 20 تا 24 سال", "value": 18.366266760762173}, "10": {"title": "درصد موالید در مادران سن 25 تا 29 سال", "value": 25.211714890613973}, "11": {"title": "درصد موالید در مادران سن 30 تا 34 سال", "value": 25.935074100211715}, "12": {"title": "درصد موالید در مادران سن 35تا 39 سال", "value": 17.325335215243474}, "13": {"title": "درصد موالید  در مادران سن 40 تا 44 سال", "value": 5.328158080451659}, "14": {"title": "درصد موالید  در مادران سن در سن45تا49 سال", "value": 0.529287226534933}, "15": {"title": "تعداد مرگ مادران", "value": null}, "16": {"title": "تعداد مرگ نوزادان ", "value": null}, "17": {"title": "تعداد مرگ کودکان 1 تا 59 ماه", "value": null}}}}}};
+</script>
+<script>
+/* ============== کمک‌توابع عمومی ============== */
+const COLORS = {navy:'#0d3b6e',green:'#2e7d32',orange:'#e65100',red:'#c62828',gold:'#f9a825',
+  teal:'#1565c0',grey:'#90a4ae'};
+const STATUS_COLOR = {1:'#b71c1c',2:'#e53935',3:'#fb8c00',4:'#fdd835',5:'#2e7d32'};
+const DIST_NAMES = Object.keys(DATA.districts);
+const fa = n => (n===null||n===undefined||isNaN(n)) ? '—' : Number(n).toLocaleString('fa-IR',{maximumFractionDigits:2});
+const faInt = n => (n===null||n===undefined||isNaN(n)) ? '—' : Math.round(n).toLocaleString('fa-IR');
+function pick(o,...path){ for(const p of path){ if(o==null) return null; o=o[p]; } return o; }
+function leftVal(d,idx){ return pick(DATA.districts[d],'amayesh','left',String(idx),'value'); }
+function leftStatus(d,idx){ return pick(DATA.districts[d],'amayesh','left',String(idx),'status'); }
+function rightVal(d,idx){ return pick(DATA.districts[d],'amayesh','right',String(idx),'value'); }
+function reg(d,field){ return pick(DATA.districts[d],'registry',field); }
+
+let chartCounter=0;
+function wrapCanvas(container, idHint){
+  chartCounter++;
+  const wrap=document.createElement('div');
+  wrap.className='chart-wrap';
+  const btn=document.createElement('button');
+  btn.className='dl-btn'; btn.textContent='⬇ دانلود تصویر';
+  const canvas=document.createElement('canvas');
+  canvas.id='c_'+idHint+'_'+chartCounter;
+  canvas.style.maxHeight='380px';
+  wrap.appendChild(btn); wrap.appendChild(canvas);
+  container.appendChild(wrap);
+  btn.addEventListener('click',()=>{
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png'); a.download=idHint+'.png'; a.click();
+  });
+  return canvas;
+}
+function baseOpts(extra){
+  return Object.assign({
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{font:{family:'Vazirmatn',size:11}}},
+      tooltip:{rtl:true,titleFont:{family:'Vazirmatn'},bodyFont:{family:'Vazirmatn'},
+        callbacks:{}}
+    },
+    scales:{
+      x:{ticks:{font:{family:'Vazirmatn',size:11}}},
+      y:{ticks:{font:{family:'Vazirmatn',size:11}}}
+    }
+  }, extra||{});
+}
+
+/* ============== تب‌ها ============== */
+function initTabs(){
+  const btns=document.querySelectorAll('nav.tabs button');
+  const panels=document.querySelectorAll('.tabpanel');
+  btns.forEach(b=>{
+    b.addEventListener('click',()=>{
+      if(b.classList.contains('active')) return;
+      showLoading();
+      setTimeout(()=>{
+        btns.forEach(x=>x.classList.remove('active'));
+        panels.forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        document.getElementById(b.dataset.tab).classList.add('active');
+        hideLoading();
+      },180);
+    });
+  });
+}
+function showLoading(){ document.getElementById('loadingOverlay').style.display='flex'; }
+function hideLoading(){ document.getElementById('loadingOverlay').style.display='none'; }
+
+/* ============== تب ۱: نمای کلی ============== */
+function buildTab1(){
+  const root=document.getElementById('tab1');
+  const H=DATA.hormozgan, K=DATA.kolKeshvar;
+
+  // KPI cards
+  const kpis=[
+    {lbl:'نرخ باروری کل (TFR)', val:fa(H.tfr), sub:'کل کشور: '+fa(K.tfr), cls: H.tfr>=2.1?'good':(H.tfr>=1.5?'warn':'bad')},
+    {lbl:'نرخ ولادت (هزار نفر)', val:fa(H.birthRate), sub:'کل کشور: '+fa(K.birthRate), cls:H.birthRate>K.birthRate?'good':'warn'},
+    {lbl:'نرخ ازدواج', val:fa(H.marriageRate), sub:'کل کشور: '+fa(K.marriageRate), cls:H.marriageRate>K.marriageRate?'good':'warn'},
+    {lbl:'نرخ طلاق', val:fa(H.divorceRate), sub:'کل کشور: '+fa(K.divorceRate), cls:H.divorceRate<K.divorceRate?'good':'bad'},
+    {lbl:'میانه سنی جمعیت', val:fa(H.medianAge), sub:'کل کشور: '+fa(K.medianAge), cls:H.medianAge<K.medianAge?'good':'warn'},
+    {lbl:'نسبت وابستگی', val:fa(H.dependencyRatio), sub:'کل کشور: '+fa(K.dependencyRatio), cls:H.dependencyRatio>K.dependencyRatio?'warn':'good'},
+    {lbl:'نرخ سالمندی (۶۵+)', val:fa(H.agingRate65), sub:'کل کشور: '+fa(K.agingRate65), cls:H.agingRate65<K.agingRate65?'good':'warn'},
+    {lbl:'نرخ فوت (هزار نفر)', val:fa(H.deathRate), sub:'کل کشور: '+fa(K.deathRate), cls:H.deathRate<K.deathRate?'good':'warn'},
+  ];
+  const grid=document.createElement('div'); grid.className='kpi-grid';
+  kpis.forEach(k=>{
+    const el=document.createElement('div'); el.className='kpi '+k.cls;
+    el.innerHTML=`<div class="lbl">${k.lbl}</div><div class="val">${k.val}</div><div class="sub">${k.sub}</div>`;
+    grid.appendChild(el);
+  });
+  root.appendChild(grid);
+
+  // Infographic 1: مقایسه با کل کشور
+  const info1=document.createElement('div'); info1.className='infobox';
+  const rows=[
+    ['نرخ باروری کل', H.tfr, K.tfr, true],
+    ['نرخ ولادت', H.birthRate, K.birthRate, true],
+    ['نرخ ازدواج', H.marriageRate, K.marriageRate, true],
+    ['نرخ طلاق', H.divorceRate, K.divorceRate, false],
+    ['میانه سنی', H.medianAge, K.medianAge, false],
+  ];
+  let tblHtml=`<h4>موقعیت هرمزگان در ایران (مقایسه با میانگین ملی)</h4>
+    <table class="cmp-table"><tr><th>شاخص</th><th>هرمزگان</th><th>کل کشور</th><th>وضعیت</th></tr>`;
+  rows.forEach(r=>{
+    const better = r[3] ? r[1]>r[2] : r[1]<r[2];
+    const arrow = r[1]>r[2] ? '▲' : (r[1]<r[2] ? '▼' : '—');
+    const cls = better ? 'arrow-up' : 'arrow-down';
+    tblHtml+=`<tr><td>${r[0]}</td><td><b>${fa(r[1])}</b></td><td>${fa(r[2])}</td><td class="${cls}">${arrow} ${better?'بهتر از میانگین':'نیازمند توجه'}</td></tr>`;
+  });
+  tblHtml+='</table>';
+  info1.innerHTML=tblHtml;
+  root.appendChild(info1);
+
+  // Gauge + Donut row
+  const grid2=document.createElement('div'); grid2.className='grid2';
+  const c1=document.createElement('div'); c1.className='card';
+  c1.innerHTML='<h3>نرخ باروری کل هرمزگان</h3><div class="desc">مقایسه با حد جایگزینی (۲.۱) و میانگین کل کشور</div>';
+  grid2.appendChild(c1);
+  const c2=document.createElement('div'); c2.className='card';
+  c2.innerHTML='<h3>توزیع خانوارهای هرمزگان بر اساس تعداد فرزند</h3><div class="desc">سرشماری ثبتی‌مبنا ۱۴۰۴</div>';
+  grid2.appendChild(c2);
+  root.appendChild(grid2);
+
+  const gaugeCanvas=wrapCanvas(c1,'gauge_tfr');
+  new Chart(gaugeCanvas,{
+    type:'doughnut',
+    data:{labels:['TFR هرمزگان','فاصله تا حد جایگزینی'],
+      datasets:[{data:[H.tfr, Math.max(2.1-H.tfr,0.01)], backgroundColor:[COLORS.orange,'#e6ecf2'],borderWidth:0}]},
+    options:baseOpts({circumference:180,rotation:-90,cutout:'70%',
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Vazirmatn',size:11}}},
+      tooltip:{rtl:true}}})
+  });
+  const gaugeNote=document.createElement('div');
+  gaugeNote.style.textAlign='center'; gaugeNote.style.marginTop='-40px'; gaugeNote.style.fontWeight='800';
+  gaugeNote.style.color=COLORS.orange; gaugeNote.style.fontSize='22px';
+  gaugeNote.textContent=fa(H.tfr);
+  c1.appendChild(gaugeNote);
+  const gaugeSub=document.createElement('div');
+  gaugeSub.style.textAlign='center';gaugeSub.style.fontSize='12px';gaugeSub.style.color='#6c7d8f';
+  gaugeSub.textContent='کل کشور: '+fa(K.tfr)+' | حد جایگزینی: ۲.۱۰';
+  c1.appendChild(gaugeSub);
+
+  const donutCanvas=wrapCanvas(c2,'family_donut');
+  new Chart(donutCanvas,{
+    type:'doughnut',
+    data:{labels:['بدون فرزند','۱ فرزند','۲ فرزند','۳ فرزند و بیشتر'],
+      datasets:[{data:[H.family0,H.family1,H.family2,H.family3plus],
+        backgroundColor:[COLORS.red,COLORS.orange,COLORS.gold,COLORS.green]}]},
+    options:baseOpts({plugins:{legend:{position:'bottom',labels:{font:{family:'Vazirmatn',size:11}}}}})
+  });
+
+  // Horizontal bar TFR all districts
+  const c3=document.createElement('div'); c3.className='card';
+  c3.innerHTML='<h3>مقایسه نرخ باروری کل (TFR) شهرستان‌های هرمزگان — ۱۴۰۴</h3><div class="desc">خط عمودی: حد جایگزینی (۲.۱)</div>';
+  root.appendChild(c3);
+  const barCanvas=wrapCanvas(c3,'tfr_districts');
+  const tfrLabels=['هرمزگان',...DIST_NAMES];
+  const tfrVals=[H.tfr,...DIST_NAMES.map(d=>reg(d,'tfr'))];
+  const tfrColors=tfrVals.map(v=> v==null?COLORS.grey : v<1.5?COLORS.red : v<2.0?COLORS.orange:COLORS.green);
+  new Chart(barCanvas,{
+    type:'bar',
+    data:{labels:tfrLabels,datasets:[{label:'TFR ۱۴۰۴',data:tfrVals,backgroundColor:tfrColors}]},
+    options:baseOpts({indexAxis:'y',plugins:{legend:{display:false}},
+      scales:{x:{suggestedMax:2.3,ticks:{font:{family:'Vazirmatn'}}},y:{ticks:{font:{family:'Vazirmatn'}}}}})
+  });
+
+  // Infographic 2: pyramid of challenges
+  const info2=document.createElement('div'); info2.className='infobox';
+  info2.innerHTML=`<h4>هرم بزرگ‌ترین چالش‌های جمعیتی هرمزگان</h4>
+  <div class="pyramid">
+    <div class="layer" style="background:#b71c1c;width:95%;">۱. کاهش مستمر نرخ خام ولادت در اکثر شهرستان‌ها (روند منفی رشد سالانه)</div>
+    <div class="layer" style="background:#e53935;width:80%;">۲. نرخ باروری کل پایین‌تر از حد جایگزینی در شهرستان‌های پرجمعیت (بندرعباس، بستک، بندرلنگه)</div>
+    <div class="layer" style="background:#fb8c00;width:65%;">۳. بالا بودن نرخ سزارین در بسیاری از شهرستان‌ها، فراتر از استاندارد WHO</div>
+    <div class="layer" style="background:#fdd835;color:#3a3a00;width:50%;">۴. کاهش نرخ ازدواج نسبت به سال قبل در اغلب شهرستان‌ها</div>
+    <div class="layer" style="background:#2e7d32;width:35%;">۵. نسبت وابستگی بالاتر از میانگین کشوری (۴۹.۵ در برابر ۴۳.۳)</div>
+  </div>`;
+  root.appendChild(info2);
+}
+
+/* ============== تب ۲: باروری و فرزندآوری ============== */
+function buildTab2(){
+  const root=document.getElementById('tab2');
+  const filterWrap=document.createElement('div');
+  filterWrap.innerHTML='<label style="font-size:13px;color:#0d3b6e;font-weight:600;margin-left:8px;">انتخاب شهرستان برای جزئیات: </label>';
+  const sel=document.createElement('select'); sel.className='filter';
+  DIST_NAMES.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;sel.appendChild(o);});
+  filterWrap.appendChild(sel);
+  root.appendChild(filterWrap);
+
+  // Chart4: TFR 1401 vs 1402 grouped
+  const c4=document.createElement('div'); c4.className='card';
+  c4.innerHTML='<h3>میزان باروری کل: ۱۴۰۱ در برابر ۱۴۰۲</h3><div class="desc">منبع: طرح آمایش امید — شاخص‌های جمعیتی شبکه</div>';
+  root.appendChild(c4);
+  const c4canvas=wrapCanvas(c4,'tfr_compare');
+  new Chart(c4canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:[
+      {label:'TFR ۱۴۰۱',data:DIST_NAMES.map(d=>leftVal(d,1)),backgroundColor:COLORS.teal},
+      {label:'TFR ۱۴۰۲',data:DIST_NAMES.map(d=>leftVal(d,2)),backgroundColor:COLORS.gold},
+    ]},options:baseOpts({})});
+
+  // Chart5: % change TFR
+  const c5=document.createElement('div'); c5.className='card';
+  c5.innerHTML='<h3>درصد تغییر TFR نسبت به سال قبل</h3>';
+  root.appendChild(c5);
+  const c5canvas=wrapCanvas(c5,'tfr_change');
+  const chgVals=DIST_NAMES.map(d=>leftVal(d,3));
+  new Chart(c5canvas,{type:'bar',data:{labels:DIST_NAMES,datasets:[{label:'درصد تغییر TFR',data:chgVals,
+    backgroundColor:chgVals.map(v=>v>=0?COLORS.green:COLORS.red)}]},options:baseOpts({plugins:{legend:{display:false}}})});
+
+  // Chart6: stacked births by age
+  const c6=document.createElement('div'); c6.className='card';
+  c6.innerHTML='<h3>توزیع سنی موالید (درصد موالید به تفکیک سن مادر)</h3>';
+  root.appendChild(c6);
+  const c6canvas=wrapCanvas(c6,'births_age');
+  const ageLabels=['۱۵-۱۹','۲۰-۲۴','۲۵-۲۹','۳۰-۳۴','۳۵-۳۹','۴۰-۴۴','۴۵-۴۹'];
+  const ageColors=[COLORS.red,COLORS.orange,COLORS.gold,COLORS.green,COLORS.teal,'#7e57c2','#8d6e63'];
+  new Chart(c6canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:ageLabels.map((lbl,i)=>({label:lbl,data:DIST_NAMES.map(d=>rightVal(d,8+i)),backgroundColor:ageColors[i]}))},
+    options:baseOpts({scales:{x:{stacked:true},y:{stacked:true}}})});
+
+  // Chart7: intervals line
+  const c7=document.createElement('div'); c7.className='card';
+  c7.innerHTML='<h3>فاصله ازدواج تا فرزندآوری (۱۴۰۲)</h3>';
+  root.appendChild(c7);
+  const c7canvas=wrapCanvas(c7,'intervals_line');
+  new Chart(c7canvas,{type:'line',data:{labels:DIST_NAMES,datasets:[
+    {label:'ازدواج تا فرزند اول',data:DIST_NAMES.map(d=>leftVal(d,4)),borderColor:COLORS.navy,backgroundColor:'transparent',tension:.3},
+    {label:'فرزند اول تا دوم',data:DIST_NAMES.map(d=>leftVal(d,5)),borderColor:COLORS.orange,backgroundColor:'transparent',tension:.3},
+    {label:'فرزند دوم تا سوم',data:DIST_NAMES.map(d=>leftVal(d,6)),borderColor:COLORS.green,backgroundColor:'transparent',tension:.3},
+  ]},options:baseOpts({})});
+
+  // Infographic3: timeline (reactive to filter)
+  const info3=document.createElement('div'); info3.className='infobox'; info3.id='tl3';
+  root.appendChild(info3);
+  function renderTimeline(d){
+    info3.innerHTML=`<h4>مسیر زمانی فرزندآوری — ${d}</h4>
+    <div class="timeline-h">
+      <div class="tl-node"><div class="tl-dot"></div><div class="tl-label">ازدواج</div></div>
+      <div class="tl-node"><div class="tl-val">${fa(leftVal(d,4))} سال</div><div class="tl-dot"></div><div class="tl-label">فرزند اول</div></div>
+      <div class="tl-node"><div class="tl-val">${fa(leftVal(d,5))} سال</div><div class="tl-dot"></div><div class="tl-label">فرزند دوم</div></div>
+      <div class="tl-node"><div class="tl-val">${fa(leftVal(d,6))} سال</div><div class="tl-dot"></div><div class="tl-label">فرزند سوم</div></div>
+    </div>`;
+  }
+  renderTimeline(DIST_NAMES[0]);
+  sel.addEventListener('change',()=>renderTimeline(sel.value));
+
+  // Infographic4: status table TFR
+  const info4=document.createElement('div'); info4.className='infobox';
+  let h4='<h4>جدول وضعیت باروری شهرستان‌ها</h4><table class="cmp-table"><tr><th>شهرستان</th><th>TFR ۱۴۰۱</th><th>TFR ۱۴۰۲</th><th>تغییر (%)</th></tr>';
+  DIST_NAMES.forEach(d=>{
+    const s1=leftStatus(d,1), s2=leftStatus(d,2), s3=leftStatus(d,3);
+    h4+=`<tr><td>${d}</td>
+      <td style="background:${STATUS_COLOR[s1]||'#eee'};color:#fff">${fa(leftVal(d,1))}</td>
+      <td style="background:${STATUS_COLOR[s2]||'#eee'};color:#fff">${fa(leftVal(d,2))}</td>
+      <td style="background:${STATUS_COLOR[s3]||'#eee'};color:#fff">${fa(leftVal(d,3))}٪</td></tr>`;
+  });
+  h4+='</table><div class="legend-status"><span><i style="background:#b71c1c"></i>بحرانی</span><span><i style="background:#e53935"></i>بسیار بد</span><span><i style="background:#fb8c00"></i>بد</span><span><i style="background:#fdd835"></i>متوسط</span><span><i style="background:#2e7d32"></i>خوب</span></div>';
+  info4.innerHTML=h4;
+  root.appendChild(info4);
+
+  // birth targets chart
+  const c8=document.createElement('div'); c8.className='card';
+  c8.innerHTML='<h3>هدف‌گذاری تعداد موالید (۱۴۰۳ تا ۱۴۰۶)</h3>';
+  root.appendChild(c8);
+  const c8canvas=wrapCanvas(c8,'birth_targets');
+  const yrs=['1403','1404','1405','1406'];
+  new Chart(c8canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:yrs.map((y,i)=>({label:'سال '+y,data:DIST_NAMES.map(d=>pick(DATA.districts[d],'amayesh','birthTarget',y)),
+      backgroundColor:[COLORS.teal,COLORS.gold,COLORS.orange,COLORS.green][i]}))},
+    options:baseOpts({})});
+}
+
+/* ============== تب ۳: ازدواج و تجرد ============== */
+function buildTab3(){
+  const root=document.getElementById('tab3');
+  const H=DATA.hormozgan;
+
+  const c9=document.createElement('div'); c9.className='card';
+  c9.innerHTML='<h3>میانگین سن ازدواج اول: زنان در برابر مردان (۱۴۰۴)</h3>';
+  root.appendChild(c9);
+  const c9canvas=wrapCanvas(c9,'marriage_age');
+  new Chart(c9canvas,{type:'bar',data:{labels:['هرمزگان',...DIST_NAMES],
+    datasets:[
+      {label:'زنان',data:[H.marriageAge1st_F,...DIST_NAMES.map(d=>reg(d,'marriageAge1st_F'))],backgroundColor:COLORS.red},
+      {label:'مردان',data:[H.marriageAge1st_M,...DIST_NAMES.map(d=>reg(d,'marriageAge1st_M'))],backgroundColor:COLORS.navy},
+    ]},options:baseOpts({})});
+
+  const c10=document.createElement('div'); c10.className='card';
+  c10.innerHTML='<h3>نرخ ازدواج ۱۴۰۱ و ۱۴۰۲ به تفکیک شهرستان</h3>';
+  root.appendChild(c10);
+  const c10canvas=wrapCanvas(c10,'marriage_rate');
+  new Chart(c10canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:[
+      {label:'نرخ ازدواج ۱۴۰۱',data:DIST_NAMES.map(d=>leftVal(d,10)),backgroundColor:COLORS.teal},
+      {label:'نرخ ازدواج ۱۴۰۲',data:DIST_NAMES.map(d=>leftVal(d,11)),backgroundColor:COLORS.gold},
+    ]},options:baseOpts({})});
+
+  const c11=document.createElement('div'); c11.className='card';
+  c11.innerHTML='<h3>ترکیب وضعیت تأهل زنان مجرد (۱۴۰۴)</h3><div class="desc">هرگز ازدواج‌نکرده / مطلقه / بیوه — مجموع کل گروه‌های سنی</div>';
+  root.appendChild(c11);
+  const c11canvas=wrapCanvas(c11,'single_women');
+  function lastVal(arr){ return arr && arr.length ? arr[arr.length-1] : null; }
+  new Chart(c11canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:[
+      {label:'هرگز ازدواج‌نکرده',data:DIST_NAMES.map(d=>lastVal(reg(d,'single_women_never_by_age'))),backgroundColor:COLORS.teal},
+      {label:'مطلقه',data:DIST_NAMES.map(d=>lastVal(reg(d,'single_women_divorced_by_age'))),backgroundColor:COLORS.orange},
+      {label:'بیوه',data:DIST_NAMES.map(d=>lastVal(reg(d,'single_women_widow_by_age'))),backgroundColor:COLORS.red},
+    ]},options:baseOpts({scales:{x:{stacked:true},y:{stacked:true}}})});
+
+  // infographic5
+  const info5=document.createElement('div'); info5.className='infobox';
+  info5.innerHTML=`<h4>تصویر ازدواج در هرمزگان</h4>
+  <div class="timeline-h">
+    <div class="tl-node"><div class="tl-val">${fa(H.marriageAge1st_F)}</div><div class="tl-dot"></div><div class="tl-label">سن ازدواج اول زنان</div></div>
+    <div class="tl-node"><div class="tl-val">${fa(H.marriageAge1st_M)}</div><div class="tl-dot"></div><div class="tl-label">سن ازدواج اول مردان</div></div>
+    <div class="tl-node"><div class="tl-val">${fa(H.marriageDuration)} سال</div><div class="tl-dot"></div><div class="tl-label">میانگین طول زندگی مشترک</div></div>
+    <div class="tl-node"><div class="tl-val">${fa(H.sexRatio)}</div><div class="tl-dot"></div><div class="tl-label">نسبت جنسی (مرد به ازای ۱۰۰ زن)</div></div>
+  </div>`;
+  root.appendChild(info5);
+
+  // infographic6 status table marriage
+  const info6=document.createElement('div'); info6.className='infobox';
+  let h6='<h4>جدول وضعیت ازدواج شهرستان‌ها</h4><table class="cmp-table"><tr><th>شهرستان</th><th>نرخ ازدواج ۱۴۰۱</th><th>نرخ ازدواج ۱۴۰۲</th><th>تغییر (%)</th></tr>';
+  DIST_NAMES.forEach(d=>{
+    const s10=leftStatus(d,10), s11=leftStatus(d,11);
+    const chg=leftVal(d,12);
+    h6+=`<tr><td>${d}</td>
+      <td style="background:${STATUS_COLOR[s10]||'#eee'};color:#fff">${fa(leftVal(d,10))}</td>
+      <td style="background:${STATUS_COLOR[s11]||'#eee'};color:#fff">${fa(leftVal(d,11))}</td>
+      <td style="${chg!=null?(chg>=0?'color:#2e7d32':'color:#c62828'):''};font-weight:700">${chg!=null?fa(chg)+'٪':'—'}</td></tr>`;
+  });
+  h6+='</table>';
+  info6.innerHTML=h6;
+  root.appendChild(info6);
+}
+
+/* ============== تب ۴: طلاق و پایداری خانواده ============== */
+function buildTab4(){
+  const root=document.getElementById('tab4');
+  const H=DATA.hormozgan, K=DATA.kolKeshvar;
+
+  const c12=document.createElement('div'); c12.className='card';
+  c12.innerHTML='<h3>نرخ طلاق به تفکیک شهرستان (۱۴۰۴)</h3><div class="desc">خط چین: میانگین استانی ('+fa(H.divorceRate)+') و ملی ('+fa(K.divorceRate)+')</div>';
+  root.appendChild(c12);
+  const c12canvas=wrapCanvas(c12,'divorce_rate');
+  new Chart(c12canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:[{label:'نرخ طلاق',data:DIST_NAMES.map(d=>reg(d,'divorceRate')),backgroundColor:COLORS.red}]},
+    options:baseOpts({plugins:{legend:{display:false}}})});
+
+  const c13=document.createElement('div'); c13.className='card';
+  c13.innerHTML='<h3>میانگین سن طلاق: زنان در برابر مردان</h3>';
+  root.appendChild(c13);
+  const c13canvas=wrapCanvas(c13,'divorce_age');
+  new Chart(c13canvas,{type:'bar',data:{labels:['هرمزگان',...DIST_NAMES],
+    datasets:[
+      {label:'زنان',data:[H.divorceAge_F,...DIST_NAMES.map(d=>reg(d,'divorceAge_F'))],backgroundColor:COLORS.red},
+      {label:'مردان',data:[H.divorceAge_M,...DIST_NAMES.map(d=>reg(d,'divorceAge_M'))],backgroundColor:COLORS.navy},
+    ]},options:baseOpts({})});
+
+  const c14=document.createElement('div'); c14.className='card';
+  c14.innerHTML='<h3>میانگین طول زندگی مشترک تا طلاق</h3>';
+  root.appendChild(c14);
+  const c14canvas=wrapCanvas(c14,'marriage_duration');
+  new Chart(c14canvas,{type:'bar',data:{labels:['هرمزگان',...DIST_NAMES],
+    datasets:[{label:'طول زندگی مشترک (سال)',data:[H.marriageDuration,...DIST_NAMES.map(d=>reg(d,'marriageDuration'))],backgroundColor:COLORS.teal}]},
+    options:baseOpts({plugins:{legend:{display:false}}})});
+
+  // infographic7
+  const info7=document.createElement('div'); info7.className='infobox';
+  info7.innerHTML=`<h4>آناتومی یک طلاق در هرمزگان</h4>
+  <div class="timeline-h">
+    <div class="tl-node"><div class="tl-val">${fa(H.marriageAge1st_F)} / ${fa(H.marriageAge1st_M)}</div><div class="tl-dot"></div><div class="tl-label">سن ازدواج (زن/مرد)</div></div>
+    <div class="tl-node"><div class="tl-val">${fa(H.marriageDuration)} سال</div><div class="tl-dot"></div><div class="tl-label">طول زندگی مشترک</div></div>
+    <div class="tl-node"><div class="tl-val">${fa(H.divorceAge_F)} / ${fa(H.divorceAge_M)}</div><div class="tl-dot"></div><div class="tl-label">سن طلاق (زن/مرد)</div></div>
+  </div>`;
+  root.appendChild(info7);
+
+  // scatter
+  const c15=document.createElement('div'); c15.className='card';
+  c15.innerHTML='<h3>رابطه نرخ ازدواج و نرخ طلاق در شهرستان‌ها</h3>';
+  root.appendChild(c15);
+  const c15canvas=wrapCanvas(c15,'scatter_marriage_divorce');
+  new Chart(c15canvas,{type:'scatter',data:{datasets:[{label:'شهرستان‌ها',
+    data:DIST_NAMES.map(d=>({x:reg(d,'marriageRate'),y:reg(d,'divorceRate'),lbl:d})),
+    backgroundColor:COLORS.navy,pointRadius:7}]},
+    options:baseOpts({plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:(ctx)=>ctx.raw.lbl+': ازدواج='+fa(ctx.raw.x)+' طلاق='+fa(ctx.raw.y)}}},
+      scales:{x:{title:{display:true,text:'نرخ ازدواج',font:{family:'Vazirmatn'}}},
+        y:{title:{display:true,text:'نرخ طلاق',font:{family:'Vazirmatn'}}}}})});
+}
+
+/* ============== تب ۵: سالمندی و نسبت وابستگی ============== */
+function buildTab5(){
+  const root=document.getElementById('tab5');
+  const H=DATA.hormozgan, K=DATA.kolKeshvar;
+
+  const c16=document.createElement('div'); c16.className='card';
+  c16.innerHTML='<h3>نسبت وابستگی و نرخ سالمندی: هرمزگان در برابر کل کشور</h3><div class="desc">داده شهرستانی برای این شاخص در منبع ثبت احوال موجود نیست؛ مقایسه در سطح استانی ارائه می‌شود.</div>';
+  root.appendChild(c16);
+  const c16canvas=wrapCanvas(c16,'dependency_compare');
+  new Chart(c16canvas,{type:'bar',data:{labels:['نسبت وابستگی','نرخ سالمندی (۶۰+)','نرخ سالمندی (۶۵+)'],
+    datasets:[
+      {label:'هرمزگان',data:[H.dependencyRatio,H.agingRate60,H.agingRate65],backgroundColor:COLORS.orange},
+      {label:'کل کشور',data:[K.dependencyRatio,K.agingRate60,K.agingRate65],backgroundColor:COLORS.navy},
+    ]},options:baseOpts({})});
+
+  const c17=document.createElement('div'); c17.className='card';
+  c17.innerHTML='<h3>میانه سنی جمعیت به تفکیک شهرستان</h3><div class="desc">خط مرجع: میانگین ملی ('+fa(K.medianAge)+') و استانی ('+fa(H.medianAge)+')</div>';
+  root.appendChild(c17);
+  const c17canvas=wrapCanvas(c17,'median_age');
+  new Chart(c17canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:[{label:'میانه سنی',data:DIST_NAMES.map(d=>reg(d,'medianAge')),backgroundColor:COLORS.teal}]},
+    options:baseOpts({indexAxis:'y',plugins:{legend:{display:false}}})});
+
+  // infographic8 age pyramid symbolic
+  const info8=document.createElement('div'); info8.className='infobox';
+  info8.innerHTML=`<h4>هرم سنی نمادین جمعیت (مقایسه هرمزگان و کل کشور)</h4>
+  <div class="grid2">
+    <div><b style="color:#0d3b6e">هرمزگان</b> — میانه سنی: ${fa(H.medianAge)} سال (جمعیت جوان‌تر)
+      <div class="pyramid" style="margin-top:8px">
+        <div class="layer" style="background:#1565c0;width:40%">سالمندان</div>
+        <div class="layer" style="background:#1db8a0;width:70%">میانسالان</div>
+        <div class="layer" style="background:#f9a825;width:100%">جوانان و کودکان</div>
+      </div>
+    </div>
+    <div><b style="color:#0d3b6e">کل کشور</b> — میانه سنی: ${fa(K.medianAge)} سال
+      <div class="pyramid" style="margin-top:8px">
+        <div class="layer" style="background:#1565c0;width:55%">سالمندان</div>
+        <div class="layer" style="background:#1db8a0;width:80%">میانسالان</div>
+        <div class="layer" style="background:#f9a825;width:90%">جوانان و کودکان</div>
+      </div>
+    </div>
+  </div>`;
+  root.appendChild(info8);
+
+  // infographic9 dependency icons
+  const info9=document.createElement('div'); info9.className='infobox';
+  const depPeople=Math.round(H.dependencyRatio);
+  let iconsHtml='';
+  for(let i=0;i<100;i++){
+    iconsHtml+=`<svg viewBox="0 0 24 24" fill="${i<depPeople?COLORS.orange:'#cfd8e3'}"><circle cx="12" cy="7" r="4"/><path d="M4 21v-1c0-3 4-5 8-5s8 2 8 5v1"/></svg>`;
+  }
+  info9.innerHTML=`<h4>بار تکفل در هرمزگان</h4>
+  <p style="font-size:13px;color:#5a6b7d">از هر ۱۰۰ نفر در سن کار (۱۵ تا ۶۴ سال)، حدود <b style="color:${COLORS.orange}">${depPeople}</b> نفر وابسته (کودک یا سالمند) را تحت تکفل دارند.</p>
+  <div class="dep-people">${iconsHtml}</div>`;
+  root.appendChild(info9);
+}
+
+/* ============== تب ۶: بهداشت و سزارین ============== */
+function buildTab6(){
+  const root=document.getElementById('tab6');
+
+  const c18=document.createElement('div'); c18.className='card';
+  c18.innerHTML='<h3>میزان سزارین و سزارین نخست‌زا به تفکیک شهرستان</h3><div class="desc">خط مرجع: استاندارد WHO (۱۰ تا ۱۵٪)</div>';
+  root.appendChild(c18);
+  const c18canvas=wrapCanvas(c18,'cesarean');
+  new Chart(c18canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:[
+      {label:'سزارین کل',data:DIST_NAMES.map(d=>leftVal(d,14)),backgroundColor:COLORS.red},
+      {label:'سزارین نخست‌زا',data:DIST_NAMES.map(d=>leftVal(d,15)),backgroundColor:COLORS.orange},
+    ]},options:baseOpts({})});
+
+  const c19=document.createElement('div'); c19.className='card';
+  c19.innerHTML='<h3>توزیع سنی زنان متأهل در سن باروری</h3>';
+  root.appendChild(c19);
+  const c19canvas=wrapCanvas(c19,'married_women_age');
+  const ageLabels=['۱۵-۱۹','۲۰-۲۴','۲۵-۲۹','۳۰-۳۴','۳۵-۳۹','۴۰-۴۴','۴۵-۴۹'];
+  const ageColors=[COLORS.red,COLORS.orange,COLORS.gold,COLORS.green,COLORS.teal,'#7e57c2','#8d6e63'];
+  new Chart(c19canvas,{type:'bar',data:{labels:DIST_NAMES,
+    datasets:ageLabels.map((lbl,i)=>({label:lbl,data:DIST_NAMES.map(d=>rightVal(d,1+i)),backgroundColor:ageColors[i]}))},
+    options:baseOpts({scales:{x:{stacked:true},y:{stacked:true}}})});
+
+  // mortality cards
+  const c20=document.createElement('div'); c20.className='card';
+  c20.innerHTML='<h3>کارت‌های مرگ‌ومیر مادران و کودکان (۱۴۰۲)</h3>';
+  const mg=document.createElement('div'); mg.className='mortality-grid';
+  DIST_NAMES.forEach(d=>{
+    const md=rightVal(d,15), nd=rightVal(d,16), id=rightVal(d,17);
+    const total=(md||0)+(nd||0)+(id||0);
+    mg.innerHTML+=`<div class="mortality-card"><div class="l">${d}</div>
+      <div class="n" style="color:${total>0?COLORS.red:COLORS.green}">${faInt(total)}</div>
+      <div class="l">مادر:${md??'—'} | نوزاد:${nd??'—'} | کودک:${id??'—'}</div></div>`;
+  });
+  c20.appendChild(mg);
+  root.appendChild(c20);
+
+  // checklist infographic
+  const info10=document.createElement('div'); info10.className='infobox';
+  let chHtml='<h4>چک‌لیست وضعیت بهداشت مادر و کودک</h4><div class="health-checklist">';
+  DIST_NAMES.forEach(d=>{
+    const ces=leftVal(d,14);
+    const okCes = ces!=null && ces<=15;
+    const md=rightVal(d,15);
+    const okMd = !md;
+    chHtml+=`<div class="item"><span class="${okCes?'ok':'bad'}">${okCes?'✔':'✘'}</span> ${d}: سزارین ${ces!=null?fa(ces)+'٪':'—'}</div>`;
+  });
+  chHtml+='</div>';
+  info10.innerHTML=chHtml;
+  root.appendChild(info10);
+}
+
+/* ============== تب ۷: مقایسه تعاملی و بینش‌ها ============== */
+function buildTab7(){
+  const root=document.getElementById('tab7');
+
+  // radar + selects
+  const radarCard=document.createElement('div'); radarCard.className='card';
+  radarCard.innerHTML='<h3>مقایسه چندشاخصه دو شهرستان</h3>';
+  const selWrap=document.createElement('div');
+  const sel1=document.createElement('select'); sel1.className='filter';
+  const sel2=document.createElement('select'); sel2.className='filter';
+  DIST_NAMES.forEach((d,i)=>{
+    const o1=document.createElement('option'); o1.value=d; o1.textContent=d; if(i===0)o1.selected=true; sel1.appendChild(o1);
+    const o2=document.createElement('option'); o2.value=d; o2.textContent=d; if(i===1)o2.selected=true; sel2.appendChild(o2);
+  });
+  selWrap.appendChild(sel1); selWrap.appendChild(sel2);
+  radarCard.appendChild(selWrap);
+  root.appendChild(radarCard);
+  const radarCanvas=wrapCanvas(radarCard,'radar_compare');
+  const metricsDef=[
+    {l:'TFR (×10)',f:d=>reg(d,'tfr')*10},
+    {l:'نرخ ازدواج',f:d=>reg(d,'marriageRate')},
+    {l:'نرخ طلاق (×5)',f:d=>reg(d,'divorceRate')*5},
+    {l:'نرخ ولادت',f:d=>reg(d,'birthRate')},
+    {l:'میانه سنی',f:d=>reg(d,'medianAge')},
+    {l:'سزارین',f:d=>leftVal(d,14)},
+  ];
+  let radarChart;
+  function renderRadar(){
+    const d1=sel1.value, d2=sel2.value;
+    const data1=metricsDef.map(m=>m.f(d1)||0);
+    const data2=metricsDef.map(m=>m.f(d2)||0);
+    if(radarChart) radarChart.destroy();
+    radarChart=new Chart(radarCanvas,{type:'radar',data:{labels:metricsDef.map(m=>m.l),
+      datasets:[
+        {label:d1,data:data1,borderColor:COLORS.navy,backgroundColor:'rgba(13,59,110,.25)'},
+        {label:d2,data:data2,borderColor:COLORS.gold,backgroundColor:'rgba(249,168,37,.25)'},
+      ]},options:baseOpts({scales:{r:{ticks:{font:{family:'Vazirmatn'}}}}})});
+  }
+  renderRadar();
+  sel1.addEventListener('change',renderRadar);
+  sel2.addEventListener('change',renderRadar);
+
+  // sortable comparison table
+  const tcard=document.createElement('div'); tcard.className='card';
+  tcard.innerHTML='<h3>جدول مقایسه کامل شهرستان‌ها</h3><div class="desc">برای مرتب‌سازی روی عنوان ستون کلیک کنید</div>';
+  root.appendChild(tcard);
+  const cols=[
+    {l:'شهرستان',f:d=>d,isText:true},
+    {l:'TFR ۱۴۰۴',f:d=>reg(d,'tfr')},
+    {l:'TFR ۱۴۰۲',f:d=>leftVal(d,2)},
+    {l:'نرخ ازدواج',f:d=>reg(d,'marriageRate')},
+    {l:'نرخ طلاق',f:d=>reg(d,'divorceRate')},
+    {l:'میانه سنی',f:d=>reg(d,'medianAge')},
+    {l:'نرخ ولادت',f:d=>reg(d,'birthRate')},
+    {l:'نرخ فوت',f:d=>reg(d,'deathRate')},
+    {l:'سزارین (%)',f:d=>leftVal(d,14)},
+  ];
+  let sortIdx=1, sortAsc=false;
+  const tableDiv=document.createElement('div');
+  tcard.appendChild(tableDiv);
+  function colorScale(val,colIdx){
+    if(val==null) return '';
+    if(colIdx===1||colIdx===2){ return val<1.5?'background:#fdecea':(val<2.0?'background:#fff7e0':'background:#eaf6ec'); }
+    if(colIdx===4){ return val>2?'background:#fdecea':(val>1.2?'background:#fff7e0':'background:#eaf6ec'); }
+    if(colIdx===8){ return val>40?'background:#fdecea':(val>20?'background:#fff7e0':'background:#eaf6ec'); }
+    return '';
+  }
+  function renderTable(){
+    let rows=DIST_NAMES.map(d=>cols.map(c=>c.f(d)));
+    rows.sort((a,b)=>{
+      const va=a[sortIdx], vb=b[sortIdx];
+      if(va==null) return 1; if(vb==null) return -1;
+      if(typeof va==='string') return sortAsc? va.localeCompare(vb,'fa') : vb.localeCompare(va,'fa');
+      return sortAsc ? va-vb : vb-va;
+    });
+    let html='<table class="dtable"><thead><tr>';
+    cols.forEach((c,i)=>{ html+=`<th data-i="${i}">${c.l}${sortIdx===i?(sortAsc?' ▲':' ▼'):''}</th>`; });
+    html+='</tr></thead><tbody>';
+    rows.forEach(r=>{
+      html+='<tr>'+r.map((v,i)=>`<td style="${colorScale(v,i)}">${i===0?v:fa(v)}</td>`).join('')+'</tr>';
+    });
+    html+='</tbody></table>';
+    tableDiv.innerHTML=html;
+    tableDiv.querySelectorAll('th').forEach(th=>{
+      th.addEventListener('click',()=>{
+        const i=Number(th.dataset.i);
+        if(sortIdx===i) sortAsc=!sortAsc; else {sortIdx=i; sortAsc=false;}
+        renderTable();
+      });
+    });
+  }
+  renderTable();
+
+  // insight cards (computed dynamically)
+  const allTFR=DIST_NAMES.map(d=>({d,v:reg(d,'tfr')})).filter(x=>x.v!=null);
+  const lowestTFR=allTFR.slice().sort((a,b)=>a.v-b.v)[0];
+  const highestTFR=allTFR.slice().sort((a,b)=>b.v-a.v)[0];
+  const allCes=DIST_NAMES.map(d=>({d,v:leftVal(d,14)})).filter(x=>x.v!=null);
+  const highestCes=allCes.slice().sort((a,b)=>b.v-a.v)[0];
+  const allMarRate=DIST_NAMES.map(d=>({d,v:reg(d,'marriageRate')})).filter(x=>x.v!=null);
+  const lowestMarRate=allMarRate.slice().sort((a,b)=>a.v-b.v)[0];
+  const allDivRate=DIST_NAMES.map(d=>({d,v:reg(d,'divorceRate')})).filter(x=>x.v!=null);
+  const lowestDiv=allDivRate.slice().sort((a,b)=>a.v-b.v)[0];
+  const negativeGrowthCount=DIST_NAMES.filter(d=>(leftVal(d,9)??0)<0).length;
+  const H=DATA.hormozgan, K=DATA.kolKeshvar;
+
+  const alertHtml=`
+  <div class="alert-card bad">TFR هرمزگان (${fa(H.tfr)}) پایین‌تر از حد جایگزینی (۲.۱۰) است.</div>
+  <div class="alert-card bad">${negativeGrowthCount} از ${DIST_NAMES.length} شهرستان رشد سالانه منفی در میزان خام ولادت دارند — روند نگران‌کننده.</div>
+  <div class="alert-card bad">شهرستان ${lowestTFR.d} با TFR ${fa(lowestTFR.v)} پایین‌ترین باروری استان را دارد.</div>
+  ${highestCes? `<div class="alert-card bad">نرخ سزارین ${highestCes.d} (${fa(highestCes.v)}٪) بالاترین در استان و فراتر از حد WHO است.</div>`:''}
+  ${lowestMarRate? `<div class="alert-card bad">نرخ ازدواج ${lowestMarRate.d} با ${fa(lowestMarRate.v)} پایین‌ترین در استان است.</div>`:''}
+  `;
+  const goodHtml=`
+  <div class="alert-card good">TFR هرمزگان (${fa(H.tfr)}) از میانگین ملی (${fa(K.tfr)}) بالاتر است.</div>
+  <div class="alert-card good">شهرستان ${highestTFR.d} با TFR ${fa(highestTFR.v)} بالاترین باروری استان را دارد — الگوی موفق قابل بررسی.</div>
+  ${lowestDiv? `<div class="alert-card good">شهرستان ${lowestDiv.d} با نرخ طلاق ${fa(lowestDiv.v)} پایین‌ترین نرخ طلاق استان را دارد.</div>`:''}
+  `;
+  const policyHtml=`
+  <div class="alert-card policy">تقویت برنامه‌های تشویق ازدواج و فرزندآوری در شهرستان‌های با TFR زیر ۱.۵</div>
+  <div class="alert-card policy">کاهش فاصله بین ازدواج و فرزندآوری اول از طریق حمایت‌های مالی و مسکن</div>
+  <div class="alert-card policy">بررسی و تعمیم الگوی موفق ${highestTFR.d} (بالاترین TFR استان) به سایر شهرستان‌ها</div>
+  ${highestCes? `<div class="alert-card policy">برنامه کنترل و کاهش سزارین غیرضروری در ${highestCes.d}</div>`:''}
+  `;
+
+  const insCard=document.createElement('div'); insCard.className='card';
+  insCard.innerHTML='<h3>هشدارهای جمعیتی</h3><div class="alert-cards">'+alertHtml+'</div>';
+  root.appendChild(insCard);
+  const insCard2=document.createElement('div'); insCard2.className='card';
+  insCard2.innerHTML='<h3>نکات مثبت</h3><div class="alert-cards">'+goodHtml+'</div>';
+  root.appendChild(insCard2);
+  const insCard3=document.createElement('div'); insCard3.className='card';
+  insCard3.innerHTML='<h3>توصیه‌های سیاستی</h3><div class="alert-cards">'+policyHtml+'</div>';
+  root.appendChild(insCard3);
+}
+
+/* ============== راه‌اندازی ============== */
+window.addEventListener('DOMContentLoaded',()=>{
+  initTabs();
+  buildTab1(); buildTab2(); buildTab3(); buildTab4(); buildTab5(); buildTab6(); buildTab7();
+  hideLoading();
+});
+
+</script>
+</body>
+</html>
